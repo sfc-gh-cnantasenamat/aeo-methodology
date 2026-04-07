@@ -17,6 +17,6 @@ Generated from the scoring JSONs in `../scores/`.
 
 ## Data Sources
 
-- Scoring JSONs: `../scores/run-{1..16}-*.json`
-- Question metadata: `../input/question-bank.md`
-- Experiment design: `../input/README.md`
+- Scoring JSONs: [`scores/run-{1..16}-*.json`](../scores/)
+- Question metadata: [`input/question-bank.md`](../input/question-bank.md)
+- Experiment design: [`input/README.md`](../input/README.md)
