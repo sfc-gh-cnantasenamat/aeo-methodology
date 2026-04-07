@@ -1,10 +1,5 @@
 # AEO Benchmark
 
-## Presentations
-
-- [Methodology](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/)
-- [Results](https://sfc-gh-cnantasenamat.github.io/aeo-results/)
-
 **AI Engine Optimization (AEO)** measures how accurately AI coding assistants answer Snowflake developer questions. Think of it as SEO, but for AI: does your assistant return the canonical, current Snowflake answer, or does it hallucinate?
 
 ## Methodology
@@ -24,6 +19,11 @@
 **Judge panel:** Scores are averaged across 3 independent LLM judges (claude-opus-4-6, openai-gpt-5.4, llama4-maverick) to reduce single-model bias.
 
 **Storage:** All runs, responses, and scores are stored in `DEVREL.AEO_OBSERVABILITY` on Snowhouse for leaderboard analysis and Snowsight visualization.
+
+## Presentations
+
+- [Methodology](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/)
+- [Results](https://sfc-gh-cnantasenamat.github.io/aeo-results/)
 
 ## Pipeline
 
