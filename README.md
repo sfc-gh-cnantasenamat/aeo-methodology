@@ -20,6 +20,15 @@
 
 **Storage:** All runs, responses, and scores are stored in `DEVREL.AEO_OBSERVABILITY` on Snowhouse for leaderboard analysis and Snowsight visualization.
 
+## Repository Structure
+
+| Folder | Contents |
+|--------|----------|
+| [`input/`](input/) | Question bank, canonical answers, experiment prompts, and run summary |
+| [`results/`](results/) | Analysis views sliced by category, question type, dimension, factor, engine, and more |
+| [`scores/`](scores/) | Per-question JSON scoring files for all 16 experimental runs |
+| [`slides/`](slides/) | Markdown source for methodology and results presentations |
+
 ## Presentations
 
 - [Methodology](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/)
