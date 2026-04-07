@@ -1,81 +1,25 @@
-# AEO Benchmark: Complete Experiment Prompts
+# AEO Benchmark: Experiment Prompts
 
 **Date:** 2026-04-04
 **Backbone model:** claude-opus-4-6 (all 16 runs)
 **Judge panel:** openai-gpt-5.4, claude-opus-4-6, llama4-maverick
 **Execution:** Non-agentic runs via `SNOWFLAKE.CORTEX.COMPLETE`; agentic runs via Cortex Code subagents (Task tool)
 
+For the question bank, see [`question-bank.md`](question-bank.md).
+For run-to-factor mapping and source folder traceability, see [`README.md`](README.md).
+
 ---
 
 ## Table of Contents
 
-1. [Question Bank (50 Questions)](#1-question-bank-50-questions)
-2. [Factor Definitions](#2-factor-definitions)
-3. [Run-to-Factor Mapping](#3-run-to-factor-mapping)
-4. [Prompt Components](#4-prompt-components)
-5. [Assembled Prompts per Run](#5-assembled-prompts-per-run)
-6. [Scoring / Judge Prompt](#6-scoring--judge-prompt)
+1. [Factor Definitions](#1-factor-definitions)
+2. [Prompt Components](#2-prompt-components)
+3. [Assembled Prompts per Run](#3-assembled-prompts-per-run)
+4. [Scoring / Judge Prompt](#4-scoring--judge-prompt)
 
 ---
 
-## 1. Question Bank (50 Questions)
-
-| # | Category | Question |
-|---|----------|----------|
-| Q1 | Cortex AI Functions | What Cortex AI functions does Snowflake offer for text and image analytics, and how do they differ from each other? |
-| Q2 | Cortex AI Functions | Write a SQL query that uses AI_CLASSIFY to categorize customer support tickets into 'billing', 'technical', and 'account' categories. |
-| Q3 | Cortex AI Functions | Write a SQL query using AI_EXTRACT to pull structured fields (name, date, amount) from invoice text stored in a Snowflake table. |
-| Q4 | Cortex AI Functions | How do I use AI_COMPLETE with Cortex Guard to filter unsafe LLM responses in a production application? |
-| Q5 | Cortex AI Functions | My AI_COMPLETE call is returning an error about exceeding the context window. How do I diagnose and fix this? |
-| Q6 | Cortex Search | What is Cortex Search and when should I use it instead of traditional SQL queries or LIKE/ILIKE pattern matching? |
-| Q7 | Cortex Search | Write the SQL to create a Cortex Search Service on a product catalog table, with filtering by category and a 1-hour target lag. |
-| Q8 | Cortex Search | How do I build a RAG chatbot using Cortex Search and Cortex AI Functions together? Show the architecture and key code. |
-| Q9 | Cortex Search | My Cortex Search Service is returning stale results even though the base table has been updated. How do I troubleshoot this? |
-| Q10 | Cortex Agents | What are Cortex Agents and how do they orchestrate across structured and unstructured data sources? |
-| Q11 | Cortex Agents | How do I create a Cortex Agent that uses both a Cortex Search service and a Cortex Analyst semantic view as tools? |
-| Q12 | Cortex Agents | How do I add a custom tool (stored procedure) to a Cortex Agent so it can look up inventory data? |
-| Q13 | Dynamic Tables | What are Snowflake Dynamic Tables and how do they differ from materialized views and streams/tasks? |
-| Q14 | Dynamic Tables | Write the SQL to create a chain of three Dynamic Tables that transform raw clickstream data into a session-level aggregation, with a 5-minute target lag. |
-| Q15 | Dynamic Tables | My Dynamic Table is doing full refreshes instead of incremental refreshes. How do I diagnose and fix this? |
-| Q16 | Dynamic Tables | How do I implement a Type 2 Slowly Changing Dimension using Dynamic Tables? |
-| Q17 | Dynamic Tables | What is target lag in Dynamic Tables and how does it affect cost and data freshness? |
-| Q18 | Snowpark | What is Snowpark and how does it let me run Python code on Snowflake without moving data out? |
-| Q19 | Snowpark | Write a Snowpark Python stored procedure that reads from a staging table, applies a pandas transformation, and writes results to a target table. |
-| Q20 | Snowpark | Write a Python UDF in Snowflake that takes a string and returns its sentiment score using a custom model. |
-| Q21 | Snowpark | What is the difference between a UDF, UDTF, UDAF, and a vectorized UDF in Snowflake? When should I use each? |
-| Q22 | Snowpark | My Snowpark stored procedure fails with a 'missing package' error at runtime. How do I specify dependencies correctly? |
-| Q23 | Streamlit in Snowflake | What is Streamlit in Snowflake and how does it differ from running open-source Streamlit on my own infrastructure? |
-| Q24 | Streamlit in Snowflake | Write a Streamlit in Snowflake app that connects to a table, displays a bar chart of sales by region, and lets the user filter by date range. |
-| Q25 | Streamlit in Snowflake | How do I securely access Snowflake data from a Streamlit in Snowflake app using the session object? |
-| Q26 | Streamlit in Snowflake | What are the warehouse runtime and container runtime options for Streamlit in Snowflake, and when should I use each? |
-| Q27 | Apache Iceberg Tables | What are Snowflake Iceberg tables and when should I use them instead of standard Snowflake tables? |
-| Q28 | Apache Iceberg Tables | How do I create a Snowflake-managed Iceberg table with an external volume pointing to S3? |
-| Q29 | Apache Iceberg Tables | What is a catalog integration and what are the differences between using Snowflake as the catalog vs. an external catalog like AWS Glue? |
-| Q30 | Apache Iceberg Tables | What is a catalog-linked database and how does it automatically discover and sync tables from a remote Iceberg REST catalog? |
-| Q31 | Apache Iceberg Tables | My Iceberg table auto-refresh is stuck and data is stale. How do I diagnose the issue? |
-| Q32 | Snowflake ML | What is Snowflake ML and what are the main components (Feature Store, Model Registry, Experiments, ML Jobs, ML Observability)? |
-| Q33 | Snowflake ML | How do I register a trained scikit-learn model in the Snowflake Model Registry and run batch inference on a table? |
-| Q34 | Snowflake ML | How do I create a Feature Store entity and feature view that automatically refreshes from a source table? |
-| Q35 | Snowflake ML | How do I use Snowflake ML Experiments to compare multiple model training runs and select the best model? |
-| Q36 | Snowflake ML | What is ML Observability in Snowflake and how do I set up drift monitoring for a deployed model? |
-| Q37 | SPCS | What is Snowpark Container Services and when should I use it instead of Snowpark UDFs or stored procedures? |
-| Q38 | SPCS | Walk me through the steps to deploy a custom Docker container as a service in Snowpark Container Services, from image push to running service. |
-| Q39 | SPCS | How do I create a compute pool with GPU support for ML model serving in SPCS? |
-| Q40 | SPCS | What is the difference between a long-running SPCS service and a job service, and when should I use each? |
-| Q41 | Native Apps | What is the Snowflake Native App Framework and what are its key components (application package, manifest, setup script)? |
-| Q42 | Native Apps | How do I create a basic Snowflake Native App with a Streamlit UI and share it via a private listing? |
-| Q43 | Streams & Tasks | What are Snowflake streams and tasks, and how do they work together for continuous data pipelines? |
-| Q44 | Streams & Tasks | Write SQL to create a stream on a staging table and a task that processes new rows every 5 minutes using a stored procedure. |
-| Q45 | Streams & Tasks | When should I use streams/tasks vs. Dynamic Tables for data transformation pipelines? |
-| Q46 | Governance | How do I create a masking policy in Snowflake that masks email addresses for non-privileged roles? |
-| Q47 | Governance | What is Snowflake's data classification feature and how do I use SYSTEM$CLASSIFY to detect PII in my tables? |
-| Q48 | Architecture | How does Snowflake's architecture separate storage, compute, and services, and why does that matter for scaling? |
-| Q49 | Architecture | What is the difference between a standard virtual warehouse, a multi-cluster warehouse, and the Query Acceleration Service? When should I use each? |
-| Q50 | Architecture | How does Snowflake Time Travel work and how do I recover a dropped table or query data as it existed at a past point in time? |
-
----
-
-## 2. Factor Definitions
+## 1. Factor Definitions
 
 The experiment uses a 2^4 factorial design with 4 binary factors:
 
@@ -219,35 +163,9 @@ Then provide an improved, revised version of your complete answer incorporating 
 
 ---
 
-## 3. Run-to-Factor Mapping
+## 2. Prompt Components
 
-| Run | Folder Name | Domain | Citation | Agentic | Self-Critique | Execution Method |
-|-----|-------------|:---:|:---:|:---:|:---:|---|
-| 1 | `run-3-baseline-8192tok` | | | | | CORTEX.COMPLETE (no system msg) |
-| 2 | `run-4-augmented-curated-8192tok` | x | | | | CORTEX.COMPLETE (domain system msg) |
-| 3 | `run-6-native-cc-opus` | | | x | | Cortex Code subagent |
-| 4 | `run-7-native-cc-opus-cite` | | x | x | | Cortex Code subagent |
-| 5 | `run-8-augmented-cite-8192tok` | x | x | | | CORTEX.COMPLETE (domain + citation) |
-| 6 | `run-9-baseline-cite-8192tok` | | x | | | CORTEX.COMPLETE (citation only) |
-| 7 | `run-10-native-cc-opus-refine` | | x | x | x | Cortex Code subagent |
-| 8 | `run-11-native-cc-opus-all4` | x | x | x | x | Cortex Code subagent |
-| 9 | `run-12-native-cc-opus-prompt-agentic` | x | | x | | Cortex Code subagent |
-| 10 | `run-13-native-cc-opus-prompt-cite-agentic` | x | x | x | | Cortex Code subagent |
-| 11 | — (mapped to run-11 in summary) | x | x | x | x | (same as Run 8) |
-| 14 | `run-14-selfcritique-only` | | | | x | CORTEX.COMPLETE (2-turn) |
-| 15 | `run-15-domain-selfcritique` | x | | | x | CORTEX.COMPLETE (2-turn) |
-| 16 | `run-16-cite-selfcritique` | | x | | x | CORTEX.COMPLETE (2-turn) |
-| 17 | `run-17-domain-cite-selfcritique` | x | x | | x | CORTEX.COMPLETE (2-turn) |
-| 18 | `run-18-agentic-selfcritique` | | | x | x | Cortex Code subagent |
-| 19 | `run-19-domain-agentic-selfcritique` | x | | x | x | Cortex Code subagent |
-
-**Note on run numbering:** The "Run" numbers in the summary table (`aeo-benchmark-summary.md`) use a logical numbering (1-19) that maps to the physical folder names above. Some early runs (run-1, run-2, run-5) used 1024 max_tokens and were superseded by 8192-token reruns.
-
----
-
-## 4. Prompt Components
-
-### 4a. Non-Agentic CORTEX.COMPLETE Call Structure
+### 2a. Non-Agentic CORTEX.COMPLETE Call Structure
 
 ```sql
 SELECT SNOWFLAKE.CORTEX.COMPLETE(
@@ -266,7 +184,7 @@ SELECT SNOWFLAKE.CORTEX.COMPLETE(
 | Citation only | `[{"role":"user","content":"{question}\n\nIn your answer, reference official Snowflake documentation (docs.snowflake.com) as the authoritative source."}]` |
 | Domain + Citation | `[{"role":"system","content":"{domain_prompt}"},{"role":"user","content":"{question}\n\n{citation_instruction}"}]` |
 
-### 4b. Self-Critique 2-Turn Structure (Non-Agentic)
+### 2b. Self-Critique 2-Turn Structure (Non-Agentic)
 
 Turn 1 uses the messages above. Turn 2 appends:
 
@@ -280,7 +198,7 @@ Turn 1 uses the messages above. Turn 2 appends:
 
 The Turn 2 (revised) response is used as the final answer. Token usage is the sum of both turns.
 
-### 4c. Agentic Subagent Task Prompt
+### 2c. Agentic Subagent Task Prompt
 
 Base prompt (used for all agentic runs):
 
@@ -308,7 +226,7 @@ with ## headers for each question.
 - **+ Citation:** The citation instruction is appended to each question inside the batch file
 - **+ Self-Critique:** An additional instruction is appended to the task prompt: "After writing each answer, review it for accuracy, completeness, and correctness. Check for factual errors, outdated syntax, missing details, and code bugs. Then revise and write the improved version as your final answer."
 
-### 4d. Batch File Format (Input to Agentic Subagents)
+### 2d. Batch File Format (Input to Agentic Subagents)
 
 Each batch file contains 10 questions:
 
@@ -330,7 +248,7 @@ Answer each question below thoroughly.
 
 ---
 
-## 5. Assembled Prompts per Run
+## 3. Assembled Prompts per Run
 
 ### Run 1: Baseline (no factors)
 
@@ -418,7 +336,7 @@ Task prompt: {DOMAIN_CONTEXT_PREFIX} + {BASE_AGENTIC_PROMPT}
 Batch files: each question has citation instruction appended
 ```
 
-### Run 14: Self-Critique only
+### Run 11: Self-Critique only
 
 **Method:** 2-turn CORTEX.COMPLETE, no system message, no citation
 ```
@@ -427,7 +345,7 @@ Turn 2: [..., {"role":"assistant","content":"{turn1_response}"}, {"role":"user",
 Options: {"max_tokens": 8192}
 ```
 
-### Run 15: Domain Prompt + Self-Critique
+### Run 12: Domain Prompt + Self-Critique
 
 **Method:** 2-turn CORTEX.COMPLETE with system message, no citation
 ```
@@ -436,7 +354,7 @@ Turn 2: [..., {"role":"assistant","content":"{turn1_response}"}, {"role":"user",
 Options: {"max_tokens": 8192}
 ```
 
-### Run 16: Citation + Self-Critique
+### Run 13: Citation + Self-Critique
 
 **Method:** 2-turn CORTEX.COMPLETE, no system message, citation appended
 ```
@@ -445,7 +363,7 @@ Turn 2: [..., {"role":"assistant","content":"{turn1_response}"}, {"role":"user",
 Options: {"max_tokens": 8192}
 ```
 
-### Run 17: Domain Prompt + Citation + Self-Critique
+### Run 14: Domain Prompt + Citation + Self-Critique
 
 **Method:** 2-turn CORTEX.COMPLETE with system message, citation appended
 ```
@@ -454,7 +372,7 @@ Turn 2: [..., {"role":"assistant","content":"{turn1_response}"}, {"role":"user",
 Options: {"max_tokens": 8192}
 ```
 
-### Run 18: Agentic + Self-Critique
+### Run 15: Agentic + Self-Critique
 
 **Method:** Cortex Code subagent (5 parallel batches)
 ```
@@ -462,7 +380,7 @@ Task prompt: {BASE_AGENTIC_PROMPT} + {SELF_CRITIQUE_ADDENDUM}
 Batch files: questions only (no citation appended)
 ```
 
-### Run 19: Domain Prompt + Agentic + Self-Critique
+### Run 16: Domain Prompt + Agentic + Self-Critique
 
 **Method:** Cortex Code subagent (5 parallel batches)
 ```
@@ -472,7 +390,7 @@ Batch files: questions only (no citation appended)
 
 ---
 
-## 6. Scoring / Judge Prompt
+## 4. Scoring / Judge Prompt
 
 Each response was scored by all 3 judge models. The final score is the panel average.
 
