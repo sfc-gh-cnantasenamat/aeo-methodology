@@ -31,8 +31,8 @@
 
 ## Presentations
 
-- [Methodology](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/)
-- [Results](https://sfc-gh-cnantasenamat.github.io/aeo-results/)
+- [Methodology](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/) ([md](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/slides.md))
+- [Results](https://sfc-gh-cnantasenamat.github.io/aeo-results/) ([md](https://sfc-gh-cnantasenamat.github.io/aeo-results/slides.md))
 
 ## Pipeline
 
