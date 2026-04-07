@@ -842,7 +842,7 @@ const Theme = (function(){
     {name:'Blue',main:'#448aff',dim:'#2979ff',dark:'#1565c0',border:'rgba(68,138,255,0.3)',cardBg:'rgba(0,5,20,0.85)'},
     {name:'White',main:'#ffffff',dim:'#cccccc',dark:'#888888',border:'rgba(255,255,255,0.3)',cardBg:'rgba(15,15,15,0.85)'},
   ];
-  let current = 0; let rainColor = themes[0].main;
+  let current = 1; let rainColor = themes[1].main;
   function apply(index){
     current = index; const t = themes[index]; const r = document.documentElement.style;
     r.setProperty('--green',t.main); r.setProperty('--green-dim',t.dim); r.setProperty('--green-dark',t.dark);
@@ -861,7 +861,7 @@ const Theme = (function(){
   themes.forEach((t,i) => {
     const wrapper = document.createElement('div'); wrapper.style.textAlign = 'center';
     const swatch = document.createElement('div');
-    swatch.className = 'color-swatch' + (i===0?' active':'');
+    swatch.className = 'color-swatch' + (i===1?' active':'');
     swatch.style.backgroundColor = t.main; swatch.style.color = t.main;
     swatch.addEventListener('click',() => { apply(i); Sound.choiceSelect(); });
     const label = document.createElement('div'); label.className = 'color-name';
@@ -876,6 +876,7 @@ const Theme = (function(){
   function toggle(){ overlay.classList.toggle('open'); }
   closeBtn.addEventListener('click',toggle);
   overlay.addEventListener('click',function(e){ if(e.target===overlay) toggle(); });
+  apply(1);
   return {toggle, getRainColor(){ return rainColor; }, isOpen(){ return overlay.classList.contains('open'); }, applyTheme:apply, themeCount:themes.length};
 })();
 
