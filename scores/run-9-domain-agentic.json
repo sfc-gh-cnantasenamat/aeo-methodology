@@ -1,0 +1,2673 @@
+{
+  "run": "run-12",
+  "condition": "Domain Prompt + Agentic",
+  "factors": [
+    "domain_prompt",
+    "agentic"
+  ],
+  "judges": [
+    "openai-gpt-5.4",
+    "claude-opus-4-6",
+    "llama4-maverick"
+  ],
+  "summary": {
+    "total_score": 352.02,
+    "max_score": 500,
+    "pct": 70.4,
+    "must_have_pass": 179.67,
+    "max_must_have": 200,
+    "mh_pct": 89.8
+  },
+  "per_question": {
+    "1": {
+      "panel_avg": {
+        "avg_total": 6.67,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            false,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 5,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "2": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "3": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "4": {
+      "panel_avg": {
+        "avg_total": 6.0,
+        "avg_must_have": 3.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        }
+      }
+    },
+    "5": {
+      "panel_avg": {
+        "avg_total": 5.33,
+        "avg_must_have": 2.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            false,
+            false,
+            true,
+            true
+          ],
+          "total": 3,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            false,
+            false,
+            true,
+            false
+          ],
+          "total": 6,
+          "must_have_pass": 1
+        }
+      }
+    },
+    "6": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "7": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "8": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "9": {
+      "panel_avg": {
+        "avg_total": 5.0,
+        "avg_must_have": 3.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            false,
+            false,
+            true
+          ],
+          "total": 2,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            false,
+            true
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "10": {
+      "panel_avg": {
+        "avg_total": 6.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 5,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "11": {
+      "panel_avg": {
+        "avg_total": 2.67,
+        "avg_must_have": 2.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            false,
+            false,
+            true,
+            true
+          ],
+          "total": 2,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            false,
+            true,
+            false,
+            true
+          ],
+          "total": 2,
+          "must_have_pass": 2
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 4,
+          "must_have_pass": 3
+        }
+      }
+    },
+    "12": {
+      "panel_avg": {
+        "avg_total": 4.0,
+        "avg_must_have": 2.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            true,
+            false,
+            false,
+            false
+          ],
+          "total": 1,
+          "must_have_pass": 1
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        }
+      }
+    },
+    "13": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "14": {
+      "panel_avg": {
+        "avg_total": 5.33,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 5,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 4,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "15": {
+      "panel_avg": {
+        "avg_total": 8.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "16": {
+      "panel_avg": {
+        "avg_total": 8.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 10,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "17": {
+      "panel_avg": {
+        "avg_total": 8.33,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 8,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "18": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "19": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "20": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "21": {
+      "panel_avg": {
+        "avg_total": 6.33,
+        "avg_must_have": 3.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            false,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "22": {
+      "panel_avg": {
+        "avg_total": 9.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "23": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "24": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 9,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "25": {
+      "panel_avg": {
+        "avg_total": 6.0,
+        "avg_must_have": 3.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "total": 3,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "26": {
+      "panel_avg": {
+        "avg_total": 7.33,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "27": {
+      "panel_avg": {
+        "avg_total": 7.0,
+        "avg_must_have": 3.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            false,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            false,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "28": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "29": {
+      "panel_avg": {
+        "avg_total": 6.33,
+        "avg_must_have": 3.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "30": {
+      "panel_avg": {
+        "avg_total": 7.0,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "31": {
+      "panel_avg": {
+        "avg_total": 4.67,
+        "avg_must_have": 1.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            false,
+            false,
+            false
+          ],
+          "total": 2,
+          "must_have_pass": 1
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            false,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 2
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            false,
+            false
+          ],
+          "total": 4,
+          "must_have_pass": 1
+        }
+      }
+    },
+    "32": {
+      "panel_avg": {
+        "avg_total": 6.0,
+        "avg_must_have": 3.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            false,
+            true,
+            false,
+            true
+          ],
+          "total": 4,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            false,
+            true,
+            true,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "33": {
+      "panel_avg": {
+        "avg_total": 7.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 5,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "34": {
+      "panel_avg": {
+        "avg_total": 6.0,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            false,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 4,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "35": {
+      "panel_avg": {
+        "avg_total": 4.33,
+        "avg_must_have": 2.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 0,
+          "completeness": 1,
+          "recency": 0,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "total": 2,
+          "must_have_pass": 2
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 4,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            false,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        }
+      }
+    },
+    "36": {
+      "panel_avg": {
+        "avg_total": 6.67,
+        "avg_must_have": 2.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            false,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 1
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            false,
+            false
+          ],
+          "total": 7,
+          "must_have_pass": 2
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "37": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "38": {
+      "panel_avg": {
+        "avg_total": 7.0,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "39": {
+      "panel_avg": {
+        "avg_total": 7.33,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 1,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "40": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "41": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "42": {
+      "panel_avg": {
+        "avg_total": 7.33,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 6,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "43": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "44": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "45": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "46": {
+      "panel_avg": {
+        "avg_total": 8.0,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "47": {
+      "panel_avg": {
+        "avg_total": 6.33,
+        "avg_must_have": 3.33
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 1,
+          "completeness": 1,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 5,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 1,
+          "completeness": 2,
+          "recency": 1,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            false
+          ],
+          "total": 6,
+          "must_have_pass": 3
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "48": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 1,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 0,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "49": {
+      "panel_avg": {
+        "avg_total": 8.33,
+        "avg_must_have": 4.0
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 4
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendance": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 10,
+          "must_have_pass": 4
+        }
+      }
+    },
+    "50": {
+      "panel_avg": {
+        "avg_total": 7.67,
+        "avg_must_have": 3.67
+      },
+      "judges": {
+        "openai-gpt-5.4": {
+          "correctness": 2,
+          "completeness": 1,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            false,
+            true
+          ],
+          "total": 7,
+          "must_have_pass": 3
+        },
+        "claude-opus-4-6": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        },
+        "llama4-maverick": {
+          "correctness": 2,
+          "completeness": 2,
+          "recency": 2,
+          "citation": 0,
+          "recommendation": 2,
+          "must_have": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "total": 8,
+          "must_have_pass": 4
+        }
+      }
+    }
+  }
+}

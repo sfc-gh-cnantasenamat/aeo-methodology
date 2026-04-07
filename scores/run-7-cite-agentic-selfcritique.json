@@ -1,0 +1,852 @@
+[
+  {
+    "question": "Q1",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q2",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.34,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q3",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.67,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q4",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 0.67,
+    "citation": 2.0,
+    "recommendation": 1.67,
+    "total": 8.01,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  {
+    "question": "Q5",
+    "model": "native-cc",
+    "correctness": 1.0,
+    "completeness": 1.33,
+    "recency": 1.0,
+    "citation": 1.33,
+    "recommendation": 1.33,
+    "total": 5.99,
+    "must_have_pass": 1,
+    "must_have": [
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  {
+    "question": "Q6",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.34,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q7",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "total": 8.34,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q8",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q9",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 1.67,
+    "recommendation": 1.67,
+    "total": 8.35,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  {
+    "question": "Q10",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.01,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q11",
+    "model": "native-cc",
+    "correctness": 1.0,
+    "completeness": 1.33,
+    "recency": 1.0,
+    "citation": 2.0,
+    "recommendation": 1.33,
+    "total": 6.66,
+    "must_have_pass": 2,
+    "must_have": [
+      false,
+      true,
+      true,
+      false
+    ]
+  },
+  {
+    "question": "Q12",
+    "model": "native-cc",
+    "correctness": 1.0,
+    "completeness": 1.67,
+    "recency": 1.0,
+    "citation": 2.0,
+    "recommendation": 1.33,
+    "total": 7.0,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q13",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q14",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.01,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q15",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 1.67,
+    "total": 9.34,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q16",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.01,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q17",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q18",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q19",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q20",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 1.67,
+    "total": 9.01,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q21",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q22",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 1.67,
+    "total": 8.68,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q23",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q24",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q25",
+    "model": "native-cc",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.33,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q26",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.34,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q27",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.01,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  {
+    "question": "Q28",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q29",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q30",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q31",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 1.67,
+    "total": 8.68,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q32",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "total": 9.01,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q33",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q34",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q35",
+    "model": "native-cc",
+    "correctness": 1.0,
+    "completeness": 1.67,
+    "recency": 1.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 7.67,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q36",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.01,
+    "must_have_pass": 3,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  {
+    "question": "Q37",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q38",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q39",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.34,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q40",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q41",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q42",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.67,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q43",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q44",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q45",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q46",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.67,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q47",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q48",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 1.33,
+    "total": 9.33,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q49",
+    "model": "native-cc",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 9.34,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "Q50",
+    "model": "native-cc",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "total": 10.0,
+    "must_have_pass": 4,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ]
+  }
+]

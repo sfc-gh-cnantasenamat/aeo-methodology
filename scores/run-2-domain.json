@@ -1,0 +1,2552 @@
+[
+  {
+    "question": "Q1",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.33,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 7.0
+  },
+  {
+    "question": "Q2",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q3",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 9.34
+  },
+  {
+    "question": "Q4",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.67,
+    "must_have": [
+      false,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 5.66
+  },
+  {
+    "question": "Q5",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q6",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q7",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q8",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.33
+  },
+  {
+    "question": "Q9",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.66
+  },
+  {
+    "question": "Q10",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.67
+  },
+  {
+    "question": "Q11",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.67
+  },
+  {
+    "question": "Q12",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.99
+  },
+  {
+    "question": "Q13",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 6.33
+  },
+  {
+    "question": "Q14",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q15",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q16",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q17",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q18",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.33
+  },
+  {
+    "question": "Q19",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q20",
+    "model": "claude-opus-4-6",
+    "correctness": 1.0,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.33
+  },
+  {
+    "question": "Q21",
+    "model": "claude-opus-4-6",
+    "correctness": 1.0,
+    "completeness": 1.0,
+    "recency": 1.0,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 3.67
+  },
+  {
+    "question": "Q22",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.66
+  },
+  {
+    "question": "Q23",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 5.0
+  },
+  {
+    "question": "Q24",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q25",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q26",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      true,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 5.66
+  },
+  {
+    "question": "Q27",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 9.67
+  },
+  {
+    "question": "Q28",
+    "model": "claude-opus-4-6",
+    "correctness": 1.0,
+    "completeness": 0.33,
+    "recency": 1.0,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 3.33
+  },
+  {
+    "question": "Q29",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 0.0,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 4.34
+  },
+  {
+    "question": "Q30",
+    "model": "claude-opus-4-6",
+    "correctness": 1.0,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 4.34
+  },
+  {
+    "question": "Q31",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q32",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.67,
+    "must_have": [
+      false,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 5.67
+  },
+  {
+    "question": "Q33",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q34",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q35",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.33
+  },
+  {
+    "question": "Q36",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.33
+  },
+  {
+    "question": "Q37",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q38",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 5.32
+  },
+  {
+    "question": "Q39",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.67
+  },
+  {
+    "question": "Q40",
+    "model": "claude-opus-4-6",
+    "correctness": 0.33,
+    "completeness": 0.33,
+    "recency": 0.33,
+    "citation": 0.0,
+    "recommendation": 0.33,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 1.32
+  },
+  {
+    "question": "Q41",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 0.67,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.67
+  },
+  {
+    "question": "Q42",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 5.32
+  },
+  {
+    "question": "Q43",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 4.33
+  },
+  {
+    "question": "Q44",
+    "model": "claude-opus-4-6",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q45",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 6.67
+  },
+  {
+    "question": "Q46",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q47",
+    "model": "claude-opus-4-6",
+    "correctness": 2.0,
+    "completeness": 1.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      true,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 6.33
+  },
+  {
+    "question": "Q48",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 5.33
+  },
+  {
+    "question": "Q49",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 5.0
+  },
+  {
+    "question": "Q50",
+    "model": "claude-opus-4-6",
+    "correctness": 1.33,
+    "completeness": 0.33,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.32
+  },
+  {
+    "question": "Q1",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 8.01
+  },
+  {
+    "question": "Q2",
+    "model": "llama4-maverick",
+    "correctness": 1.0,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      false,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 4.67
+  },
+  {
+    "question": "Q3",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.66
+  },
+  {
+    "question": "Q4",
+    "model": "llama4-maverick",
+    "correctness": 1.0,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.0
+  },
+  {
+    "question": "Q5",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      false,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 7.99
+  },
+  {
+    "question": "Q6",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.0
+  },
+  {
+    "question": "Q7",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.66
+  },
+  {
+    "question": "Q8",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 6.66
+  },
+  {
+    "question": "Q9",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.99
+  },
+  {
+    "question": "Q10",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 6.34
+  },
+  {
+    "question": "Q11",
+    "model": "llama4-maverick",
+    "correctness": 0.0,
+    "completeness": 0.67,
+    "recency": 0.67,
+    "citation": 1.33,
+    "recommendation": 0.67,
+    "must_have": [
+      false,
+      false,
+      true,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 3.34
+  },
+  {
+    "question": "Q12",
+    "model": "llama4-maverick",
+    "correctness": 0.67,
+    "completeness": 1.0,
+    "recency": 1.0,
+    "citation": 1.33,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 5.33
+  },
+  {
+    "question": "Q13",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      false,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 9.34
+  },
+  {
+    "question": "Q14",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.34
+  },
+  {
+    "question": "Q15",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 1.67,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 6.67
+  },
+  {
+    "question": "Q16",
+    "model": "llama4-maverick",
+    "correctness": 0.33,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 3.66
+  },
+  {
+    "question": "Q17",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 9.34
+  },
+  {
+    "question": "Q18",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q19",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 6.33
+  },
+  {
+    "question": "Q20",
+    "model": "llama4-maverick",
+    "correctness": 0.67,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.0
+  },
+  {
+    "question": "Q21",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.33
+  },
+  {
+    "question": "Q22",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.33
+  },
+  {
+    "question": "Q23",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 7.67
+  },
+  {
+    "question": "Q24",
+    "model": "llama4-maverick",
+    "correctness": 1.0,
+    "completeness": 1.67,
+    "recency": 1.0,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      false,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 4.34
+  },
+  {
+    "question": "Q25",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q26",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q27",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.33
+  },
+  {
+    "question": "Q28",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 9.0
+  },
+  {
+    "question": "Q29",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 0.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 5.99
+  },
+  {
+    "question": "Q30",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 6.99
+  },
+  {
+    "question": "Q31",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 6.99
+  },
+  {
+    "question": "Q32",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.33,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 6.99
+  },
+  {
+    "question": "Q33",
+    "model": "llama4-maverick",
+    "correctness": 0.0,
+    "completeness": 0.0,
+    "recency": 0.0,
+    "citation": 0.0,
+    "recommendation": 0.0,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 0.0
+  },
+  {
+    "question": "Q34",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.33
+  },
+  {
+    "question": "Q35",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 7.66
+  },
+  {
+    "question": "Q36",
+    "model": "llama4-maverick",
+    "correctness": 1.0,
+    "completeness": 1.33,
+    "recency": 1.0,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 6.33
+  },
+  {
+    "question": "Q37",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q38",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 1.67,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      false,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.34
+  },
+  {
+    "question": "Q39",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 9.01
+  },
+  {
+    "question": "Q40",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 8.0
+  },
+  {
+    "question": "Q41",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      false,
+      true,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 8.67
+  },
+  {
+    "question": "Q42",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 6.99
+  },
+  {
+    "question": "Q43",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q44",
+    "model": "llama4-maverick",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.67
+  },
+  {
+    "question": "Q45",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q46",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 9.67
+  },
+  {
+    "question": "Q47",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 6.99
+  },
+  {
+    "question": "Q48",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q49",
+    "model": "llama4-maverick",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.66
+  },
+  {
+    "question": "Q50",
+    "model": "llama4-maverick",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.34
+  },
+  {
+    "question": "Q1",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.0,
+    "completeness": 0.67,
+    "recency": 1.0,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      false,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 1,
+    "total": 3.34
+  },
+  {
+    "question": "Q2",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q3",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.67
+  },
+  {
+    "question": "Q4",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q5",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 2.0,
+    "recency": 1.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      false,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 7.66
+  },
+  {
+    "question": "Q6",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.33
+  },
+  {
+    "question": "Q7",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q8",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 1.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.5,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 5.5
+  },
+  {
+    "question": "Q9",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 6.66
+  },
+  {
+    "question": "Q10",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q11",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 2.0,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.34
+  },
+  {
+    "question": "Q12",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 0.67,
+    "recency": 1.33,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 4.66
+  },
+  {
+    "question": "Q13",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "must_have_pass": 2,
+    "total": 7.66
+  },
+  {
+    "question": "Q14",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q15",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 1.67,
+    "must_have": [
+      false,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 8.34
+  },
+  {
+    "question": "Q16",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.0,
+    "completeness": 1.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 1.0,
+    "must_have": [
+      false,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 6.0
+  },
+  {
+    "question": "Q17",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 0.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 5.33
+  },
+  {
+    "question": "Q18",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q19",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q20",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q21",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.67
+  },
+  {
+    "question": "Q22",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 0.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      true
+    ],
+    "must_have_pass": 3,
+    "total": 8.0
+  },
+  {
+    "question": "Q23",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.67
+  },
+  {
+    "question": "Q24",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 5.67
+  },
+  {
+    "question": "Q25",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q26",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 5.66
+  },
+  {
+    "question": "Q27",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 6.0
+  },
+  {
+    "question": "Q28",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q29",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 6.33
+  },
+  {
+    "question": "Q30",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.34
+  },
+  {
+    "question": "Q31",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 0.67,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 0.67,
+    "must_have": [
+      false,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 4.34
+  },
+  {
+    "question": "Q32",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 0.67,
+    "recency": 1.33,
+    "citation": 1.33,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      false,
+      false
+    ],
+    "must_have_pass": 2,
+    "total": 6.33
+  },
+  {
+    "question": "Q33",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.34
+  },
+  {
+    "question": "Q34",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q35",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 7.33
+  },
+  {
+    "question": "Q36",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 1.67,
+    "recency": 1.33,
+    "citation": 1.67,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.0
+  },
+  {
+    "question": "Q37",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q38",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 2.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 10.0
+  },
+  {
+    "question": "Q39",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q40",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.67,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 7.34
+  },
+  {
+    "question": "Q41",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.67,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.67
+  },
+  {
+    "question": "Q42",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.33
+  },
+  {
+    "question": "Q43",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q44",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 1.33,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 1,
+    "total": 5.99
+  },
+  {
+    "question": "Q45",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 0.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 8.0
+  },
+  {
+    "question": "Q46",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 1.67,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 8.67
+  },
+  {
+    "question": "Q47",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q48",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.33,
+    "recommendation": 1.67,
+    "must_have": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "must_have_pass": 4,
+    "total": 9.0
+  },
+  {
+    "question": "Q49",
+    "model": "openai-gpt-5.4",
+    "correctness": 1.33,
+    "completeness": 0.33,
+    "recency": 1.67,
+    "citation": 0.0,
+    "recommendation": 1.33,
+    "must_have": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "must_have_pass": 0,
+    "total": 4.66
+  },
+  {
+    "question": "Q50",
+    "model": "openai-gpt-5.4",
+    "correctness": 2.0,
+    "completeness": 2.0,
+    "recency": 2.0,
+    "citation": 1.0,
+    "recommendation": 2.0,
+    "must_have": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "must_have_pass": 3,
+    "total": 9.0
+  }
+]

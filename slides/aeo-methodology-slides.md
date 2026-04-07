@@ -309,7 +309,7 @@ To confirm lever effects generalize beyond one model, we also ran three LLMs in 
 | Model             | Base | Domain | Cite | Domain+Cite |
 +-------------------+------+--------+------+----------+
 | openai-gpt-5.4    | 57.5 |  72.5  | 81.8 |   80.4   |
-| claude-opus-4-6   | 60.9 |  68.6  | 71.1 |   71.5   |
+| claude-opus-4-6   | 60.9 |  71.5  | 71.1 |   71.5   |
 | llama4-maverick   | 38.4 |  65.2  | 66.2 |   63.9   |
 +-------------------+------+--------+------+----------+
 ```

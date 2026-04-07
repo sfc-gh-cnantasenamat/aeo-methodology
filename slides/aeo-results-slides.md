@@ -34,7 +34,7 @@ What deployment changes made this happen? Keep reading.
 | Run  | Domain | Citation | Agentic | Self-Critique  | Score % | MH %  | vs Base   |
 +------+--------+----------+---------+----------------+---------+-------+-----------+
 |  1   |        |          |         |                |  60.9%  | 68.5% | baseline  |
-|  2   |   x    |          |         |                |  68.6%  | 62.0% | +7.7pp    |
+|  2   |   x    |          |         |                |  71.5%  | 63.5% | +10.6pp   |
 |  6   |        |    x     |         |                |  71.1%  | 48.5% | +10.2pp   |
 |  5   |   x    |    x     |         |                |  71.5%  | 54.5% | +10.6pp   |
 | 14   |        |          |         |       x        |  56.9%  | 66.5% | -4.0pp    |
@@ -65,7 +65,7 @@ Each pair holds the other 3 levers constant and flips only Agentic on/off:
 |  D |  C | SC | Without Agentic | With Agentic   | Score +  |  MH +   |
 +----+----+----+-----------------+----------------+----------+---------+
 |    |    |    | Run 1  (60.9%)  | Run 3  (72.2%) | +11.3pp  | +25.0pp |
-| x  |    |    | Run 2  (68.6%)  | Run 9  (70.4%) |  +1.8pp  | +27.8pp |
+| x  |    |    | Run 2  (71.5%)  | Run 9  (70.4%) |  -1.1pp  | +26.3pp |
 |    |  x |    | Run 6  (71.1%)  | Run 4  (93.8%) | +22.7pp  | +43.0pp |
 | x  |  x |    | Run 5  (71.5%)  | Run 10 (76.0%) |  +4.5pp  | +36.0pp |
 |    |    | x  | Run 14 (56.9%)  | Run 18 (70.8%) | +13.9pp  | +21.7pp |
@@ -155,7 +155,7 @@ Citation tells the agent what to look for. Agentic tools let it actually find an
 +-----+-----+----+-----------------+----------------+----------+---------+
 |  C  | Agt | SC | Without Domain  | With Domain    | Score +  |  MH +   |
 +-----+-----+----+-----------------+----------------+----------+---------+
-|     |     |    | Run 1  (60.9%)  | Run 2  (68.6%) |  +7.7pp  | -6.5pp  |
+|     |     |    | Run 1  (60.9%)  | Run 2  (71.5%) | +10.6pp  | -5.0pp  |
 |  x  |     |    | Run 6  (71.1%)  | Run 5  (71.5%) |  +0.4pp  | +6.0pp  |
 |  x  |  x  |    | Run 4  (93.8%)  | Run 10 (76.0%) | -17.8pp  | -1.0pp  |
 |  x  |  x  | x  | Run 7  (93.2%)  | Run 8  (73.0%) | -20.2pp  | -2.3pp  |
@@ -178,7 +178,7 @@ The worst cases: adding the domain prompt to the best configuration (citation + 
 |  D  |  C  | Agt | Without SC      | With SC        | Score +  |  MH +   |
 +-----+-----+-----+-----------------+----------------+----------+---------+
 |     |     |     | Run 1  (60.9%)  | Run 14 (56.9%) |  -4.0pp  | -2.0pp  |
-|  x  |     |     | Run 2  (68.6%)  | Run 15 (62.0%) |  -6.6pp  | +7.0pp  |
+|  x  |     |     | Run 2  (71.5%)  | Run 15 (62.0%) |  -9.5pp  | +5.5pp  |
 |     |     |  x  | Run 3  (72.2%)  | Run 18 (70.8%) |  -1.4pp  | -5.3pp  |
 |     |  x  |  x  | Run 4  (93.8%)  | Run 7  (93.2%) |  -0.6pp  | +2.0pp  |
 +-----+-----+-----+-----------------+----------------+----------+---------+
@@ -222,7 +222,7 @@ A 200-word system prompt destroyed a 20+ point advantage. The best instruction w
 ## Every data point uses claude-opus-4-6
 
 - **Bare model with no help:** 60.9% score (Run 1)
-- **Added a 200-word domain prompt:** 68.6% score, a gain of +7.7 points (Run 2)
+- **Added a 200-word domain prompt:** 71.5% score, a gain of +10.6 points (Run 2)
 - **Added citation instruction instead:** 71.1% score, a gain of +10.2 points (Run 6)
 - **Added both domain prompt and citation:** 71.5% score, a gain of +10.6 points (Run 5)
 - **Added agentic tools instead (no prompt changes):** 72.2% score, a gain of +11.3 points (Run 3)
@@ -233,7 +233,7 @@ Same neural network weights. Same training data. The 32.9-point difference came 
 ```
   Score progression (same model)
   Bare       60.9% ████████████████████████░░░░░░░░░░░░░░░░
-  +Domain    68.6% ███████████████████████████░░░░░░░░░░░░░
+  +Domain    71.5% ████████████████████████████░░░░░░░░░░░░
   +Citation  71.1% ████████████████████████████░░░░░░░░░░░░
   +Dom+Cite  71.5% ████████████████████████████░░░░░░░░░░░░
   +Agentic   72.2% █████████████████████████████░░░░░░░░░░░
@@ -254,7 +254,7 @@ Same neural network weights. Same training data. The 32.9-point difference came 
 | llama4-maverick Base  |  38.4%  | 43.0% |
 +-----------------------+---------+-------+
 | openai-gpt-5.4 Aug   |  72.5%  | 58.5% |
-| claude-opus-4-6 Aug   |  68.6%  | 62.0% |
+| claude-opus-4-6 Aug   |  71.5%  | 63.5% |
 | llama4-maverick Aug   |  65.2%  | 54.0% |
 +-----------------------+---------+-------+
 | CC + Cite (Run 4)     |  93.8%  | 91.5% |
@@ -271,7 +271,7 @@ Switching to a different (and arguably stronger) model closed far less of the ga
   GPT-5.4 Base 57.5% ███████████████████████░░░░░░░░░░░░░░░░
   Claude Base  60.9% ████████████████████████░░░░░░░░░░░░░░░
   Llama Aug    65.2% ██████████████████████████░░░░░░░░░░░░░
-  Claude Aug   68.6% ███████████████████████████░░░░░░░░░░░░
+  Claude Aug   71.5% ████████████████████████████░░░░░░░░░░░░
   GPT-5.4 Aug  72.5% █████████████████████████████░░░░░░░░░░
   CC + Cite    93.8% █████████████████████████████████████░░░
 ```
@@ -339,7 +339,7 @@ Self-critique asks the model to doubt its own work. But on domain-specific factu
 ---
 # Implications for AI Products
 
-- **Invest in tools and infrastructure, not longer prompts.** Agentic tools delivered a +32.9 point improvement, while the best prompt engineering delivered only +7.7 points. That is a 4x difference in impact for the same underlying model.
+- **Invest in tools and infrastructure, not longer prompts.** Agentic tools delivered a +32.9 point improvement, while the best prompt engineering delivered only +10.6 points. That is a 3x difference in impact for the same underlying model.
 
 - **Use citation as a lightweight nudge appended to user queries, not as a system prompt.** Appending "please cite official documentation" to each question outperformed a carefully crafted 200-word domain expert system prompt.
 
