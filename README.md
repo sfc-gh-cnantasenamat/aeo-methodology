@@ -3,7 +3,7 @@
 ## Presentations
 
 - [Methodology](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/)
-- [Results](https://sfc-gh-cnantasenamat.github.io/aeo-methodology/results.html)
+- [Results](https://sfc-gh-cnantasenamat.github.io/aeo-results/)
 
 **AI Engine Optimization (AEO)** measures how accurately AI coding assistants answer Snowflake developer questions. Think of it as SEO, but for AI: does your assistant return the canonical, current Snowflake answer, or does it hallucinate?
 
