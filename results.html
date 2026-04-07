@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEO Benchmark: Results</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+:root{
+  --green:#00ff41;--green-dim:#00cc33;--green-dark:#009922;--bg:#0a0a0a;
+  --bg-card:rgba(0,20,0,0.85);--border:rgba(0,255,65,0.3);
+  --glow:0 0 0 2px rgba(0,255,65,0.5),0 0 0 5px rgba(0,255,65,0.15);
+  --text-glow:0 0 7px rgba(0,255,65,0.6);
+  --btn-bg:rgba(0,255,65,0.08);--btn-bg-hover:rgba(0,255,65,0.18);
+  --text-main:#00ff41E0;--text-muted:#00ff41B3;
+  --code-bg:#00ff4114;--code-border:#00ff4126;--label-bg:#00ff410F;--quote-bg:#00ff4108;
+  --font-pixel:'Press Start 2P',cursive;
+  --font-body:'JetBrains Mono','Courier New',monospace;
+  --font-mono:'JetBrains Mono','Courier New',monospace;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--green);
+  font-family:var(--font-body);font-size:16px;line-height:1.7;font-weight:400;
+  text-size-adjust:none;-webkit-text-size-adjust:none;
+  -webkit-font-smoothing:none;-moz-osx-font-smoothing:grayscale;font-smooth:never}
+
+.bitmap-text{display:block;margin:0 auto;image-rendering:pixelated;image-rendering:crisp-edges;
+  -ms-interpolation-mode:nearest-neighbor;pointer-events:none;border:none!important;border-radius:0!important;background:transparent!important}
+.slide-title{margin-bottom:1.5rem;text-align:center;width:100%;display:flex;justify-content:center}
+.slide-title .bitmap-text{filter:drop-shadow(0 0 6px var(--green))}
+
+.bitmap-heading-wrap{margin:1.2rem 0 0.6rem;display:flex;justify-content:center}
+
+#matrix-rain{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.12;pointer-events:none}
+
+#scanlines{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px)}
+
+#slides-container{position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.slide{display:none;flex-direction:column;justify-content:center;align-items:center;
+  width:85%;max-width:1200px;animation:slideIn 0.4s ease-out}
+.slide.active{display:flex}
+.slide-card{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;
+  width:100%;min-height:200px;max-height:calc(100vh - 140px);padding:2rem 3rem;
+  background:var(--bg-card);border:none;border-radius:0;
+  box-shadow:var(--glow);gap:0.4rem;overflow-y:auto}
+.slide-card::-webkit-scrollbar{width:4px}
+.slide-card::-webkit-scrollbar-track{background:transparent}
+.slide-card::-webkit-scrollbar-thumb{background:var(--green-dark);border-radius:2px}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(20px) scale(0.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.slide h1{display:none}
+.slide-card h2,.slide-card h3{display:none}
+.slide-card p{margin:0.5rem 0;max-width:1100px;text-align:left;font-weight:400;
+  line-height:1.6;color:var(--text-main)}
+.slide-card ul,.slide-card ol{text-align:left;margin:0.8rem 0;padding-left:0;max-width:1100px;width:100%;list-style:none}
+.slide-card li{margin:0.4rem 0;font-weight:400;line-height:1.6;color:var(--text-main);display:flex;align-items:flex-start;gap:0}
+.slide-card li::marker{color:var(--green)}
+.slide-card code{background:var(--code-bg);border:1px solid var(--code-border);
+  padding:0.2em 0.45em;border-radius:4px;font-size:0.85em;font-family:var(--font-mono);font-weight:400}
+.slide-card pre{background:rgba(0,0,0,0.7);border:1px solid var(--border);border-radius:6px;
+  padding:0;margin:1.2rem 0;overflow-x:auto;width:100%;max-width:1100px;text-align:left;position:relative;flex-shrink:0}
+.slide-card pre .lang-label{position:absolute;top:0;right:0;padding:0.2rem 0.7rem;font-size:0.6rem;
+  color:var(--green-dark);background:var(--label-bg);border-bottom-left-radius:6px;border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);letter-spacing:1.5px;text-transform:uppercase;user-select:none;
+  font-family:var(--font-mono);font-weight:400}
+.slide-card pre code{background:none;border:none;padding:1rem 1.2rem;font-size:17px;display:block;
+  line-height:1.45;font-family:var(--font-mono);white-space:pre;tab-size:4;font-weight:700}
+.slide-card pre code .col-white{color:#ffffff}
+.tok-kw{color:var(--green);font-weight:700}
+.tok-str{color:#ffd54f}
+.tok-num{color:#ff8a65}
+.tok-cm{color:var(--green-dark);font-style:italic}
+.tok-fn{color:#80cbc4}
+.tok-op{color:var(--green-dim)}
+.tok-type{color:#ce93d8}
+.tok-builtin{color:#4fc3f7}
+.slide-card blockquote{border-left:3px solid var(--green-dim);padding:1rem 1.4rem;margin:1rem auto;
+  max-width:1000px;color:var(--text-muted);font-style:italic;font-weight:300;text-align:left;
+  line-height:1.8;background:var(--quote-bg);border-radius:0 4px 4px 0}
+.slide-card table{width:100%;border-collapse:collapse;margin:0.6rem 0;font-family:var(--font-mono);font-size:0.72rem;line-height:1.5}
+.slide-card th{text-align:left;padding:0.3rem 0.6rem;border-bottom:2px solid var(--green-dim);color:#fff;font-weight:700}
+.slide-card td{padding:0.25rem 0.6rem;border-bottom:1px solid var(--code-border);color:var(--text-main)}
+.slide-card tr:last-child td{border-bottom:none}
+.slide-card td:last-child,.slide-card th:last-child{text-align:right}
+.slide-card img:not(.bitmap-text){max-width:80%;max-height:50vh;border:1px solid var(--border);border-radius:6px;margin:1.2rem 0}
+.slide-card strong{color:#fff;font-weight:400;text-shadow:0 0 6px rgba(255,255,255,0.25)}
+.slide-card em{color:var(--green-dim);font-weight:400}
+.slide-card a{color:var(--green);text-decoration:underline;text-underline-offset:3px;font-weight:400;
+  transition:text-shadow 0.2s}
+.slide-card a:hover{text-shadow:var(--text-glow)}
+
+.return-btn{background:var(--btn-bg);border:1px solid var(--green-dark);color:var(--green);
+  padding:0.8rem 1.5rem;cursor:pointer;border-radius:0;
+  margin-top:2rem;margin-bottom:1rem;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;
+  text-align:center;position:relative;overflow:hidden;align-self:center;flex-shrink:0}
+.return-btn:hover{background:var(--btn-bg-hover);border-color:var(--green);box-shadow:var(--glow);transform:translateX(5px)}
+
+.press-enter{margin-top:2rem;display:flex;justify-content:center;animation:blink 1.2s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+#hud{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;align-items:center;
+  justify-content:space-between;padding:0.8rem 1.5rem;background:linear-gradient(transparent,rgba(0,0,0,0.8));pointer-events:none}
+#hud>*{pointer-events:auto}
+#slide-counter{font-size:0.75rem;color:var(--green-dark);letter-spacing:2px;font-family:var(--font-mono)}
+#progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--green);z-index:10;
+  box-shadow:0 0 8px var(--green);transition:width 0.3s}
+#mute-indicator{position:fixed;top:1rem;left:1rem;z-index:10;font-size:0.7rem;color:var(--green-dark);
+  letter-spacing:2px;display:none}
+
+#settings-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;
+  background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center}
+#settings-overlay.open{display:flex}
+#settings-panel{background:var(--bg);border:1px solid var(--border);border-radius:4px;
+  box-shadow:var(--glow);padding:2rem 2.5rem;max-width:450px;width:90%}
+.settings-section{margin-bottom:1.5rem}
+.settings-label{margin-bottom:0.6rem}
+.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem}
+.color-swatch{width:100%;aspect-ratio:1;border-radius:4px;border:2px solid rgba(255,255,255,0.15);
+  cursor:pointer;transition:all 0.2s;position:relative}
+.color-swatch:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.5)}
+.color-swatch.active{border-color:#fff;box-shadow:0 0 10px currentColor}
+.color-name{font-size:0.7rem;text-align:center;margin-top:0.3rem;color:var(--green-dim)}
+.settings-close{display:flex;justify-content:center;margin:1rem auto 0;background:none;border:1px solid var(--border);
+  padding:0.5rem 1.5rem;cursor:pointer;border-radius:0;transition:all 0.2s}
+.settings-close:hover{border-color:var(--green);box-shadow:var(--glow)}
+
+#shortcuts-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;
+  background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center}
+#shortcuts-overlay.open{display:flex}
+#shortcuts-panel{background:var(--bg);border:1px solid var(--border);border-radius:4px;
+  box-shadow:var(--glow);padding:2rem 2.5rem;max-width:450px;width:90%}
+.shortcuts-list{display:flex;flex-direction:column;gap:0.7rem;margin-bottom:1rem}
+.shortcuts-close{display:flex;justify-content:center;margin:1rem auto 0;background:none;border:1px solid var(--border);
+  padding:0.5rem 1.5rem;cursor:pointer;border-radius:0;transition:all 0.2s}
+.shortcuts-close:hover{border-color:var(--green);box-shadow:var(--glow)}
+
+#click-prev,#click-next{position:fixed;top:0;height:100%;z-index:1;cursor:pointer}
+#click-prev{left:0;width:30%}
+#click-next{right:0;width:70%}
+
+:-webkit-full-screen{background:var(--bg)}
+:-moz-full-screen{background:var(--bg)}
+:fullscreen{background:var(--bg)}
+
+@media(max-width:768px){
+  .slide{width:95%}
+  .slide-card{padding:1.5rem 1.2rem}
+  .slide-title{font-size:24px}
+  .slide-card h2{font-size:16px}
+  .slide-card p{font-size:16px}
+  .press-enter{font-size:16px}
+  html{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-rain"></canvas>
+<div id="scanlines"></div>
+<div id="progress-bar"></div>
+<div id="mute-indicator">MUTED</div>
+<div id="bgm-indicator" style="position:fixed;top:1rem;right:1rem;z-index:10;cursor:pointer"></div>
+<div id="shortcuts-indicator" style="position:fixed;top:1rem;left:1rem;z-index:10;cursor:pointer"></div>
+
+<div id="shortcuts-overlay">
+  <div id="shortcuts-panel">
+    <div id="shortcuts-title" style="text-align:center;margin-bottom:1.5rem"></div>
+    <div class="shortcuts-list" id="shortcuts-list"></div>
+    <button class="shortcuts-close" id="shortcuts-close"></button>
+  </div>
+</div>
+
+<div id="settings-overlay">
+  <div id="settings-panel">
+    <div id="settings-title" style="text-align:center;margin-bottom:1.5rem"></div>
+    <div class="settings-section">
+      <div class="settings-label" id="settings-theme-label"></div>
+      <div class="color-grid" id="color-grid"></div>
+    </div>
+    <button class="settings-close" id="settings-close"></button>
+  </div>
+</div>
+
+<div id="slides-container"></div>
+
+<div id="click-prev"></div>
+<div id="click-next"></div>
+
+<div id="hud">
+  <span id="slide-counter"></span>
+  <span id="path-label" style="font-size:0.7rem;color:var(--green-dark);letter-spacing:2px"></span>
+</div>
+
+<script>
+// ============================================================
+// SLIDES DATA
+// ============================================================
+const SLIDES_DATA = {
+    "title": "AEO Benchmark: Results",
+    "slides": [
+        {
+            "id": "slide-0",
+            "content": "# AEO Benchmark: Results",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-1",
+            "content": "# The Punchline\n\nWe tested the claude-opus-4-6 model on a set of 50 Snowflake developer questions, scored by a panel of 3 judges.\n\n**Baseline (bare model, no help):** scored 60.9% on answer quality and passed 68.5% of required facts\n\n**Best configuration (citation instruction + agentic tools):** scored 93.8% on answer quality and passed 91.5% of required facts\n\nThat is a **+32.9 percentage point improvement** without changing the model, its training, or its weights. The only difference was how we deployed it.\n\n```\n  Answer Quality Score\n  Baseline  60.9% ████████████████████████░░░░░░░░░░░░░░░░\n  Best      93.8% █████████████████████████████████████░░░\n\n  Must-Have Fact Pass Rate\n  Baseline  68.5% ███████████████████████████░░░░░░░░░░░░░\n  Best      91.5% ████████████████████████████████████░░░░\n```\n\nWhat deployment changes made this happen? Keep reading.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-2",
+            "content": "# The Full 2⁴ Factorial\n\n## We ran all 16 combinations of 4 binary levers\n\n```\n+------+--------+----------+---------+----------------+---------+-------+-----------+\n| Run  | Domain | Citation | Agentic | Self-Critique  | Score % | MH %  | vs Base   |\n+------+--------+----------+---------+----------------+---------+-------+-----------+\n|  1   |        |          |         |                |  60.9%  | 68.5% | baseline  |\n|  2   |   x    |          |         |                |  68.6%  | 62.0% | +7.7pp    |\n|  6   |        |    x     |         |                |  71.1%  | 48.5% | +10.2pp   |\n|  5   |   x    |    x     |         |                |  71.5%  | 54.5% | +10.6pp   |\n| 14   |        |          |         |       x        |  56.9%  | 66.5% | -4.0pp    |\n| 15   |   x    |          |         |       x        |  62.0%  | 69.0% | +1.1pp    |\n| 16   |        |    x     |         |       x        |  65.7%  | 60.7% | +4.8pp    |\n| 17   |   x    |    x     |         |       x        |  67.4%  | 69.3% | +6.5pp    |\n|  3   |        |          |   x     |                |  72.2%  | 93.5% | +11.3pp   |\n|  9   |   x    |          |   x     |                |  70.4%  | 89.8% | +9.5pp    |\n|  4   |        |    x     |   x     |                |  93.8%  | 91.5% | +32.9pp   |\n| 10   |   x    |    x     |   x     |                |  76.0%  | 90.5% | +15.1pp   |\n| 18   |        |          |   x     |       x        |  70.8%  | 88.2% | +9.9pp    |\n| 19   |   x    |          |   x     |       x        |  71.2%  | 88.7% | +10.3pp   |\n|  7   |        |    x     |   x     |       x        |  93.2%  | 93.5% | +32.3pp   |\n|  8   |   x    |    x     |   x     |       x        |  73.0%  | 91.2% | +12.1pp   |\n+------+--------+----------+---------+----------------+---------+-------+-----------+\n```\n\nMH = Must-Have fact pass rate, pp = percentage points",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-3",
+            "content": "# How Main Effects Are Calculated\n\nEach pair holds the other 3 levers constant and flips only Agentic on/off:\n\n```\n+----+----+----+-----------------+----------------+----------+---------+\n|  D |  C | SC | Without Agentic | With Agentic   | Score +  |  MH +   |\n+----+----+----+-----------------+----------------+----------+---------+\n|    |    |    | Run 1  (60.9%)  | Run 3  (72.2%) | +11.3pp  | +25.0pp |\n| x  |    |    | Run 2  (68.6%)  | Run 9  (70.4%) |  +1.8pp  | +27.8pp |\n|    |  x |    | Run 6  (71.1%)  | Run 4  (93.8%) | +22.7pp  | +43.0pp |\n| x  |  x |    | Run 5  (71.5%)  | Run 10 (76.0%) |  +4.5pp  | +36.0pp |\n|    |    | x  | Run 14 (56.9%)  | Run 18 (70.8%) | +13.9pp  | +21.7pp |\n| x  |    | x  | Run 15 (62.0%)  | Run 19 (71.2%) |  +9.2pp  | +19.7pp |\n|    |  x | x  | Run 16 (65.7%)  | Run 7  (93.2%) | +27.5pp  | +32.8pp |\n| x  |  x | x  | Run 17 (67.4%)  | Run 8  (73.0%) |  +5.6pp  | +21.9pp |\n+----+----+----+-----------------+----------------+----------+---------+\n```\n\n**Average main effect:** +12.1pp on score, +28.5pp on must-have. The same calculation is done for each of the 4 levers.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-4",
+            "content": "# Main Effects\n\n## Averaged across all 8 paired comparisons in the factorial design\n\n- **Agentic Tools (web search, doc lookup, skills):** improved answer quality score by +12.5 percentage points on average, and improved must-have fact pass rate by +19.2 points on average\n\n- **Citation Instruction (\"cite official Snowflake docs\"):** improved answer quality score by +8.7 points on average, but reduced must-have fact pass rate by -7.7 points (the model cited docs it had not actually read)\n\n- **Domain Prompt (200-word Snowflake expert system prompt):** reduced answer quality score by -2.0 points on average, and reduced must-have pass rate by -2.8 points\n\n- **Self-Critique (\"review and revise your answer\"):** reduced answer quality score by -4.6 points on average, and reduced must-have pass rate by -1.3 points\n\nOnly agentic tools improved *both* score and must-have simultaneously.\n\n```\n  Average Main Effect on Score (pp)\n  Agentic   +12.5 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n  Citation   +8.7 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n  Domain     -2.0 ░░░░\n  Self-Crit  -4.6 ░░░░░░░░░\n\n  Average Main Effect on Must-Have (pp)\n  Agentic   +19.2 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n  Citation   -7.7 ░░░░░░░░░░░░░░░\n  Domain     -2.8 ░░░░░░\n  Self-Crit  -1.3 ░░░\n```",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-5",
+            "content": "# Lever 1: Agentic Tools\n\n## Giving the model web search, doc lookup, and skills (i.e. Cortex Code) was the single most impactful change\n\n```\n+----+----+----+-----------------+----------------+----------+---------+\n|  D |  C | SC | Without Agentic | With Agentic   | Score +  |  MH +   |\n+----+----+----+-----------------+----------------+----------+---------+\n|    |    |    | Run 1  (60.9%)  | Run 3  (72.2%) | +11.3pp  | +25.0pp |\n|    |  x |    | Run 6  (71.1%)  | Run 4  (93.8%) | +22.7pp  | +43.0pp |\n|    |    |  x | Run 14 (56.9%)  | Run 18 (70.8%) | +13.9pp  | +21.7pp |\n|    |  x |  x | Run 16 (65.7%)  | Run 7  (93.2%) | +27.5pp  | +32.8pp |\n+----+----+----+-----------------+----------------+----------+---------+\n```\n\nIn every single one of the 8 paired comparisons, adding agentic tools improved both the answer quality score and the must-have fact pass rate. No other lever achieved this.\n\nAverage improvement: +12.1 points on score, +28.5 points on must-have. Giving the model the ability to look things up was worth more than any prompt instruction.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-6",
+            "content": "# Lever 2: Citation Instruction\n\n## Appending \"cite official Snowflake documentation\" to each question boosted scores, but only when tools were available to actually find the docs\n\n```\n+----+-----+----+------------------+----------------+-----------+---------+\n|  D | Agt | SC | Without Citation | With Citation  | Score +   |  MH +   |\n+----+-----+----+------------------+----------------+-----------+---------+\n|    |  x  |    | Run 3  (72.2%)   | Run 4  (93.8%) | +21.6pp   | -2.0pp  |\n|    |  x  | x  | Run 18 (70.8%)   | Run 7  (93.2%) | +22.4pp   | +5.3pp  |\n|    |     |    | Run 1  (60.9%)   | Run 6  (71.1%) | +10.2pp   | -20.0pp |\n| x  |     |    | Run 9  (70.4%)   | Run 10 (76.0%) |  +5.6pp   | +0.7pp  |\n+----+-----+----+------------------+----------------+-----------+---------+\n```\n\nThe massive +21 to +22 point gains happened specifically when agentic tools were ON and the domain prompt was OFF. When the domain prompt was present, the citation effect shrank to just +1.8 to +5.6 points.\n\nCitation tells the agent what to look for. Agentic tools let it actually find and verify those references.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-7",
+            "content": "# Lever 3: Domain Prompt\n\n## The data: 4 selected paired comparisons\n\n```\n+-----+-----+----+-----------------+----------------+----------+---------+\n|  C  | Agt | SC | Without Domain  | With Domain    | Score +  |  MH +   |\n+-----+-----+----+-----------------+----------------+----------+---------+\n|     |     |    | Run 1  (60.9%)  | Run 2  (68.6%) |  +7.7pp  | -6.5pp  |\n|  x  |     |    | Run 6  (71.1%)  | Run 5  (71.5%) |  +0.4pp  | +6.0pp  |\n|  x  |  x  |    | Run 4  (93.8%)  | Run 10 (76.0%) | -17.8pp  | -1.0pp  |\n|  x  |  x  | x  | Run 7  (93.2%)  | Run 8  (73.0%) | -20.2pp  | -2.3pp  |\n+-----+-----+----+-----------------+----------------+----------+---------+\n```\n\n- **Without domain prompt:** scores averaged 72.6% across all non-domain runs, because the model relied on its own retrieval and training without rigid framing\n\n- **With domain prompt:** scores averaged 70.6% overall, but the effect split sharply. It helped bare models (+3.7 points) by providing useful Snowflake framing, yet hurt agentic models (-9.9 points) by constraining how the agent used its tools and overriding information discovered through web search\n\nThe worst cases: adding the domain prompt to the best configuration (citation + agentic) destroyed **17.8 and 20.2 points** of score.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-8",
+            "content": "# Lever 4: Self-Critique\n\n## The data: 4 selected paired comparisons\n\n```\n+-----+-----+-----+-----------------+----------------+----------+---------+\n|  D  |  C  | Agt | Without SC      | With SC        | Score +  |  MH +   |\n+-----+-----+-----+-----------------+----------------+----------+---------+\n|     |     |     | Run 1  (60.9%)  | Run 14 (56.9%) |  -4.0pp  | -2.0pp  |\n|  x  |     |     | Run 2  (68.6%)  | Run 15 (62.0%) |  -6.6pp  | +7.0pp  |\n|     |     |  x  | Run 3  (72.2%)  | Run 18 (70.8%) |  -1.4pp  | -5.3pp  |\n|     |  x  |  x  | Run 4  (93.8%)  | Run 7  (93.2%) |  -0.6pp  | +2.0pp  |\n+-----+-----+-----+-----------------+----------------+----------+---------+\n```\n\nAverage effect across all 8 pairs: **-3.0 points on answer quality score.**\n\nWhat happened: the self-critique instruction caused the model to second-guess correct answers, add unnecessary hedging language (\"it depends\", \"you may want to consider\"), and remove specific technical details in favor of safer, more generic statements. More thinking did not produce better answers.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-9",
+            "content": "# The Golden Combination\n\n## The winning formula\n\n**No domain prompt + citation instruction + agentic**\n\nThe top 2 configurations both share this exact pattern:\n\n- **Run 4 scored 93.8%:** citation instruction + agentic, no domain prompt, no self-critique\n- **Run 7 scored 93.2%:** citation instruction + agentic + self-critique, no domain prompt\n\nWhat happens when you add a domain prompt?\n\n- **Run 10 scored 76.0%:** domain prompt + citation + agentic, a drop of 17.8 points from Run 4\n- **Run 8 scored 73.0%:** domain prompt + citation + agentic + self-critique, a drop of 20.2 points from Run 7\n\nA 200-word system prompt destroyed a 20+ point advantage. The best instruction was no instruction at all.\n\n```\n  Score % (adding domain prompt)\n  Run 4  93.8% ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n  Run 7  93.2% ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n  Run 10 76.0% ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░\n  Run 8  73.0% ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░\n             no domain prompt  +domain prompt\n```",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-10",
+            "content": "# The Same Model Story\n\n## Every data point uses claude-opus-4-6\n\n- **Bare model with no help:** 60.9% score (Run 1)\n- **Added a 200-word domain prompt:** 68.6% score, a gain of +7.7 points (Run 2)\n- **Added citation instruction instead:** 71.1% score, a gain of +10.2 points (Run 6)\n- **Added both domain prompt and citation:** 71.5% score, a gain of +10.6 points (Run 5)\n- **Added agentic tools instead (no prompt changes):** 72.2% score, a gain of +11.3 points (Run 3)\n- **Added citation instruction + agentic tools:** 93.8% score, a gain of +32.9 points (Run 4)\n\nSame neural network weights. Same training data. The 32.9-point difference came entirely from giving the model tools and a lightweight instruction to cite its sources.\n\n```\n  Score progression (same model)\n  Bare       60.9% ████████████████████████░░░░░░░░░░░░░░░░\n  +Domain    68.6% ███████████████████████████░░░░░░░░░░░░░\n  +Citation  71.1% ████████████████████████████░░░░░░░░░░░░\n  +Dom+Cite  71.5% ████████████████████████████░░░░░░░░░░░░\n  +Agentic   72.2% █████████████████████████████░░░░░░░░░░░\n  +Cite+Agt  93.8% █████████████████████████████████████░░░\n```",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-11",
+            "content": "# Cross-Model Baselines\n\n## We also tested GPT-5.4 and Llama 4 Maverick to establish external reference points\n\n```\n+-----------------------+---------+-------+\n| Respondent            | Score % | MH %  |\n+-----------------------+---------+-------+\n| openai-gpt-5.4 Base  |  57.5%  | 55.0% |\n| claude-opus-4-6 Base  |  60.9%  | 68.5% |\n| llama4-maverick Base  |  38.4%  | 43.0% |\n+-----------------------+---------+-------+\n| openai-gpt-5.4 Aug   |  72.5%  | 58.5% |\n| claude-opus-4-6 Aug   |  68.6%  | 62.0% |\n| llama4-maverick Aug   |  65.2%  | 54.0% |\n+-----------------------+---------+-------+\n| CC + Cite (Run 4)     |  93.8%  | 91.5% |\n+-----------------------+---------+-------+\n```\n\nThe best non-agentic result across all three models was GPT-5.4 with a domain prompt at 72.5%. The best agentic configuration scored 93.8%, which is 21.3 points higher.\n\nSwitching to a different (and arguably stronger) model closed far less of the gap than simply giving the original model access to tools.\n\n```\n  Score % across models\n  Llama Base   38.4% ███████████████░░░░░░░░░░░░░░░░░░░░░░░░\n  GPT-5.4 Base 57.5% ███████████████████████░░░░░░░░░░░░░░░░\n  Claude Base  60.9% ████████████████████████░░░░░░░░░░░░░░░\n  Llama Aug    65.2% ██████████████████████████░░░░░░░░░░░░░\n  Claude Aug   68.6% ███████████████████████████░░░░░░░░░░░░\n  GPT-5.4 Aug  72.5% █████████████████████████████░░░░░░░░░░\n  CC + Cite    93.8% █████████████████████████████████████░░░\n```",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-12",
+            "content": "# Must-Have Pass Rates\n\n## Must-have measures whether the answer includes specific required facts (4 per question, 200 total)\n\n- **Baseline model with no tools (Run 1):** passed 68.5% of required facts, meaning it missed about 1 in 3 required details\n- **Model with agentic tools (all agentic runs):** passed 88 to 93.5% of required facts, because it could look up and verify specific details in real time\n- **Model with citation instruction but no tools (Run 6):** passed only 48.5% of required facts, worse than baseline, because the model fabricated documentation references it had not actually read\n\nCitation without tools is dangerous: it teaches the model to sound authoritative while getting the facts wrong. Citation with tools is powerful: it tells the agent to verify and present what it actually found.\n\n```\n  Must-Have Fact Pass Rate\n  Cite no tools  48.5% ███████████████████░░░░░░░░░░░░░░░░░░░░\n  Baseline       68.5% ███████████████████████████░░░░░░░░░░░░░\n  Agentic best   93.5% █████████████████████████████████████░░░\n```",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-13",
+            "content": "# Score vs Must-Have\n\n## Most configurations improve one metric at the expense of the other. Only one configuration improves both.\n\n**Non-agentic with citation (Runs 5 and 6):** Answer quality score went up because the model wrote more polished, reference-heavy responses. But must-have pass rate went down because those references were often fabricated, and the model missed required factual details.\n\n**Agentic without citation (Run 3):** Must-have pass rate jumped to 93.5% because the agent retrieved real facts. But the answer quality score stayed at a moderate 72.2% because the agent did not always present its findings in a well-structured, citation-rich format.\n\n**Agentic with citation (Run 4):** Both metrics peaked together at 93.8% score and 91.5% must-have. The citation instruction told the agent to show its work, and the tools ensured that work was grounded in real documentation.\n\n```\n  Score %                        Must-Have %\n  Cite only  71.1% ████████████████████████████  48.5% ███████████████████\n  Agent only 72.2% █████████████████████████████  93.5% █████████████████████████████████████\n  Agent+Cite 93.8% █████████████████████████████████████  91.5% ████████████████████████████████████░\n```",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-14",
+            "content": "# 5 Surprising Findings\n\n- **Adding more instructions to the system prompt made answers worse, not better.** The 200-word domain prompt reduced scores by 17 to 20 points in the best configurations, because it constrained how the agent used its tools.\n\n- **Self-critique (\"review and revise your answer\") was counterproductive.** It reduced answer quality in 7 out of 8 comparisons by causing the model to second-guess correct content and replace specific details with hedging language.\n\n- **Telling the model to cite docs without giving it tools to find them was actively harmful.** The must-have pass rate dropped from 68.5% to 48.5% because the model fabricated references to documentation it had never read.\n\n- **The highest-scoring configuration used the fewest prompt instructions of any non-baseline run.** No system prompt at all. Just \"please cite official Snowflake documentation\" appended to each question, plus access to tools.\n\n- **A 33-point score improvement came from deployment infrastructure, not model training.** The same claude-opus-4-6 weights went from 60.9% to 93.8% based solely on whether it had tools and a citation nudge.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-15",
+            "content": "# Why Less Is More\n\nThe domain prompt tells the model what it should already know about Snowflake. But the model already knows most of it from training, and the rigid framing prevents the agent from discovering and incorporating information it does not already know.\n\nAgentic tools let the model find what it actually needs in real time. Web search, documentation lookup, and code execution provide current, verified information that no static system prompt can match.\n\nSelf-critique asks the model to doubt its own work. But on domain-specific factual questions, the model's first answer is usually more detailed and accurate than its revised one. The revision process introduces hedging, removes specific examples, and replaces confident correct statements with cautious incorrect ones.\n\n**The optimal pattern:** Give the model access to tools and a lightweight nudge to cite its sources. Then get out of the way and let it work.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-16",
+            "content": "# Implications for AI Products\n\n- **Invest in tools and infrastructure, not longer prompts.** Agentic tools delivered a +32.9 point improvement, while the best prompt engineering delivered only +7.7 points. That is a 4x difference in impact for the same underlying model.\n\n- **Use citation as a lightweight nudge appended to user queries, not as a system prompt.** Appending \"please cite official documentation\" to each question outperformed a carefully crafted 200-word domain expert system prompt.\n\n- **Do not assume self-critique improves quality.** The popular \"generate then revise\" pattern actively degraded answer quality on factual domain questions. Test it empirically before shipping it.\n\n- **Expect domain prompts to have diminishing returns as tools improve.** System prompts help bare models that have nothing else, but they constrain models that have access to real-time information retrieval. As tool infrastructure matures, prompts should get shorter, not longer.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-17",
+            "content": "# What We Would Do Differently\n\n- **Test with a larger question bank.** 50 questions gives good overall signal but limits per-category statistical power. Some product categories had only 2 to 3 questions, making it hard to isolate category-specific lever effects.\n\n- **Add human judges alongside the LLM panel.** The 3-model judge panel (GPT-5.4, Claude Opus, Llama Maverick) is reproducible and consistent, but all three may share systematic biases from similar training data.\n\n- **Run per-category lever analysis.** Citation might matter more for API reference questions than for architecture questions. The factorial design supports this analysis but 50 questions is too few to do it reliably.\n\n- **Measure latency and cost per configuration.** Agentic runs take longer and cost more tokens. The quality improvement is clear, but the cost-quality tradeoff deserves explicit quantification.\n\n- **Test multi-turn conversations.** All 50 questions were single-turn. Real developer interactions involve follow-up questions and clarifications that could change the lever dynamics.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-18",
+            "content": "# Key Takeaways\n\n**1. Agentic tools are the single most impactful lever.** Across all 8 paired comparisons in the factorial design, giving the model access to web search, documentation lookup, and skills improved answer quality by +12.5 points and must-have fact pass rate by +19.2 points on average. It was the only lever that improved both metrics simultaneously.\n\n**2. The best configuration is minimalist.** No system prompt. Just a citation instruction (\"cite official docs\") and agentic tool access. This scored 93.8%, the highest of all 16 conditions.\n\n**3. More instructions can hurt.** Both the domain prompt and self-critique reduced answer quality when the model had access to tools. The domain prompt constrained tool use; self-critique introduced hedging. Less instruction produced better results.\n\n**4. Deployment architecture matters more than prompt engineering.** The same claude-opus-4-6 model went from 60.9% to 93.8% by changing how it was deployed (adding tools and a citation nudge), not by changing what it was told in a system prompt.",
+            "path": "main",
+            "type": "normal"
+        },
+        {
+            "id": "slide-19",
+            "content": "# Thank You\n\n## AEO Benchmark: Full 2⁴ Factorial Experiment\n\n- **50 Snowflake developer questions** across 15 product categories, each scored on 5 dimensions (correctness, completeness, recency, citation, recommendation) plus 4 required must-have facts\n- **16 experimental conditions** testing every combination of 4 binary levers, all using the same claude-opus-4-6 backbone model\n- **3-model judge panel** (GPT-5.4, Claude Opus, Llama Maverick) scoring every response independently, with scores averaged for robustness\n- **Key result:** the same model improved from 60.9% to 93.8% (+32.9 percentage points) purely from deployment changes, with no changes to model weights or training\n\n*Open the methodology deck for the full experimental design.*",
+            "path": "main",
+            "type": "normal"
+        }
+    ]
+};
+// ============================================================
+// BITMAP TEXT ENGINE
+// ============================================================
+const BitmapText = (function(){
+  const offscreen = document.createElement('canvas');
+  const octx = offscreen.getContext('2d');
+  const registry = [];
+
+  const GLYPHS = {
+    'A':[0x0E,0x11,0x11,0x1F,0x11,0x11,0x11],
+    'B':[0x1E,0x11,0x11,0x1E,0x11,0x11,0x1E],
+    'C':[0x0E,0x11,0x10,0x10,0x10,0x11,0x0E],
+    'D':[0x1E,0x11,0x11,0x11,0x11,0x11,0x1E],
+    'E':[0x1F,0x10,0x10,0x1E,0x10,0x10,0x1F],
+    'F':[0x1F,0x10,0x10,0x1E,0x10,0x10,0x10],
+    'G':[0x0E,0x11,0x10,0x17,0x11,0x11,0x0F],
+    'H':[0x11,0x11,0x11,0x1F,0x11,0x11,0x11],
+    'I':[0x0E,0x04,0x04,0x04,0x04,0x04,0x0E],
+    'J':[0x07,0x02,0x02,0x02,0x02,0x12,0x0C],
+    'K':[0x11,0x12,0x14,0x18,0x14,0x12,0x11],
+    'L':[0x10,0x10,0x10,0x10,0x10,0x10,0x1F],
+    'M':[0x11,0x1B,0x15,0x15,0x11,0x11,0x11],
+    'N':[0x11,0x19,0x15,0x13,0x11,0x11,0x11],
+    'O':[0x0E,0x11,0x11,0x11,0x11,0x11,0x0E],
+    'P':[0x1E,0x11,0x11,0x1E,0x10,0x10,0x10],
+    'Q':[0x0E,0x11,0x11,0x11,0x15,0x12,0x0D],
+    'R':[0x1E,0x11,0x11,0x1E,0x14,0x12,0x11],
+    'S':[0x0E,0x11,0x10,0x0E,0x01,0x11,0x0E],
+    'T':[0x1F,0x04,0x04,0x04,0x04,0x04,0x04],
+    'U':[0x11,0x11,0x11,0x11,0x11,0x11,0x0E],
+    'V':[0x11,0x11,0x11,0x11,0x0A,0x0A,0x04],
+    'W':[0x11,0x11,0x11,0x15,0x15,0x1B,0x11],
+    'X':[0x11,0x11,0x0A,0x04,0x0A,0x11,0x11],
+    'Y':[0x11,0x11,0x0A,0x04,0x04,0x04,0x04],
+    'Z':[0x1F,0x01,0x02,0x04,0x08,0x10,0x1F],
+    '0':[0x0E,0x11,0x13,0x15,0x19,0x11,0x0E],
+    '1':[0x04,0x0C,0x04,0x04,0x04,0x04,0x0E],
+    '2':[0x0E,0x11,0x01,0x06,0x08,0x10,0x1F],
+    '3':[0x0E,0x11,0x01,0x06,0x01,0x11,0x0E],
+    '4':[0x02,0x06,0x0A,0x12,0x1F,0x02,0x02],
+    '5':[0x1F,0x10,0x1E,0x01,0x01,0x11,0x0E],
+    '6':[0x06,0x08,0x10,0x1E,0x11,0x11,0x0E],
+    '7':[0x1F,0x01,0x02,0x04,0x08,0x08,0x08],
+    '8':[0x0E,0x11,0x11,0x0E,0x11,0x11,0x0E],
+    '9':[0x0E,0x11,0x11,0x0F,0x01,0x02,0x0C],
+    ' ':[0x00,0x00,0x00,0x00,0x00,0x00,0x00],
+    '.':[0x00,0x00,0x00,0x00,0x00,0x0C,0x0C],
+    ',':[0x00,0x00,0x00,0x00,0x04,0x04,0x08],
+    '!':[0x04,0x04,0x04,0x04,0x04,0x00,0x04],
+    '?':[0x0E,0x11,0x01,0x02,0x04,0x00,0x04],
+    ':':[0x00,0x0C,0x0C,0x00,0x0C,0x0C,0x00],
+    ';':[0x00,0x0C,0x0C,0x00,0x04,0x04,0x08],
+    '-':[0x00,0x00,0x00,0x1F,0x00,0x00,0x00],
+    '+':[0x00,0x04,0x04,0x1F,0x04,0x04,0x00],
+    '=':[0x00,0x00,0x1F,0x00,0x1F,0x00,0x00],
+    '(':[0x02,0x04,0x08,0x08,0x08,0x04,0x02],
+    ')':[0x08,0x04,0x02,0x02,0x02,0x04,0x08],
+    '[':[0x0E,0x08,0x08,0x08,0x08,0x08,0x0E],
+    ']':[0x0E,0x02,0x02,0x02,0x02,0x02,0x0E],
+    '/':[0x01,0x01,0x02,0x04,0x08,0x10,0x10],
+    '\'':[0x04,0x04,0x08,0x00,0x00,0x00,0x00],
+    '"':[0x0A,0x0A,0x14,0x00,0x00,0x00,0x00],
+    '\u2018':[0x04,0x04,0x08,0x00,0x00,0x00,0x00],
+    '\u2019':[0x04,0x04,0x08,0x00,0x00,0x00,0x00],
+    '\u201C':[0x0A,0x0A,0x14,0x00,0x00,0x00,0x00],
+    '\u201D':[0x0A,0x0A,0x14,0x00,0x00,0x00,0x00],
+    '\u2014':[0x00,0x00,0x00,0x1F,0x00,0x00,0x00],
+    '\u2013':[0x00,0x00,0x00,0x1F,0x00,0x00,0x00],
+    '_':[0x00,0x00,0x00,0x00,0x00,0x00,0x1F],
+    '<':[0x02,0x04,0x08,0x10,0x08,0x04,0x02],
+    '>':[0x08,0x04,0x02,0x01,0x02,0x04,0x08],
+    '#':[0x0A,0x0A,0x1F,0x0A,0x1F,0x0A,0x0A],
+    '*':[0x00,0x04,0x15,0x0E,0x15,0x04,0x00],
+    '@':[0x0E,0x11,0x17,0x15,0x17,0x10,0x0F],
+    '&':[0x08,0x14,0x14,0x08,0x15,0x12,0x0D],
+    '%':[0x18,0x19,0x02,0x04,0x08,0x13,0x03],
+    '$':[0x04,0x0F,0x14,0x0E,0x05,0x1E,0x04],
+    'a':[0x00,0x00,0x0E,0x01,0x0F,0x11,0x0F],
+    'b':[0x10,0x10,0x16,0x19,0x11,0x11,0x1E],
+    'c':[0x00,0x00,0x0E,0x10,0x10,0x11,0x0E],
+    'd':[0x01,0x01,0x0D,0x13,0x11,0x11,0x0F],
+    'e':[0x00,0x00,0x0E,0x11,0x1F,0x10,0x0E],
+    'f':[0x06,0x09,0x08,0x1C,0x08,0x08,0x08],
+    'g':[0x00,0x0F,0x11,0x11,0x0F,0x01,0x0E],
+    'h':[0x10,0x10,0x16,0x19,0x11,0x11,0x11],
+    'i':[0x04,0x00,0x0C,0x04,0x04,0x04,0x0E],
+    'j':[0x02,0x00,0x06,0x02,0x02,0x12,0x0C],
+    'k':[0x10,0x10,0x12,0x14,0x18,0x14,0x12],
+    'l':[0x0C,0x04,0x04,0x04,0x04,0x04,0x0E],
+    'm':[0x00,0x00,0x1A,0x15,0x15,0x11,0x11],
+    'n':[0x00,0x00,0x16,0x19,0x11,0x11,0x11],
+    'o':[0x00,0x00,0x0E,0x11,0x11,0x11,0x0E],
+    'p':[0x00,0x00,0x1E,0x11,0x1E,0x10,0x10],
+    'q':[0x00,0x00,0x0D,0x13,0x0F,0x01,0x01],
+    'r':[0x00,0x00,0x16,0x19,0x10,0x10,0x10],
+    's':[0x00,0x00,0x0E,0x10,0x0E,0x01,0x1E],
+    't':[0x08,0x08,0x1C,0x08,0x08,0x09,0x06],
+    'u':[0x00,0x00,0x11,0x11,0x11,0x13,0x0D],
+    'v':[0x00,0x00,0x11,0x11,0x11,0x0A,0x04],
+    'w':[0x00,0x00,0x11,0x11,0x15,0x15,0x0A],
+    'x':[0x00,0x00,0x11,0x0A,0x04,0x0A,0x11],
+    'y':[0x00,0x00,0x11,0x11,0x0F,0x01,0x0E],
+    'z':[0x00,0x00,0x1F,0x02,0x04,0x08,0x1F],
+    '^':[0x04,0x0A,0x11,0x00,0x00,0x00,0x00],
+    '\u2074':[0x0A,0x0A,0x0F,0x02,0x00,0x00,0x00],
+    '|':[0x04,0x04,0x04,0x04,0x04,0x04,0x04],
+    '~':[0x00,0x00,0x0D,0x12,0x00,0x00,0x00],
+    '\u25E6':[0x00,0x0E,0x11,0x11,0x0E,0x00,0x00],
+    '{':[0x06,0x04,0x04,0x18,0x04,0x04,0x06],
+    '}':[0x0C,0x04,0x04,0x03,0x04,0x04,0x0C],
+  };
+  const CHAR_W = 5, CHAR_H = 7, SPACING = 1;
+  const DESCEND = 2;
+  const DESC_GLYPHS = {
+    'g':[0x00,0x00,0x0F,0x11,0x11,0x0F,0x01,0x01,0x0E],
+    'j':[0x00,0x02,0x00,0x06,0x02,0x02,0x02,0x12,0x0C],
+    'p':[0x00,0x00,0x1E,0x11,0x11,0x1E,0x10,0x10,0x10],
+    'q':[0x00,0x00,0x0D,0x13,0x11,0x0F,0x01,0x01,0x01],
+    'y':[0x00,0x00,0x11,0x11,0x11,0x0F,0x01,0x01,0x0E]
+  };
+  const DESCENDERS = {'g':1,'j':1,'p':1,'q':1,'y':1};
+
+  function drawText(text, color, uppercase){
+    if(uppercase) text = text.toUpperCase();
+    const totalW = text.length * (CHAR_W + SPACING) - SPACING;
+    var hasDesc = false;
+    for(var i = 0; i < text.length; i++){ if(DESCENDERS[text[i]]){ hasDesc = true; break; } }
+    const totalH = CHAR_H + (hasDesc ? DESCEND : 0);
+    offscreen.width = totalW;
+    offscreen.height = totalH;
+    octx.clearRect(0, 0, totalW, totalH);
+    for(let ci = 0; ci < text.length; ci++){
+      const ch = text[ci];
+      const isDesc = !uppercase && DESC_GLYPHS[ch];
+      const glyph = isDesc ? DESC_GLYPHS[ch] : (GLYPHS[ch] || GLYPHS['?']);
+      const glyphH = isDesc ? (CHAR_H + DESCEND) : CHAR_H;
+      const ox = ci * (CHAR_W + SPACING);
+      for(let row = 0; row < glyphH; row++){
+        const bits = glyph[row];
+        for(let col = 0; col < CHAR_W; col++){
+          if(bits & (1 << (CHAR_W - 1 - col))){
+            octx.fillStyle = color;
+            octx.fillRect(ox + col, row, 1, 1);
+          }
+        }
+      }
+    }
+    return {w: totalW, h: totalH};
+  }
+
+  function makeImg(w, h, scale){
+    const img = document.createElement('img');
+    img.src = offscreen.toDataURL();
+    img.className = 'bitmap-text';
+    img.style.width = (w * scale) + 'px';
+    img.style.height = (h * scale) + 'px';
+    img.draggable = false;
+    return img;
+  }
+
+  function render(text, opts){
+    opts = opts || {};
+    const scale = opts.scale || 5;
+    const uppercase = opts.uppercase !== undefined ? opts.uppercase : true;
+    const color = opts.color || getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+    const dims = drawText(text, color, uppercase);
+    const img = makeImg(dims.w, dims.h, scale);
+    img.setAttribute('data-text', text);
+    img.setAttribute('data-scale', scale);
+    img.setAttribute('data-color-mode', opts.colorMode || 'main');
+    img.setAttribute('data-uppercase', uppercase ? '1' : '0');
+    img.alt = text;
+    registry.push(img);
+    return img;
+  }
+
+  function renderWrapped(text, opts){
+    opts = opts || {};
+    const scale = opts.scale || 3;
+    const maxChars = opts.maxChars || 52;
+    const hangingIndent = opts.hangingIndent || 0;
+    const uppercase = opts.uppercase !== undefined ? opts.uppercase : false;
+    const lineGap = opts.lineGap || 3;
+    const color = opts.color || getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+    const colorMode = opts.colorMode || 'main';
+    if(uppercase) text = text.toUpperCase();
+    var words = text.split(' ');
+    var lines = [];
+    var cur = '';
+    for(var i = 0; i < words.length; i++){
+      var test = cur ? cur + ' ' + words[i] : words[i];
+      if(test.length > maxChars && cur){ lines.push(cur); cur = words[i]; }
+      else { cur = test; }
+    }
+    if(cur) lines.push(cur);
+    if(!lines.length) lines = [''];
+    var indentPx = hangingIndent * (CHAR_W + SPACING);
+    var lineH = CHAR_H + DESCEND;
+    var maxLineW = 0;
+    for(var li = 0; li < lines.length; li++){
+      var lw = lines[li].length * (CHAR_W + SPACING) - SPACING;
+      if(li > 0 && hangingIndent > 0) lw += indentPx;
+      if(lw > maxLineW) maxLineW = lw;
+    }
+    if(maxLineW < 1) maxLineW = 1;
+    var totalH = lines.length * lineH + (lines.length - 1) * lineGap;
+    offscreen.width = maxLineW;
+    offscreen.height = totalH;
+    octx.clearRect(0, 0, maxLineW, totalH);
+    for(var li = 0; li < lines.length; li++){
+      var lineY = li * (lineH + lineGap);
+      var lineText = lines[li];
+      var lineOffsetX = (li > 0 && hangingIndent > 0) ? indentPx : 0;
+      for(var ci = 0; ci < lineText.length; ci++){
+        var ch = lineText[ci];
+        var isDesc = !uppercase && DESC_GLYPHS[ch];
+        var glyph = isDesc ? DESC_GLYPHS[ch] : (GLYPHS[ch] || GLYPHS[ch.toUpperCase()] || GLYPHS['?']);
+        var glyphH = isDesc ? (CHAR_H + DESCEND) : CHAR_H;
+        var ox = lineOffsetX + ci * (CHAR_W + SPACING);
+        for(var row = 0; row < glyphH; row++){
+          var bits = glyph[row];
+          for(var col = 0; col < CHAR_W; col++){
+            if(bits & (1 << (CHAR_W - 1 - col))){
+              octx.fillStyle = color;
+              octx.fillRect(ox + col, lineY + row, 1, 1);
+            }
+          }
+        }
+      }
+    }
+    var img = makeImg(maxLineW, totalH, scale);
+    img.setAttribute('data-text', text);
+    img.setAttribute('data-scale', scale);
+    img.setAttribute('data-color-mode', colorMode);
+    img.setAttribute('data-uppercase', uppercase ? '1' : '0');
+    img.setAttribute('data-max-chars', maxChars);
+    img.setAttribute('data-line-gap', lineGap);
+    img.setAttribute('data-hanging-indent', hangingIndent);
+    img.setAttribute('data-wrapped', '1');
+    img.alt = text;
+    registry.push(img);
+    return img;
+  }
+
+  function renderMultiColor(segments, opts){
+    opts = opts || {};
+    const scale = opts.scale || 4;
+    const maxChars = opts.maxChars || 0;
+    const hangingIndent = opts.hangingIndent || 0;
+    const uc = opts.uppercase !== undefined ? opts.uppercase : false;
+    const lineGap = opts.lineGap || 3;
+    const fullText = segments.map(function(s){ return s.text; }).join('');
+    const dispText = uc ? fullText.toUpperCase() : fullText;
+
+    // Build per-character color map
+    var charColors = [];
+    segments.forEach(function(seg){
+      var segText = uc ? seg.text.toUpperCase() : seg.text;
+      for(var i = 0; i < segText.length; i++){
+        charColors.push({ch: segText[i], color: seg.color || '#ffffff'});
+      }
+    });
+
+    // Word-wrap if maxChars > 0
+    var lines = [];
+    if(maxChars > 0 && charColors.length > maxChars){
+      // Collect words as arrays of {ch,color} entries
+      var allWords = []; var curWord = [];
+      for(var ci3 = 0; ci3 < charColors.length; ci3++){
+        if(charColors[ci3].ch === ' '){
+          if(curWord.length) allWords.push(curWord);
+          curWord = [];
+        } else {
+          curWord.push(charColors[ci3]);
+        }
+      }
+      if(curWord.length) allWords.push(curWord);
+      // Build lines by fitting words
+      var curLine = [];
+      for(var wi = 0; wi < allWords.length; wi++){
+        var w = allWords[wi];
+        var needed = curLine.length > 0 ? curLine.length + 1 + w.length : w.length;
+        if(needed > maxChars && curLine.length > 0){
+          lines.push(curLine);
+          curLine = [];
+        }
+        if(curLine.length > 0){
+          // Add space before word using the color of the first char of this word
+          curLine.push({ch:' ', color:w[0].color});
+        }
+        for(var wc = 0; wc < w.length; wc++) curLine.push(w[wc]);
+      }
+      if(curLine.length) lines.push(curLine);
+    } else {
+      lines = [charColors];
+    }
+
+    // Calculate canvas dimensions
+    var indentPx = hangingIndent * (CHAR_W + SPACING);
+    var maxLineW = 0;
+    for(var li = 0; li < lines.length; li++){
+      var lw = lines[li].length * (CHAR_W + SPACING) - SPACING;
+      if(li > 0 && hangingIndent > 0) lw += indentPx;
+      if(lw > maxLineW) maxLineW = lw;
+    }
+    if(maxLineW < 1) maxLineW = 1;
+    var lineH = CHAR_H + DESCEND;
+    var totalH = lines.length * lineH + (lines.length - 1) * lineGap;
+    offscreen.width = maxLineW;
+    offscreen.height = totalH;
+    octx.clearRect(0, 0, maxLineW, totalH);
+
+    // Draw each line
+    for(var li = 0; li < lines.length; li++){
+      var lineY = li * (lineH + lineGap);
+      var line = lines[li];
+      var lineOffsetX = (li > 0 && hangingIndent > 0) ? indentPx : 0;
+      for(var ci = 0; ci < line.length; ci++){
+        var entry = line[ci];
+        var ch = entry.ch;
+        var isDesc = !uc && DESC_GLYPHS[ch];
+        var glyph = isDesc ? DESC_GLYPHS[ch] : (GLYPHS[ch] || GLYPHS[ch.toUpperCase()] || GLYPHS['?']);
+        var glyphH = isDesc ? (CHAR_H + DESCEND) : CHAR_H;
+        var ox = lineOffsetX + ci * (CHAR_W + SPACING);
+        for(var row = 0; row < glyphH; row++){
+          var bits = glyph[row];
+          for(var col = 0; col < CHAR_W; col++){
+            if(bits & (1 << (CHAR_W - 1 - col))){
+              octx.fillStyle = entry.color;
+              octx.fillRect(ox + col, lineY + row, 1, 1);
+            }
+          }
+        }
+      }
+    }
+
+    const img = makeImg(maxLineW, totalH, scale);
+    img.setAttribute('data-segments', JSON.stringify(segments));
+    img.setAttribute('data-scale', scale);
+    img.setAttribute('data-uppercase', uc ? '1' : '0');
+    if(maxChars > 0){ img.setAttribute('data-max-chars', maxChars); img.setAttribute('data-line-gap', lineGap); img.setAttribute('data-hanging-indent', hangingIndent); }
+    img.alt = dispText;
+    registry.push(img);
+    return img;
+  }
+
+  function refreshAll(){
+    const mainColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+    const dimColor = getComputedStyle(document.documentElement).getPropertyValue('--green-dim').trim();
+    registry.forEach(function(img){
+      const scale = parseInt(img.getAttribute('data-scale')) || 5;
+      const segData = img.getAttribute('data-segments');
+      const colorMode = img.getAttribute('data-color-mode') || 'main';
+      if(segData){
+        const segs = JSON.parse(segData);
+        const uc = img.getAttribute('data-uppercase') === '1';
+        const mcMaxChars = parseInt(img.getAttribute('data-max-chars')) || 0;
+        const mcLineGap = parseInt(img.getAttribute('data-line-gap')) || 3;
+        const mcHangIndent = parseInt(img.getAttribute('data-hanging-indent')) || 0;
+        segs.forEach(function(seg){ if(seg.themeDim) seg.color = dimColor; else if(seg.themeColor) seg.color = mainColor; });
+        // Build per-character color map
+        var charColors = [];
+        segs.forEach(function(seg){
+          var segText = uc ? seg.text.toUpperCase() : seg.text;
+          for(var i = 0; i < segText.length; i++) charColors.push({ch: segText[i], color: seg.color || '#ffffff'});
+        });
+        // Word-wrap if maxChars > 0
+        var mcLines = [];
+        if(mcMaxChars > 0 && charColors.length > mcMaxChars){
+          var allWords = []; var curWord = [];
+          for(var ci3 = 0; ci3 < charColors.length; ci3++){
+            if(charColors[ci3].ch === ' '){ if(curWord.length) allWords.push(curWord); curWord = []; }
+            else { curWord.push(charColors[ci3]); }
+          }
+          if(curWord.length) allWords.push(curWord);
+          var curLine = [];
+          for(var wi = 0; wi < allWords.length; wi++){
+            var w = allWords[wi];
+            var needed = curLine.length > 0 ? curLine.length + 1 + w.length : w.length;
+            if(needed > mcMaxChars && curLine.length > 0){ mcLines.push(curLine); curLine = []; }
+            if(curLine.length > 0) curLine.push({ch:' ', color:w[0].color});
+            for(var wc = 0; wc < w.length; wc++) curLine.push(w[wc]);
+          }
+          if(curLine.length) mcLines.push(curLine);
+        } else {
+          mcLines = [charColors];
+        }
+        // Calculate dimensions
+        var indentPx = mcHangIndent * (CHAR_W + SPACING);
+        var maxLineW = 0;
+        for(var li = 0; li < mcLines.length; li++){
+          var lw = mcLines[li].length * (CHAR_W + SPACING) - SPACING;
+          if(li > 0 && mcHangIndent > 0) lw += indentPx;
+          if(lw > maxLineW) maxLineW = lw;
+        }
+        if(maxLineW < 1) maxLineW = 1;
+        var lineH = CHAR_H + DESCEND;
+        var totalH = mcLines.length * lineH + (mcLines.length - 1) * mcLineGap;
+        offscreen.width = maxLineW; offscreen.height = totalH;
+        octx.clearRect(0, 0, maxLineW, totalH);
+        for(var li = 0; li < mcLines.length; li++){
+          var lineY = li * (lineH + mcLineGap);
+          var line = mcLines[li];
+          var lineOffsetX = (li > 0 && mcHangIndent > 0) ? indentPx : 0;
+          for(var ci = 0; ci < line.length; ci++){
+            var entry = line[ci];
+            var ch = entry.ch;
+            var isDesc = !uc && DESC_GLYPHS[ch];
+            var glyph = isDesc ? DESC_GLYPHS[ch] : (GLYPHS[ch] || GLYPHS[ch.toUpperCase()] || GLYPHS['?']);
+            var glyphH = isDesc ? (CHAR_H + DESCEND) : CHAR_H;
+            var ox = lineOffsetX + ci * (CHAR_W + SPACING);
+            for(var row = 0; row < glyphH; row++){
+              var bits = glyph[row];
+              for(var col = 0; col < CHAR_W; col++){
+                if(bits & (1 << (CHAR_W - 1 - col))){
+                  octx.fillStyle = entry.color;
+                  octx.fillRect(ox + col, lineY + row, 1, 1);
+                }
+              }
+            }
+          }
+        }
+        img.src = offscreen.toDataURL();
+        img.style.width = (maxLineW * scale) + 'px';
+        img.style.height = (totalH * scale) + 'px';
+        img.setAttribute('data-segments', JSON.stringify(segs));
+      } else if(img.getAttribute('data-wrapped') === '1'){
+        const text = img.getAttribute('data-text') || '';
+        const maxChars = parseInt(img.getAttribute('data-max-chars')) || 52;
+        const lineGap = parseInt(img.getAttribute('data-line-gap')) || 3;
+        const hangingIndent = parseInt(img.getAttribute('data-hanging-indent')) || 0;
+        const color = colorMode === 'dim' ? dimColor : mainColor;
+        var words = text.split(' '); var lines = []; var cur = '';
+        for(var wi = 0; wi < words.length; wi++){
+          var test = cur ? cur + ' ' + words[wi] : words[wi];
+          if(test.length > maxChars && cur){ lines.push(cur); cur = words[wi]; } else { cur = test; }
+        }
+        if(cur) lines.push(cur); if(!lines.length) lines = [''];
+        var indentPx = hangingIndent * (CHAR_W + SPACING);
+        var maxLineW = 0;
+        for(var li = 0; li < lines.length; li++){
+          var lw = lines[li].length * (CHAR_W + SPACING) - SPACING;
+          if(li > 0 && hangingIndent > 0) lw += indentPx;
+          if(lw > maxLineW) maxLineW = lw;
+        }
+        if(maxLineW < 1) maxLineW = 1;
+        var lineH = CHAR_H + DESCEND;
+        var totalH = lines.length * lineH + (lines.length - 1) * lineGap;
+        offscreen.width = maxLineW; offscreen.height = totalH;
+        octx.clearRect(0, 0, maxLineW, totalH);
+        for(var li = 0; li < lines.length; li++){
+          var lineY = li * (lineH + lineGap);
+          var lineText = lines[li];
+          var lineOffsetX = (li > 0 && hangingIndent > 0) ? indentPx : 0;
+          for(var ci = 0; ci < lineText.length; ci++){
+            var ch = lineText[ci];
+            var isDesc = DESC_GLYPHS[ch];
+            var glyph = isDesc ? DESC_GLYPHS[ch] : (GLYPHS[ch] || GLYPHS[ch.toUpperCase()] || GLYPHS['?']);
+            var glyphH = isDesc ? (CHAR_H + DESCEND) : CHAR_H;
+            var ox = lineOffsetX + ci * (CHAR_W + SPACING);
+            for(var row = 0; row < glyphH; row++){
+              var bits = glyph[row];
+              for(var col = 0; col < CHAR_W; col++){
+                if(bits & (1 << (CHAR_W - 1 - col))){
+                  octx.fillStyle = color;
+                  octx.fillRect(ox + col, lineY + row, 1, 1);
+                }
+              }
+            }
+          }
+        }
+        img.src = offscreen.toDataURL();
+        img.style.width = (maxLineW * scale) + 'px';
+        img.style.height = (totalH * scale) + 'px';
+      } else {
+        const text = img.getAttribute('data-text') || '';
+        const uppercase = img.getAttribute('data-uppercase') === '1';
+        const color = colorMode === 'dim' ? dimColor : mainColor;
+        const dims = drawText(text, color, uppercase);
+        img.src = offscreen.toDataURL();
+        img.style.width = (dims.w * scale) + 'px';
+        img.style.height = (dims.h * scale) + 'px';
+      }
+    });
+  }
+
+  return {render, renderWrapped, renderMultiColor, refreshAll};
+})();
+
+// ============================================================
+// SETTINGS / THEME ENGINE
+// ============================================================
+const Theme = (function(){
+  const overlay = document.getElementById('settings-overlay');
+  const grid = document.getElementById('color-grid');
+  const closeBtn = document.getElementById('settings-close');
+  const themes = [
+    {name:'Matrix',main:'#00ff41',dim:'#00cc33',dark:'#009922',border:'rgba(0,255,65,0.3)',cardBg:'rgba(0,20,0,0.85)'},
+    {name:'Cyan',main:'#00e5ff',dim:'#00b8d4',dark:'#0097a7',border:'rgba(0,229,255,0.3)',cardBg:'rgba(0,15,20,0.85)'},
+    {name:'Amber',main:'#ffab00',dim:'#ff8f00',dark:'#c67c00',border:'rgba(255,171,0,0.3)',cardBg:'rgba(20,15,0,0.85)'},
+    {name:'Red',main:'#ff1744',dim:'#d50000',dark:'#9b0000',border:'rgba(255,23,68,0.3)',cardBg:'rgba(20,0,0,0.85)'},
+    {name:'Purple',main:'#d050ff',dim:'#aa00ff',dark:'#7b1fa2',border:'rgba(208,80,255,0.3)',cardBg:'rgba(15,0,20,0.85)'},
+    {name:'Pink',main:'#ff4081',dim:'#f50057',dark:'#c51162',border:'rgba(255,64,129,0.3)',cardBg:'rgba(20,0,10,0.85)'},
+    {name:'Blue',main:'#448aff',dim:'#2979ff',dark:'#1565c0',border:'rgba(68,138,255,0.3)',cardBg:'rgba(0,5,20,0.85)'},
+    {name:'White',main:'#ffffff',dim:'#cccccc',dark:'#888888',border:'rgba(255,255,255,0.3)',cardBg:'rgba(15,15,15,0.85)'},
+  ];
+  let current = 0; let rainColor = themes[0].main;
+  function apply(index){
+    current = index; const t = themes[index]; const r = document.documentElement.style;
+    r.setProperty('--green',t.main); r.setProperty('--green-dim',t.dim); r.setProperty('--green-dark',t.dark);
+    r.setProperty('--border',t.border); r.setProperty('--bg-card',t.cardBg);
+    r.setProperty('--glow','0 0 0 2px '+t.main+'80, 0 0 0 5px '+t.main+'26');
+    r.setProperty('--text-glow','0 0 7px '+t.main+'99');
+    r.setProperty('--btn-bg',t.main+'14'); r.setProperty('--btn-bg-hover',t.main+'2E');
+    r.setProperty('--text-main',t.main+'E0'); r.setProperty('--text-muted',t.main+'B3');
+    r.setProperty('--code-bg',t.main+'14'); r.setProperty('--code-border',t.main+'26');
+    r.setProperty('--label-bg',t.main+'0F'); r.setProperty('--quote-bg',t.main+'08');
+    rainColor = t.main; BitmapText.refreshAll();
+    var bgmIcon = document.getElementById('bgm-indicator'); if(bgmIcon && bgmIcon._redraw) bgmIcon._redraw();
+    var kbIcon = document.getElementById('shortcuts-indicator'); if(kbIcon && kbIcon._redraw) kbIcon._redraw();
+    grid.querySelectorAll('.color-swatch').forEach((s,i) => s.classList.toggle('active',i===index));
+  }
+  themes.forEach((t,i) => {
+    const wrapper = document.createElement('div'); wrapper.style.textAlign = 'center';
+    const swatch = document.createElement('div');
+    swatch.className = 'color-swatch' + (i===0?' active':'');
+    swatch.style.backgroundColor = t.main; swatch.style.color = t.main;
+    swatch.addEventListener('click',() => { apply(i); Sound.choiceSelect(); });
+    const label = document.createElement('div'); label.className = 'color-name';
+    const bmpLabel = BitmapText.render('['+(i+1)+'] '+t.name,{scale:1,uppercase:true,colorMode:'dim'});
+    label.appendChild(bmpLabel); wrapper.appendChild(swatch); wrapper.appendChild(label); grid.appendChild(wrapper);
+  });
+  var settingsTitle = document.getElementById('settings-title');
+  settingsTitle.appendChild(BitmapText.render('Settings',{scale:3,uppercase:false,colorMode:'main'}));
+  var themeLabel = document.getElementById('settings-theme-label');
+  themeLabel.appendChild(BitmapText.render('Theme Color',{scale:2,uppercase:true,colorMode:'dark'}));
+  closeBtn.appendChild(BitmapText.render('Close [S]',{scale:2,uppercase:false,colorMode:'main'}));
+  function toggle(){ overlay.classList.toggle('open'); }
+  closeBtn.addEventListener('click',toggle);
+  overlay.addEventListener('click',function(e){ if(e.target===overlay) toggle(); });
+  return {toggle, getRainColor(){ return rainColor; }, isOpen(){ return overlay.classList.contains('open'); }, applyTheme:apply, themeCount:themes.length};
+})();
+
+// ============================================================
+// KEYBOARD SHORTCUTS MODAL
+// ============================================================
+const Shortcuts = (function(){
+  const overlay = document.getElementById('shortcuts-overlay');
+  const listEl = document.getElementById('shortcuts-list');
+  const closeBtn = document.getElementById('shortcuts-close');
+  const titleEl = document.getElementById('shortcuts-title');
+  titleEl.appendChild(BitmapText.render('Keyboard Shortcuts',{scale:3,uppercase:false,colorMode:'main'}));
+  [{key:'S',desc:' Settings'},{key:'K',desc:' Shortcuts'},{key:'M',desc:' Mute sounds'},{key:'B',desc:' Toggle music'},{key:'R',desc:' Toggle rain'},{key:'F',desc:' Fullscreen'}].forEach(function(sc){
+    var row = document.createElement('div');
+    var bmp = BitmapText.renderMultiColor([{text:sc.key,color:'#ffffff'},{text:sc.desc,color:'__main__',themeColor:true}],{scale:2,uppercase:false});
+    row.appendChild(bmp); listEl.appendChild(row);
+  });
+  closeBtn.appendChild(BitmapText.render('Close [K]',{scale:2,uppercase:false,colorMode:'main'}));
+  function toggle(){ overlay.classList.toggle('open'); }
+  closeBtn.addEventListener('click',toggle);
+  overlay.addEventListener('click',function(e){ if(e.target===overlay) toggle(); });
+  (function(){
+    var iconEl = document.getElementById('shortcuts-indicator'); var scale = 3;
+    var kbIcon = [[1,1,1,1,1,1,1,1,1],[1,0,1,0,1,0,1,0,1],[1,0,1,0,1,0,1,0,1],[1,1,1,1,1,1,1,1,1],[1,0,1,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1]];
+    var canvas = document.createElement('canvas'); canvas.width=9; canvas.height=7;
+    canvas.style.width=(9*scale)+'px'; canvas.style.height=(7*scale)+'px';
+    canvas.style.imageRendering='pixelated'; canvas.style.display='block';
+    var cctx = canvas.getContext('2d');
+    function drawIcon(){
+      var color = getComputedStyle(document.documentElement).getPropertyValue('--green-dim').trim()||'#00cc33';
+      cctx.clearRect(0,0,9,7);
+      for(var y=0;y<7;y++) for(var x=0;x<9;x++) if(kbIcon[y][x]){ cctx.fillStyle=color; cctx.fillRect(x,y,1,1); }
+    }
+    drawIcon(); iconEl.appendChild(canvas);
+    iconEl.addEventListener('click',function(e){ e.stopPropagation(); toggle(); });
+    iconEl._redraw = drawIcon;
+  })();
+  return {toggle, isOpen(){ return overlay.classList.contains('open'); }};
+})();
+
+// ============================================================
+// MATRIX RAIN
+// ============================================================
+(function initRain(){
+  const canvas = document.getElementById('matrix-rain');
+  const ctx = canvas.getContext('2d');
+  let cols, drops, whiteCol, charSize = 14, running = true;
+  const chars = '\u30A2\u30A4\u30A6\u30A8\u30AA\u30AB\u30AD\u30AF\u30B1\u30B3\u30B5\u30B7\u30B9\u30BB\u30BD\u30BF\u30C1\u30C4\u30C6\u30C8\u30CA\u30CB\u30CC\u30CD\u30CE\u30CF\u30D2\u30D5\u30D8\u30DB\u30DE\u30DF\u30E0\u30E1\u30E2\u30E4\u30E6\u30E8\u30E9\u30EA\u30EB\u30EC\u30ED\u30EF\u30F2\u30F30123456789ABCDEF';
+  function resize(){
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width/charSize);
+    drops = Array.from({length:cols},()=>Math.random()*-100);
+    whiteCol = Array.from({length:cols},()=>Math.random()<0.25);
+  }
+  function draw(){
+    if(!running) return requestAnimationFrame(draw);
+    ctx.fillStyle = 'rgba(10,10,10,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    const rainColor = Theme.getRainColor(); ctx.font = charSize+'px monospace';
+    for(let i=0;i<cols;i++){
+      const ch = chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillStyle = whiteCol[i]?'#ffffff':rainColor;
+      ctx.fillText(ch,i*charSize,drops[i]*charSize);
+      if(drops[i]*charSize>canvas.height&&Math.random()>0.975){ drops[i]=0; whiteCol[i]=Math.random()<0.25; }
+      drops[i]++;
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize); resize(); draw();
+  window.toggleRain = function(){ running=!running; canvas.style.opacity=running?'0.12':'0'; };
+})();
+
+// ============================================================
+// SOUND ENGINE + BGM
+// ============================================================
+const Sound = (function(){
+  let audioCtx = null; let muted = false;
+  function ctx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+  function beep(freq,duration,type,vol,delay){
+    if(muted) return; const c=ctx(); const t=c.currentTime+(delay||0);
+    const osc=c.createOscillator(); const gain=c.createGain();
+    osc.type=type||'square'; osc.frequency.setValueAtTime(freq,t);
+    gain.gain.setValueAtTime(vol||0.08,t); gain.gain.exponentialRampToValueAtTime(0.001,t+duration);
+    osc.connect(gain); gain.connect(c.destination); osc.start(t); osc.stop(t+duration);
+  }
+  function sweep(startFreq,endFreq,duration,type,vol){
+    if(muted) return; const c=ctx(); const t=c.currentTime;
+    const osc=c.createOscillator(); const gain=c.createGain();
+    osc.type=type||'square'; osc.frequency.setValueAtTime(startFreq,t);
+    osc.frequency.exponentialRampToValueAtTime(endFreq,t+duration);
+    gain.gain.setValueAtTime(vol||0.07,t); gain.gain.exponentialRampToValueAtTime(0.001,t+duration);
+    osc.connect(gain); gain.connect(c.destination); osc.start(t); osc.stop(t+duration);
+  }
+  const BGM = (function(){
+    let playing=false; let masterGain=null; let timerId=null; let nextNoteTime=0;
+    const N={C3:131,D3:147,E3:165,F3:175,G3:196,A3:220,B3:247,C4:262,D4:294,E4:330,F4:349,G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784,A5:880,R:0};
+    const BPM=110; const EIGHTH=60/BPM/2;
+    const lead=[[N.D4,2],[N.F4,1],[N.G4,1],[N.A4,2],[N.G4,1],[N.F4,1],[N.A4,1],[N.G4,1],[N.F4,1],[N.D4,1],[N.F4,2],[N.D4,2],[N.G4,2],[N.A4,1],[N.C5,1],[N.A4,2],[N.G4,1],[N.A4,1],[N.F4,2],[N.D4,2],[N.R,2],[N.D4,1],[N.F4,1]];
+    const bass=[[N.D3,4],[N.F3,4],[N.A3,4],[N.D3,4],[N.G3,4],[N.A3,4],[N.F3,4],[N.D3,4]];
+    const arp=[[N.D5,1],[N.R,1],[N.A4,1],[N.R,1],[N.D5,1],[N.R,1],[N.A4,1],[N.R,1],[N.F5,1],[N.R,1],[N.D5,1],[N.R,1],[N.A4,1],[N.R,1],[N.D5,1],[N.R,1],[N.G5,1],[N.R,1],[N.D5,1],[N.R,1],[N.E5,1],[N.R,1],[N.C5,1],[N.R,1],[N.F5,1],[N.R,1],[N.A4,1],[N.R,1],[N.R,2],[N.R,2]];
+    function scheduleVoice(notes,type,vol,startTime){
+      const c=ctx(); let t=startTime;
+      notes.forEach(function(note){
+        const freq=note[0]; const dur=note[1]*EIGHTH;
+        if(freq>0){ const osc=c.createOscillator(); const g=c.createGain();
+          osc.type=type; osc.frequency.setValueAtTime(freq,t);
+          g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.01);
+          g.gain.setValueAtTime(vol,t+dur-0.02); g.gain.linearRampToValueAtTime(0,t+dur);
+          osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t+dur);
+        } t+=dur;
+      }); return t;
+    }
+    function scheduleLoop(){
+      if(!playing) return; const c=ctx(); const loopStart=nextNoteTime;
+      scheduleVoice(lead,'square',0.007,loopStart); scheduleVoice(bass,'triangle',0.009,loopStart);
+      scheduleVoice(arp,'square',0.003,loopStart);
+      let loopDur=0; lead.forEach(function(n){ loopDur+=n[1]*EIGHTH; });
+      nextNoteTime=loopStart+loopDur;
+      const scheduleAhead=loopDur*1000-200;
+      timerId=setTimeout(scheduleLoop,Math.max(scheduleAhead,100));
+    }
+    function start(){ if(playing) return; playing=true; const c=ctx(); masterGain=c.createGain(); masterGain.gain.setValueAtTime(muted?0:1,c.currentTime); masterGain.connect(c.destination); nextNoteTime=c.currentTime+0.1; scheduleLoop(); }
+    function stop(){ playing=false; if(timerId){clearTimeout(timerId);timerId=null;} if(masterGain){try{var c=ctx();masterGain.gain.cancelScheduledValues(c.currentTime);masterGain.gain.setValueAtTime(0,c.currentTime);masterGain.disconnect();}catch(e){}masterGain=null;} }
+    function toggle(){ if(playing) stop(); else start(); return playing; }
+    function setMuted(m){ if(masterGain){const c=ctx();masterGain.gain.setValueAtTime(m?0:1,c.currentTime);} }
+    return {start,stop,toggle,setMuted,isPlaying(){return playing;}};
+  })();
+  return {
+    slideForward(){ beep(440,0.08,'square',0.06); beep(660,0.1,'square',0.06,0.05); },
+    slideBack(){ beep(660,0.08,'square',0.06); beep(440,0.1,'square',0.06,0.05); },
+    choiceAppear(){ beep(330,0.07,'square',0.04); beep(440,0.07,'square',0.04,0.07); beep(550,0.09,'square',0.04,0.14); },
+    choiceSelect(){ beep(520,0.1,'square',0.07); beep(780,0.15,'square',0.07,0.08); },
+    branchEnter(){ sweep(800,200,0.3,'sawtooth',0.05); },
+    branchReturn(){ sweep(300,900,0.3,'sawtooth',0.05); beep(900,0.15,'square',0.04,0.25); },
+    toggleMute(){ muted=!muted; BGM.setMuted(muted); document.getElementById('mute-indicator').style.display=muted?'block':'none'; return muted; },
+    toggleBGM(){ return BGM.toggle(); },
+    isBGMPlaying(){ return BGM.isPlaying(); }
+  };
+})();
+
+// ============================================================
+// MARKDOWN RENDERER
+// ============================================================
+function renderMarkdown(src){
+  let html = src;
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_,lang,code){
+    const escaped = escHtml(code.trim());
+    const label = lang ? '<span class="lang-label">'+lang+'</span>' : '';
+    return '<pre>'+label+'<code class="lang-'+lang+'">'+escaped+'</code></pre>';
+  });
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  const preBlocks = [];
+  html = html.replace(/<pre>[\s\S]*?<\/pre>/g, function(match){ preBlocks.push(match); return '%%PRE'+(preBlocks.length-1)+'%%'; });
+  html = html.replace(/^  [\-\*] (.+)$/gm, '<li class="nested">$1</li>');
+  html = html.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li[^>]*>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  html = html.split('\n').map(line => {
+    const trimmed = line.trim();
+    if(!trimmed) return '';
+    if(/^<[a-z]/.test(trimmed)){
+      if(/^<strong>/.test(trimmed)) return '<p>' + trimmed + '</p>';
+      return trimmed;
+    }
+    if(/^%%PRE\d+%%$/.test(trimmed)) return trimmed;
+    return '<p>' + trimmed + '</p>';
+  }).join('\n');
+  html = html.replace(/%%PRE(\d+)%%/g, function(_,idx){ return preBlocks[parseInt(idx)]; });
+  html = html.replace(/<p><\/p>/g, '');
+  return html;
+}
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Colorize factor columns in ASCII tables inside <code> blocks
+function colorizeFactorColumns(html){
+  return html.replace(/<code[^>]*>([\s\S]*?)<\/code>/g, function(fullMatch, codeContent){
+    var lines = codeContent.split('\n');
+    // Find header row (contains '|' and known factor names or comparison headers)
+    var headerIdx = -1;
+    var factorCols = []; // [{start, end}] character ranges to colorize
+    var exactNames = ['Domain','Citation','Cite','Agentic','Self-Critique'];
+    var prefixes = ['Without','With '];
+    for(var i = 0; i < lines.length; i++){
+      if(lines[i].indexOf('|') === -1) continue;
+      var hasFactors = false;
+      for(var f = 0; f < exactNames.length; f++){
+        if(lines[i].indexOf(exactNames[f]) !== -1){ hasFactors = true; break; }
+      }
+      if(!hasFactors){
+        for(var p = 0; p < prefixes.length; p++){
+          if(lines[i].indexOf(prefixes[p]) !== -1){ hasFactors = true; break; }
+        }
+      }
+      if(hasFactors){ headerIdx = i; break; }
+    }
+    if(headerIdx === -1) return fullMatch;
+    // Parse column positions from the header row using pipe delimiters
+    var hdr = lines[headerIdx];
+    var cols = [];
+    var pos = 0;
+    while(pos < hdr.length){
+      var pipeIdx = hdr.indexOf('|', pos);
+      if(pipeIdx === -1) break;
+      var nextPipe = hdr.indexOf('|', pipeIdx + 1);
+      if(nextPipe === -1) break;
+      cols.push({start: pipeIdx, end: nextPipe, text: hdr.substring(pipeIdx + 1, nextPipe)});
+      pos = nextPipe;
+    }
+    // Determine table type: if any column starts with "Without"/"With ", it's
+    // a paired comparison table → only highlight the Without/With columns.
+    // Otherwise it's the factorial table → highlight exact factor name columns.
+    var hasPairedCols = false;
+    for(var ci = 0; ci < cols.length; ci++){
+      var ct = cols[ci].text.trim();
+      for(var pi = 0; pi < prefixes.length; pi++){
+        if(ct.indexOf(prefixes[pi]) === 0){ hasPairedCols = true; break; }
+      }
+      if(hasPairedCols) break;
+    }
+    for(var ci = 0; ci < cols.length; ci++){
+      var colText = cols[ci].text.trim();
+      var matched = false;
+      if(hasPairedCols){
+        // Paired comparison table: only highlight Without/With columns
+        for(var pi = 0; pi < prefixes.length; pi++){
+          if(colText.indexOf(prefixes[pi]) === 0){ matched = true; break; }
+        }
+      } else {
+        // Factorial table: highlight exact factor name columns
+        for(var fi = 0; fi < exactNames.length; fi++){
+          if(colText === exactNames[fi]){ matched = true; break; }
+        }
+      }
+      if(matched){
+        factorCols.push({start: cols[ci].start, end: cols[ci].end});
+      }
+    }
+    if(factorCols.length === 0) return fullMatch;
+    // Wrap factor column ranges in each line
+    var newLines = [];
+    for(var li = 0; li < lines.length; li++){
+      var line = lines[li];
+      if(line.indexOf('|') === -1){ newLines.push(line); continue; }
+      // Build new line by inserting spans around factor column content
+      var parts = [];
+      var lastEnd = 0;
+      for(var fc = 0; fc < factorCols.length; fc++){
+        var s = factorCols[fc].start + 1; // skip the pipe
+        var e = factorCols[fc].end;       // up to but not including next pipe
+        if(s >= line.length) continue;
+        var actualEnd = Math.min(e, line.length);
+        if(s > lastEnd) parts.push(line.substring(lastEnd, s));
+        parts.push('<span class="col-white">' + line.substring(s, actualEnd) + '</span>');
+        lastEnd = actualEnd;
+      }
+      if(lastEnd < line.length) parts.push(line.substring(lastEnd));
+      newLines.push(parts.join(''));
+    }
+    return fullMatch.replace(codeContent, newLines.join('\n'));
+  });
+}
+
+// ============================================================
+// SLIDE ENGINE
+// ============================================================
+const Engine = (function(){
+  const container = document.getElementById('slides-container');
+  const counter = document.getElementById('slide-counter');
+  const progressBar = document.getElementById('progress-bar');
+  const pathLabel = document.getElementById('path-label');
+  const mainSlides = SLIDES_DATA.slides.filter(s => s.path === 'main');
+  let currentList = mainSlides;
+  let currentIndex = 0;
+
+  const slideElements = {};
+  SLIDES_DATA.slides.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'slide'; div.id = 'slide-' + s.id;
+    let rendered = renderMarkdown(s.content);
+    rendered = colorizeFactorColumns(rendered);
+    let titleText = '';
+    const h1Match = rendered.match(/<h1>([\s\S]*?)<\/h1>/);
+    if(h1Match){ titleText = h1Match[1].replace(/<[^>]+>/g,''); rendered = rendered.replace(h1Match[0],''); }
+    let headingIndex = 0; const headings = [];
+    rendered = rendered.replace(/<h2>([\s\S]*?)<\/h2>/g, function(_,text){
+      headings.push({level:2,text:text.replace(/<[^>]+>/g,'')}); return '<div class="bitmap-heading-wrap" data-heading-idx="'+(headingIndex++)+'"></div>';
+    });
+    rendered = rendered.replace(/<h3>([\s\S]*?)<\/h3>/g, function(_,text){
+      headings.push({level:3,text:text.replace(/<[^>]+>/g,'')}); return '<div class="bitmap-heading-wrap" data-heading-idx="'+(headingIndex++)+'"></div>';
+    });
+    let cardInner = rendered;
+    if(s.id === 'slide-0'){ cardInner += '<div class="press-enter" id="press-enter-target"></div>'; }
+    if(s.path === 'main' && s === mainSlides[mainSlides.length - 1]){
+      cardInner += '<button class="return-btn restart-btn">Return to start</button>';
+    }
+    const titleDiv = document.createElement('div'); titleDiv.className = 'slide-title';
+    div.innerHTML = '<div class="slide-card">' + cardInner + '</div>';
+    if(s.id === 'slide-0'){
+      const card = div.querySelector('.slide-card');
+      card.style.background='transparent'; card.style.border='none'; card.style.boxShadow='none';
+      card.style.alignItems='center'; card.style.textAlign='center';
+    }
+    div.insertBefore(titleDiv, div.firstChild);
+    container.appendChild(div);
+    slideElements[s.id] = div;
+    if(titleText){
+      const bmpTitle = BitmapText.render(titleText,{scale:5,uppercase:false,colorMode:'main'});
+      titleDiv.appendChild(bmpTitle);
+    }
+    headings.forEach(function(h,idx){
+      const wrap = div.querySelector('[data-heading-idx="'+idx+'"]');
+      if(wrap){ const bmpH = BitmapText.renderWrapped(h.text,{scale:3,maxChars:55,uppercase:false,colorMode:'main'}); wrap.appendChild(bmpH); }
+    });
+    if(s.id === 'slide-0'){
+      const target = div.querySelector('#press-enter-target');
+      if(target){
+        const greenColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+        const bmpPrompt = BitmapText.renderMultiColor([
+          {text:'Press ',color:'#ffffff'},{text:'Enter',color:greenColor,themeColor:true},{text:' to begin',color:'#ffffff'}
+        ],{scale:3});
+        target.appendChild(bmpPrompt);
+      }
+    }
+    // Bitmap render paragraphs
+    div.querySelectorAll('.slide-card p').forEach(function(p){
+      if(p.closest('pre')) return;
+      const text = p.textContent; if(!text.trim()) return;
+      var hasStrong = p.querySelector('strong');
+      if(hasStrong){
+        var mainColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+        var segments = [];
+        p.childNodes.forEach(function(node){
+          if(node.nodeType===3){ if(node.textContent) segments.push({text:node.textContent,color:mainColor,themeColor:true}); }
+          else if(node.tagName==='STRONG'){ segments.push({text:node.textContent,color:'#ffffff'}); }
+          else if(node.tagName==='EM'){ var dimColor=getComputedStyle(document.documentElement).getPropertyValue('--green-dim').trim(); segments.push({text:node.textContent,color:dimColor,themeColor:true,themeDim:true}); }
+          else { if(node.textContent) segments.push({text:node.textContent,color:mainColor,themeColor:true}); }
+        });
+        var bmp = BitmapText.renderMultiColor(segments,{scale:3,maxChars:60});
+        bmp.style.marginTop='6px'; bmp.style.marginBottom='6px';
+        p.textContent=''; p.appendChild(bmp);
+      } else {
+        const bmp = BitmapText.renderWrapped(text,{scale:3,maxChars:60,uppercase:false,colorMode:'main'});
+        bmp.style.marginTop='6px'; bmp.style.marginBottom='6px';
+        p.textContent=''; p.appendChild(bmp);
+      }
+    });
+    // Bare strong/em outside containers
+    div.querySelectorAll('.slide-card strong, .slide-card em').forEach(function(el){
+      if(el.closest('p')||el.closest('li')||el.closest('blockquote')||el.closest('pre')) return;
+      if(el.querySelector('.bitmap-text')) return;
+      const text = el.textContent; if(!text.trim()) return;
+      const isStrong = el.tagName==='STRONG';
+      const color = isStrong ? '#ffffff' : undefined;
+      const bmp = BitmapText.renderWrapped(text,{scale:3,maxChars:60,uppercase:false,color:color,colorMode:isStrong?'main':'dim'});
+      bmp.style.marginTop='6px'; bmp.style.marginBottom='6px';
+      el.textContent=''; el.appendChild(bmp);
+    });
+    // List items
+    div.querySelectorAll('.slide-card li').forEach(function(li){
+      var isNested = li.classList.contains('nested');
+      var prefix = isNested ? '  \u25E6 ' : '> ';
+      var maxC = isNested ? 54 : 58;
+      var hangIndent = isNested ? 4 : 2;
+      var hasStrong = li.querySelector('strong');
+      if(hasStrong){
+        var mainColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+        var segments = [];
+        li.childNodes.forEach(function(node){
+          if(node.nodeType===3){ if(node.textContent) segments.push({text:node.textContent,color:mainColor,themeColor:true}); }
+          else if(node.tagName==='STRONG'){ segments.push({text:node.textContent,color:'#ffffff'}); }
+          else if(node.tagName==='EM'){ var dimColor=getComputedStyle(document.documentElement).getPropertyValue('--green-dim').trim(); segments.push({text:node.textContent,color:dimColor,themeColor:true,themeDim:true}); }
+          else { if(node.textContent) segments.push({text:node.textContent,color:mainColor,themeColor:true}); }
+        });
+        segments.unshift({text:prefix,color:mainColor,themeColor:true});
+        var bmp = BitmapText.renderMultiColor(segments,{scale:3,maxChars:maxC,hangingIndent:hangIndent});
+        bmp.style.margin='0'; li.textContent=''; li.appendChild(bmp);
+      } else {
+        const text = li.textContent; if(!text.trim()) return;
+        const bmp = BitmapText.renderWrapped(prefix+text,{scale:3,maxChars:maxC,hangingIndent:hangIndent,uppercase:false,colorMode:'main'});
+        bmp.style.margin='0'; li.textContent=''; li.appendChild(bmp);
+      }
+    });
+    // Blockquotes
+    div.querySelectorAll('.slide-card blockquote').forEach(function(bq){
+      const text = bq.textContent; if(!text.trim()) return;
+      bq.textContent='';
+      const bmp = BitmapText.renderWrapped(text.trim(),{scale:3,maxChars:50,uppercase:false,colorMode:'main'});
+      bmp.style.display='block'; bq.appendChild(bmp);
+    });
+    // Restart button
+    div.querySelectorAll('.restart-btn').forEach(function(btn){
+      btn.textContent='';
+      const greenColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim();
+      const dimColor = getComputedStyle(document.documentElement).getPropertyValue('--green-dim').trim();
+      const line1 = BitmapText.render('<< Return to start',{scale:3,uppercase:false,color:dimColor,colorMode:'dim'});
+      line1.style.pointerEvents='none';
+      const line2 = BitmapText.render('[Esc]',{scale:3,uppercase:false,color:greenColor,colorMode:'main'});
+      line2.style.pointerEvents='none';
+      btn.appendChild(line1); btn.appendChild(line2);
+    });
+  });
+
+  function showSlide(skipSound){
+    Object.values(slideElements).forEach(el => el.classList.remove('active'));
+    const slide = currentList[currentIndex]; if(!slide) return;
+    const el = slideElements[slide.id]; el.classList.add('active');
+    el.style.animation='none'; el.offsetHeight; el.style.animation='';
+    var rainCanvas = document.getElementById('matrix-rain');
+    rainCanvas.style.opacity = (slide.id==='slide-0') ? '0.24' : '0.12';
+    counter.textContent=''; counter.innerHTML='';
+    var cBmp = BitmapText.render((currentIndex+1)+' / '+mainSlides.length,{scale:2,uppercase:true,colorMode:'dim'});
+    counter.appendChild(cBmp);
+    pathLabel.textContent=''; pathLabel.innerHTML='';
+    const progress = ((currentIndex+1)/mainSlides.length)*100;
+    progressBar.style.width = progress+'%';
+    const restartBtn = el.querySelector('.restart-btn');
+    if(restartBtn){ restartBtn.onclick = function(){ Sound.branchReturn(); restartPresentation(); }; }
+  }
+
+  function next(){
+    if(currentIndex < currentList.length - 1){ currentIndex++; Sound.slideForward(); showSlide(); }
+  }
+  function prev(){
+    if(currentIndex > 0){ currentIndex--; Sound.slideBack(); showSlide(); }
+  }
+  function restartPresentation(){ currentList=mainSlides; currentIndex=0; showSlide(); }
+  function isLastMainSlide(){ return currentList===mainSlides && currentIndex===mainSlides.length-1; }
+
+  showSlide(true);
+
+  // BGM speaker icon
+  (function(){
+    var bgmEl = document.getElementById('bgm-indicator'); var scale=3;
+    var speakerOn=[[0,0,1,0,0,0,0,0,0],[0,0,1,1,0,0,0,1,0],[1,1,1,0,1,0,1,0,0],[1,1,1,0,0,0,1,0,0],[1,1,1,0,1,0,1,0,0],[0,0,1,1,0,0,0,1,0],[0,0,1,0,0,0,0,0,0]];
+    var speakerOff=[[0,0,1,0,0,0,0,0,0],[0,0,1,1,0,0,0,0,0],[1,1,1,0,1,0,1,0,1],[1,1,1,0,0,0,0,1,0],[1,1,1,0,1,0,1,0,1],[0,0,1,1,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]];
+    var canvas=document.createElement('canvas'); canvas.width=9; canvas.height=7;
+    canvas.style.width=(9*scale)+'px'; canvas.style.height=(7*scale)+'px';
+    canvas.style.imageRendering='pixelated'; canvas.style.display='block';
+    var ctx=canvas.getContext('2d'); var isPlaying=false;
+    function drawIcon(){
+      var color=getComputedStyle(document.documentElement).getPropertyValue('--green-dim').trim()||'#00cc33';
+      var icon=isPlaying?speakerOn:speakerOff; ctx.clearRect(0,0,9,7);
+      for(var y=0;y<7;y++) for(var x=0;x<9;x++) if(icon[y][x]){ ctx.fillStyle=color; ctx.fillRect(x,y,1,1); }
+    }
+    drawIcon(); bgmEl.appendChild(canvas);
+    bgmEl.addEventListener('click',function(e){ e.stopPropagation(); var playing=Sound.toggleBGM(); isPlaying=playing; drawIcon(); });
+    bgmEl._setPlaying=function(v){ isPlaying=v; drawIcon(); };
+    bgmEl._redraw=drawIcon;
+  })();
+
+  return {next, prev, restartPresentation, isLastMainSlide};
+})();
+
+// ============================================================
+// INPUT HANDLERS
+// ============================================================
+document.addEventListener('keydown', function(e){
+  if((e.key==='s'||e.key==='S')&&!Shortcuts.isOpen()){ Theme.toggle(); return; }
+  if((e.key==='k'||e.key==='K')&&!Theme.isOpen()){ Shortcuts.toggle(); return; }
+  if(e.key==='Escape'){
+    if(Theme.isOpen()){ Theme.toggle(); return; }
+    if(Shortcuts.isOpen()){ Shortcuts.toggle(); return; }
+  }
+  if(Theme.isOpen()){
+    if(e.key>='1'&&e.key<=String(Theme.themeCount)){ Theme.applyTheme(parseInt(e.key)-1); Sound.choiceSelect(); }
+    return;
+  }
+  if(Shortcuts.isOpen()) return;
+  if(Engine.isLastMainSlide()&&e.key==='Escape'){ e.preventDefault(); Sound.branchReturn(); Engine.restartPresentation(); return; }
+  switch(e.key){
+    case 'Enter': e.preventDefault(); Engine.next(); break;
+    case 'ArrowRight': case ' ': e.preventDefault(); Engine.next(); break;
+    case 'ArrowLeft': e.preventDefault(); Engine.prev(); break;
+    case 'f': case 'F':
+      if(document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(()=>{});
+      break;
+    case 'm': case 'M': Sound.toggleMute(); break;
+    case 'b': case 'B': { const playing=Sound.toggleBGM(); var bi=document.getElementById('bgm-indicator'); if(bi._setPlaying) bi._setPlaying(playing); break; }
+    case 'r': case 'R': window.toggleRain(); break;
+  }
+});
+
+document.getElementById('click-next').addEventListener('click',()=>Engine.next());
+document.getElementById('click-prev').addEventListener('click',()=>Engine.prev());
+
+(function(){
+  let startX=0,startY=0;
+  document.addEventListener('touchstart',e=>{ startX=e.touches[0].clientX; startY=e.touches[0].clientY; },{passive:true});
+  document.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>50){ if(dx<0) Engine.next(); else Engine.prev(); }
+  },{passive:true});
+})();
+
+document.addEventListener('click',function unlock(){
+  if(window.AudioContext||window.webkitAudioContext){ const c=new(window.AudioContext||window.webkitAudioContext)(); c.resume().then(()=>c.close()); }
+  document.removeEventListener('click',unlock);
+},{once:true});
+document.addEventListener('keydown',function unlockKey(){
+  if(window.AudioContext||window.webkitAudioContext){ const c=new(window.AudioContext||window.webkitAudioContext)(); c.resume().then(()=>c.close()); }
+  document.removeEventListener('keydown',unlockKey);
+},{once:true});
+</script>
+</body>
+</html>
