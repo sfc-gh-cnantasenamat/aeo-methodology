@@ -136,7 +136,7 @@ The heatmap below shows all 16 runs against all 13 product categories, with rows
 
 ## Conclusion
 
-Three actionable findings emerge from this benchmark:
+Four actionable findings emerge from this benchmark:
 
 1. **Deploy agentic tools, not bigger prompts.** Access to current documentation and specialized skills produces larger quality improvements than any prompting strategy. The optimal configuration uses citation instruction and agentic tools with no domain prompt.
 
