@@ -1,4 +1,4 @@
-# Building an AI Engine Optimization (AEO) System for Measuring How Well LLMs Answer Snowflake Questions
+# Building an AI Engine Optimization (AEO) System for Measuring How Well LLMs Answer Snowflake Developer Questions
 
 ## Executive Summary
 
