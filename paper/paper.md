@@ -8,7 +8,7 @@ AI coding assistants are now part of the Snowflake developer workflow, but there
 
 When a developer asks an AI assistant "How do I create a Cortex Search Service?", the quality of the answer depends on more than the model's training data. It depends on whether the assistant can search current documentation, whether it has domain-specific prompting, and whether it applies post-generation review. But which of these augmentation strategies actually matter, and how much?
 
-Vercel introduced the term "AI Engine Optimization" in early 2026 to describe the practice of tracking how AI coding agents reference and recommend developer tools. Their system measures brand visibility: does the agent mention Vercel products? Our system asks a different question: does the agent give the *right* answer?
+In early 2026, Vercel built an AI Engine Optimization (AEO) system to track how AI coding agents reference and recommend their products. Their system measures brand visibility: does the agent mention Vercel products? Our system asks a different question: does the agent give the *right* answer?
 
 We designed a benchmark that goes beyond brand tracking to measure multi-dimensional answer quality (correctness, completeness, recency, citation, and recommendation) against expert-authored canonical answers. Rather than testing multiple competing agents, we tested multiple augmentation configurations on a single model (Claude Opus 4.6) to isolate the effect of each deployment lever. The result is a data-backed framework for configuring AI developer tools on the Snowflake platform.
 
