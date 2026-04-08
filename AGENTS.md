@@ -51,9 +51,9 @@ paper/
 │   ├── fig_01_main_effects.png
 │   ├── fig_02_dumbbell_chart.png
 │   └── fig_03_category_heatmap.png
+├── paper.pdf                         # Compiled PDF (copied here after compilation)
 ├── latex/
-│   ├── paper.tex                     # LaTeX source (manually synced from paper.md)
-│   └── paper.pdf                     # Compiled PDF
+│   └── paper.tex                     # LaTeX source (manually synced from paper.md)
 └── scripts/
     ├── fig_01_main_effects.py        # Main effects bar chart
     ├── fig_02_dumbbell_chart.py      # Baseline vs best dumbbell chart
@@ -78,9 +78,10 @@ Requires TeX Live (`pdflatex`). Run two passes from the `latex/` directory so cr
 cd paper/latex
 pdflatex -interaction=nonstopmode paper.tex
 pdflatex -interaction=nonstopmode paper.tex
+cp paper.pdf ../paper.pdf
 ```
 
-The `.tex` file uses `../assets/` relative paths for `\includegraphics`, so it must be compiled from inside `paper/latex/`.
+The `.tex` file uses `../assets/` relative paths for `\includegraphics`, so it must be compiled from inside `paper/latex/`. After compilation, copy the PDF up to `paper/` so it sits alongside `paper.md`.
 
 LaTeX auxiliary files (`.aux`, `.log`, `.out`) are excluded via `.gitignore`.
 
