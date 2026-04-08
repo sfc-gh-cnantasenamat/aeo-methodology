@@ -1,15 +1,57 @@
-\documentclass[11pt,letterpaper]{article}
+\documentclass[10pt,letterpaper]{article}
 
-\usepackage[margin=1in]{geometry}
-\usepackage{graphicx}
+\usepackage[top=0.85in,left=2.75in,footskip=0.75in,marginparwidth=2in]{geometry}
+
+% use Unicode characters
+\usepackage[utf8]{inputenc}
+
+% hyperref makes references clicky
+\usepackage{nameref,hyperref}
+
+% line numbers
+\usepackage[right]{lineno}
+
+% improves typesetting in LaTeX
+\usepackage{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+
+% text layout
+\raggedright
+\setlength{\parindent}{0.5cm}
+\textwidth 5.25in
+\textheight 8.75in
+
+% use adjustwidth environment to exceed text width
+\usepackage{changepage}
+
+% adjust caption style
+\usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,singlelinecheck=off]{caption}
+
+% remove brackets from references
+\makeatletter
+\renewcommand{\@biblabel}[1]{\quad#1.}
+\makeatother
+
+% headrule, footrule and page numbers
+\usepackage{lastpage,fancyhdr,graphicx}
+\pagestyle{myheadings}
+\pagestyle{fancy}
+\fancyhf{}
+\rfoot{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
+\fancyheadoffset[L]{2.25in}
+\fancyfootoffset[L]{2.25in}
+
+% colors
+\usepackage[dvipsnames]{xcolor}
+
+% tables and figures
 \usepackage{booktabs}
 \usepackage{amssymb}
 \usepackage{enumitem}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{hyperref}
 \usepackage{float}
 \usepackage{tabularx}
-\usepackage[font=small,labelfont=bf]{caption}
 
 \hypersetup{
     colorlinks=true,
@@ -18,22 +60,34 @@
     citecolor=NavyBlue,
 }
 
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt}
-
-\title{\Large\bfseries Building an AI Engine Optimization (AEO) System\\for Measuring How Well LLMs Answer Snowflake Developer Questions}
-\author{}
-\date{}
-
+% ============================================================
 \begin{document}
-\maketitle
-\thispagestyle{empty}
+% ============================================================
+
+\vspace*{0.35in}
+
+\begin{flushleft}
+{\Large
+\textbf\newline{Building an AI Engine Optimization (AEO) System for Measuring How Well LLMs Answer Snowflake Developer Questions}
+}
+\newline
+\\
+Chanin Nantasenamat\textsuperscript{1}
+\\
+\bigskip
+\textbf{1} Snowflake, Developer Relations
+\\
+\bigskip
+\end{flushleft}
 
 % ============================================================
-\section*{Executive Summary}
+\section*{Summary}
 % ============================================================
 
 AI coding assistants are now part of the Snowflake developer workflow, but there is no systematic way to measure whether those assistants give developers correct, current answers. We built an AEO benchmark that evaluates AI answer quality across 50 Snowflake developer questions spanning 13 product categories. Using a $2^4$ factorial experiment design, we tested 16 combinations of four augmentation factors (domain prompt, citation instruction, agentic tools, self-critique) to isolate what actually improves answer quality. The best configuration (citation + agentic tools, no domain prompt) scored 93.8\%, a 33 percentage-point improvement over the bare LLM baseline of 60.9\%. Agentic tool access was the dominant factor (+12pp average), while self-critique was consistently counterproductive ($-$3pp average). These findings directly inform how Snowflake should configure its AI-powered developer tools.
+
+% now start line numbers
+\linenumbers
 
 % ============================================================
 \section{Introduction}
@@ -76,9 +130,10 @@ Every response was scored independently by three LLM judges: openai-gpt-5.4, cla
 We tested four binary augmentation factors in all 16 possible combinations:
 
 \begin{table}[H]
+\begin{adjustwidth}{-1.5in}{0in}
 \centering
 \small
-\begin{tabularx}{\textwidth}{lXX}
+\begin{tabularx}{7.5in}{lXX}
 \toprule
 \textbf{Factor} & \textbf{OFF} & \textbf{ON} \\
 \midrule
@@ -88,6 +143,7 @@ Agentic Tools & Single \texttt{CORTEX.COMPLETE} API call (parametric knowledge o
 Self-Critique & Single-turn generation & Two-turn generate-then-revise pattern \\
 \bottomrule
 \end{tabularx}
+\end{adjustwidth}
 \end{table}
 
 Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.CORTEX.COMPLETE('claude-opus-4-6', ...)} with the conversation format. Agentic runs (8 of 16) launched five parallel Cortex Code subagents, each handling a 10-question batch with full tool access. All 16 runs used Claude Opus 4.6 exclusively as the respondent model to avoid cross-model contamination.
@@ -211,10 +267,12 @@ Citation is the dimension most sensitive to configuration. Without explicit cita
 The heatmap below shows all 16 runs against all 13 product categories, with rows grouped by whether the Agentic factor is ON (upper half) or OFF (lower half). The color gradient makes the agentic divide immediately visible: the upper half is predominantly green (high scores), while the lower half shifts toward yellow and red.
 
 \begin{figure}[H]
+\begin{adjustwidth}{-1.5in}{0in}
 \centering
-\includegraphics[width=\textwidth]{../assets/fig_03_category_heatmap.png}
+\includegraphics[width=7.5in]{../assets/fig_03_category_heatmap.png}
 \caption{Category-level heatmap of all 16 factorial runs. Rows are grouped by Agentic factor (upper = ON, lower = OFF) and sorted by average score within each group. The rightmost column shows the run average. Factor abbreviations: D = Domain Prompt, C = Citation, A = Agentic, S = Self-Critique.}
 \label{fig:heatmap}
+\end{adjustwidth}
 \end{figure}
 
 % ============================================================
