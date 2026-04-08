@@ -1,9 +1,5 @@
 # Building an AI Engine Optimization (AEO) System for Measuring How Well LLMs Answer Snowflake Questions
 
-**Authors:** Chanin Nantasenamat, Snowflake DevRel
-**Date:** April 2026
-**Status:** Internal Whitepaper
-
 ## Executive Summary
 
 AI coding assistants are now part of the Snowflake developer workflow, but there is no systematic way to measure whether those assistants give developers correct, current answers. We built an AEO benchmark that evaluates AI answer quality across 50 Snowflake developer questions spanning 13 product categories. Using a 2^4 factorial experiment design, we tested 16 combinations of four augmentation factors (domain prompt, citation instruction, agentic tools, self-critique) to isolate what actually improves answer quality. The best configuration (citation + agentic tools, no domain prompt) scored 93.8%, a 33 percentage-point improvement over the bare LLM baseline of 60.9%. Agentic tool access was the dominant factor (+12pp average), while self-critique was consistently counterproductive (-3pp average). These findings directly inform how Snowflake should configure its AI-powered developer tools.
@@ -144,6 +140,8 @@ Three actionable findings emerge from this benchmark:
 
 1. **Deploy agentic tools, not bigger prompts.** Access to current documentation and specialized skills produces larger quality improvements than any prompting strategy. The optimal configuration uses citation instruction and agentic tools with no domain prompt.
 
+Beyond the main effects, two-way interaction effects reveal that factors do not act independently:
+
 2. **Pair citation with agentic tools, not with static prompts.** Citation and agentic tools amplify each other (+6.7pp interaction effect). An agent instructed to cite sources will actively search for and link real documentation, while a non-agentic model instructed to cite can only fabricate or vaguely reference URLs.
 
 3. **Remove the domain prompt from agentic configurations.** A static knowledge primer actively interferes with agentic tool use (-14.3pp interaction effect). When all three other factors are present, adding the domain prompt drops the score by 17-20 percentage points. The domain prompt is only useful for non-agentic, single-call scenarios where the model has no other source of Snowflake-specific context.
@@ -169,3 +167,7 @@ The immediate priorities are automating the pipeline for scheduled runs (to dete
 
 - Dodds, E. and Zhou, A. (2026). "How we built AEO tracking for coding agents." Vercel Engineering Blog. February 9, 2026.
 - Snowflake Documentation. https://docs.snowflake.com
+
+---
+
+*April 8, 2026*
