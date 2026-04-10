@@ -1,6 +1,6 @@
 # Building an AI Engine Optimization (AEO) System for Measuring How Well LLMs Answer Snowflake Developer Questions
 
-## Executive Summary
+## Summary
 
 AI coding assistants are now part of the Snowflake developer workflow, but there is no systematic way to measure whether those assistants give developers correct, current answers. We built an AEO benchmark that evaluates AI answer quality across 50 Snowflake developer questions spanning 13 product categories. Using a 2^4 factorial experiment design, we tested 16 combinations of four augmentation factors (domain prompt, citation instruction, agentic tools, self-critique) to isolate what actually improves answer quality. The best configuration (citation + agentic tools, no domain prompt) scored 93.8%, a 33 percentage-point improvement over the bare LLM baseline of 60.9%. Agentic tool access was the dominant factor (+12pp average), while self-critique was consistently counterproductive (-3pp average). These findings directly inform how Snowflake should configure its AI-powered developer tools.
 

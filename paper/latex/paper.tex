@@ -97,7 +97,7 @@ When a developer asks an AI assistant ``How do I create a Cortex Search Service?
 
 In early 2026, Vercel built an AI Engine Optimization (AEO) system to track how AI coding agents reference and recommend their products. Their system measures brand visibility: does the agent mention Vercel products? Our system asks a different question: does the agent give the \emph{right} answer?
 
-We designed a benchmark that goes beyond brand tracking to measure multi-dimensional answer quality (correctness, completeness, recency, citation, and recommendation) against expert-authored canonical answers. Rather than testing multiple competing agents, we tested multiple augmentation configurations on a single model (Claude Opus 4.6) to isolate the effect of each deployment lever. The result is a data-backed framework for configuring AI developer tools on the Snowflake platform.
+We designed a benchmark that goes beyond brand tracking to measure multi-dimensional answer quality (correctness, completeness, recency, citation, and recommendation) against expert-authored canonical answers. Rather than testing multiple competing agents, we tested multiple augmentation configurations on a single model (\texttt{claude-opus-4-6}) to isolate the effect of each deployment lever. The result is a data-backed framework for configuring AI developer tools on the Snowflake platform.
 
 % ============================================================
 \section{Methodology}
@@ -123,30 +123,28 @@ Maximum score per question: 10 points. Maximum per run: 500 points. Each questio
 
 \subsection{Judge Panel}
 
-Every response was scored independently by three LLM judges: openai-gpt-5.4, claude-opus-4-6, and llama4-maverick. The final score for each response is the panel average. This design mitigates single-model scoring bias.
+Every response was scored independently by three LLM judges: \texttt{openai-gpt-5.4}, \texttt{claude-opus-4-6}, and \texttt{llama4-maverick}. The final score for each response is the panel average. This design mitigates single-model scoring bias.
 
 \subsection{$2^4$ Factorial Experiment}
 
 We tested four binary augmentation factors in all 16 possible combinations:
 
 \begin{table}[H]
-\begin{adjustwidth}{-1.5in}{0in}
 \centering
 \small
-\begin{tabularx}{7.5in}{lXX}
+\begin{tabularx}{\textwidth}{@{}lXX@{}}
 \toprule
 \textbf{Factor} & \textbf{OFF} & \textbf{ON} \\
 \midrule
-Domain Prompt & No system message & 1,800-token Snowflake product knowledge primer as system message \\
-Citation & Raw question only & ``Reference official Snowflake documentation'' appended to question \\
-Agentic Tools & Single \texttt{CORTEX.COMPLETE} API call (parametric knowledge only) & Cortex Code subagent with web search, doc search, skills, and file I/O \\
-Self-Critique & Single-turn generation & Two-turn generate-then-revise pattern \\
+Domain Prompt & No system message & 1,800-token Snowflake product knowledge primer \\
+Citation & Raw question only & ``Cite official Snowflake docs'' appended to question \\
+Agentic Tools & Single \texttt{CORTEX.COMPLETE} call (parametric only) & Cortex Code subagent with web search, doc search, skills \\
+Self-Critique & Single-turn generation & Two-turn generate-then-revise \\
 \bottomrule
 \end{tabularx}
-\end{adjustwidth}
 \end{table}
 
-Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.CORTEX.COMPLETE('claude-opus-4-6', ...)} with the conversation format. Agentic runs (8 of 16) launched five parallel Cortex Code subagents, each handling a 10-question batch with full tool access. All 16 runs used Claude Opus 4.6 exclusively as the respondent model to avoid cross-model contamination.
+Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak COMPLETE(\allowbreak 'claude-opus-4-6',\allowbreak ...)} with the conversation format. Agentic runs (8 of 16) launched five parallel Cortex Code subagents, each handling a 10-question batch with full tool access. All 16 runs used \texttt{claude-opus-4-6} exclusively as the respondent model to avoid cross-model contamination.
 
 Subagents were sandboxed to prevent access to canonical answers, scoring rubrics, or benchmark files.
 
@@ -207,23 +205,25 @@ Self-Critique        & $-$3.4pp         & +3.4pp           \\
 \end{table}
 
 \begin{figure}[H]
+\begin{adjustwidth}{-2in}{0in}
 \centering
-\includegraphics[width=0.85\textwidth]{../assets/fig_01_main_effects.png}
+\includegraphics[width=7.25in]{../assets/fig_01_main_effects.png}
 \caption{Main effects bar chart. Agentic tools dominate both score and must-have compliance. Self-Critique and Domain Prompt show negative score effects on average.}
 \label{fig:main_effects}
+\end{adjustwidth}
 \end{figure}
 
 \textbf{Agentic tools are the dominant factor.} They improve both score and must-have compliance in every single paired comparison. The ability to search current documentation and invoke specialized skills is more valuable than any prompting strategy.
 
-\textbf{Citation helps score but through an indirect mechanism.} The +9.5pp score effect comes largely from the Citation dimension itself (which goes from near-zero to near-perfect when citation is instructed). The biggest citation gains (+22pp) occur when combined with agentic tools, where the agent can actually look up and link to real documentation URLs.
+\textbf{Citation instruction helps score but through an indirect mechanism.} The +9.5pp score effect comes largely from the Citation dimension itself (which goes from near-zero to near-perfect when citation instruction is active). The biggest citation gains (+22pp) occur when combined with agentic tools, where the agent can actually look up and link to real documentation URLs.
 
-\textbf{Domain prompt has a split personality.} In non-agentic conditions, it helps (+3.7pp average) by giving the model Snowflake-specific context it otherwise lacks. In agentic conditions, it actively harms performance ($-$9.9pp average). The worst damage occurs when all three other factors are present: adding the domain prompt to Citation + Agentic drops the score by 17--20 percentage points. The likely explanation is that the 1,800-token system prompt constrains how the agent uses its retrieved information, overriding what it finds in current docs with potentially outdated or overly rigid framing.
+\textbf{Domain prompt has a split personality.} In non-agentic conditions, it helps (+3.7pp average) by giving the model Snowflake-specific context it otherwise lacks. In agentic conditions, it actively harms performance ($-$9.9pp average). The worst damage occurs when all three other factors are present: adding the domain prompt to citation instruction + agentic tools drops the score by 17--20 percentage points. The likely explanation is that the 1,800-token system prompt constrains how the agent uses its retrieved information, overriding what it finds in current docs with potentially outdated or overly rigid framing.
 
 \textbf{Self-critique is counterproductive.} It hurts score in 7 of 8 paired comparisons ($-$3.4pp average). The two-turn ``generate then revise'' pattern causes the model to second-guess correct content, introduce hedging, and sometimes remove accurate details that were present in the first pass.
 
 \subsection{Category Performance}
 
-The table below compares the baseline (Run 1, no factors) against the best configuration (Run 4, Citation + Agentic) across all 13 product categories:
+The table below compares the baseline (Run 1, no factors) against the best configuration (Run 4, citation instruction + agentic tools) across all 13 product categories:
 
 \begin{table}[H]
 \centering
@@ -252,10 +252,12 @@ Cortex Agents                & 57.7\% & 68.9\%  & +11.2pp \\
 Every category improved. The largest gains occurred in Native Apps Framework (+55.1pp), Snowpark (+50.0pp), and Cortex AI Functions (+50.0pp), where the baseline model lacked current documentation knowledge that agentic tool access provided. The weakest category remained Cortex Agents (68.9\%), reflecting the relative newness of this feature and limited training data even in current documentation.
 
 \begin{figure}[H]
+\begin{adjustwidth}{-2in}{0in}
 \centering
-\includegraphics[width=0.9\textwidth]{../assets/fig_02_dumbbell_chart.png}
-\caption{Dumbbell chart showing per-category improvement from baseline (Run 1) to best configuration (Run 4, Citation + Agentic). Categories sorted by delta. Every category improved, with Native Apps Framework gaining the most (+55.1pp).}
+\includegraphics[width=7.25in]{../assets/fig_02_dumbbell_chart.png}
+\caption{Dumbbell chart showing per-category improvement from baseline (Run 1) to best configuration (Run 4, citation instruction + agentic tools). Categories sorted by delta. Every category improved, with Native Apps Framework gaining the most (+55.1pp).}
 \label{fig:dumbbell}
+\end{adjustwidth}
 \end{figure}
 
 \subsection{Scoring Dimension Analysis}
@@ -264,12 +266,12 @@ Citation is the dimension most sensitive to configuration. Without explicit cita
 
 \subsection{Full Factorial Heatmap}
 
-The heatmap below shows all 16 runs against all 13 product categories, with rows grouped by whether the Agentic factor is ON (upper half) or OFF (lower half). The color gradient makes the agentic divide immediately visible: the upper half is predominantly green (high scores), while the lower half shifts toward yellow and red.
+The heatmap below shows all 16 runs against all 13 product categories, with rows grouped by whether the agentic tools factor is ON (upper half) or OFF (lower half). The color gradient makes the agentic divide immediately visible: the upper half is predominantly green (high scores), while the lower half shifts toward yellow and red.
 
 \begin{figure}[H]
-\begin{adjustwidth}{-1.5in}{0in}
+\begin{adjustwidth}{-2in}{0in}
 \centering
-\includegraphics[width=7.5in]{../assets/fig_03_category_heatmap.png}
+\includegraphics[width=7.25in]{../assets/fig_03_category_heatmap.png}
 \caption{Category-level heatmap of all 16 factorial runs. Rows are grouped by Agentic factor (upper = ON, lower = OFF) and sorted by average score within each group. The rightmost column shows the run average. Factor abbreviations: D = Domain Prompt, C = Citation, A = Agentic, S = Self-Critique.}
 \label{fig:heatmap}
 \end{adjustwidth}
@@ -288,7 +290,7 @@ Four actionable findings emerge from this benchmark:
 Beyond the main effects, two-way interaction effects reveal that factors do not act independently:
 
 \begin{enumerate}[leftmargin=*,resume]
-  \item \textbf{Pair citation with agentic tools, not with static prompts.} Citation and agentic tools amplify each other (+6.7pp interaction effect). An agent instructed to cite sources will actively search for and link real documentation, while a non-agentic model instructed to cite can only fabricate or vaguely reference URLs.
+  \item \textbf{Pair citation instruction with agentic tools, not with static prompts.} Citation instruction and agentic tools amplify each other (+6.7pp interaction effect). An agent instructed to cite sources will actively search for and link real documentation, while a non-agentic model instructed to cite can only fabricate or vaguely reference URLs.
 
   \item \textbf{Remove the domain prompt from agentic configurations.} A static knowledge primer actively interferes with agentic tool use ($-$14.3pp interaction effect). When all three other factors are present, adding the domain prompt drops the score by 17--20 percentage points. The domain prompt is only useful for non-agentic, single-call scenarios where the model has no other source of Snowflake-specific context.
 
@@ -302,7 +304,7 @@ For product teams configuring Snowflake AI developer tools, the prescription is 
 This benchmark has several limitations worth noting:
 
 \begin{itemize}[nosep]
-  \item \textbf{Single respondent model.} All 16 runs use Claude Opus 4.6; results may differ for other models.
+  \item \textbf{Single respondent model.} All 16 runs use \texttt{claude-opus-4-6}; results may differ for other models.
   \item \textbf{Question bank coverage.} The 50-question bank spans 13 categories but does not cover every Snowflake feature.
   \item \textbf{LLM-as-judge scoring.} Even with a 3-model panel, LLM judges may differ from human expert evaluation on nuanced questions. The must-have elements are binary checks that do not capture partial credit for closely related facts.
   \item \textbf{No TruLens integration in production scoring.} Although we built a TruLens integration (instrumented app, custom feedback functions, Snowflake connector), the 16-run factorial experiment used our custom 3-judge pipeline rather than TruLens. This means we lack standardized OpenTelemetry tracing of retrieval and generation spans, which would provide deeper observability into why agentic runs perform better (for example, which tool calls and documentation lookups contributed most to correct answers). The custom pipeline also does not produce the RAG Triad metrics (groundedness, answer relevance, context relevance) that would enable direct comparison with other TruLens-evaluated systems. Migrating the scoring pipeline to TruLens would unify evaluation with Snowflake AI Observability and make results visible in Snowsight under AI \& ML $>$ Cortex AI $>$ Evaluations.
