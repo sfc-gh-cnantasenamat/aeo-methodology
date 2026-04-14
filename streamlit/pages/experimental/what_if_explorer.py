@@ -169,8 +169,8 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Custom Score":      st.column_config.ProgressColumn(
-            "Custom Score",      format="%.2f", min_value=0, max_value=10, color="auto"),
+            "Custom Score",      format="%.2f", min_value=0, max_value=10),
         "Original Score %":  st.column_config.ProgressColumn(
-            "Original Score %",  format="%.1f%%", min_value=0, max_value=100, color="auto"),
+            "Original Score %",  format="%.1f%%", min_value=0, max_value=100),
     },
 )

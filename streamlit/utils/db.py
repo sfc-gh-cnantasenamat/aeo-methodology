@@ -1,32 +1,42 @@
 """Snowflake connection and query helpers for the AEO dashboard."""
 
+import re
 import streamlit as st
 import pandas as pd
 
 DB   = "DEVREL"
 SCH  = "CNANTASENAMAT_DEV"
 WH   = "SNOWADHOC"
+ROLE = "DEVREL_ADMIN_RL"
+
+
+@st.cache_resource
+def _get_session():
+    """Return a Snowpark Session that works in both SiS and local."""
+    try:
+        from snowflake.snowpark.context import get_active_session
+        return get_active_session()
+    except Exception:
+        from snowflake.snowpark import Session
+        session = Session.builder.config("connection_name", "my-snowflake").create()
+        session.sql(f"USE ROLE {ROLE}").collect()
+        session.sql(f"USE WAREHOUSE {WH}").collect()
+        session.sql(f"USE DATABASE {DB}").collect()
+        session.sql(f"USE SCHEMA {SCH}").collect()
+        return session
 
 
 @st.cache_data(ttl=300, show_spinner="Querying Snowflake…")
 def run_query(sql: str) -> pd.DataFrame:
     """Execute SQL and return a DataFrame.
 
-    get_active_session() is called here (at render time inside @st.cache_data),
-    not at module level. Module-level calls fail in SiS because st.Page()
-    pre-imports page modules before the Snowpark session context is ready.
-    Inside @st.cache_data the full request context is available.
+    Automatically qualifies bare AEO view and table names so they resolve
+    in SiS where USE DATABASE/SCHEMA is not available.
     """
-    try:
-        from snowflake.snowpark.context import get_active_session
-        sess = get_active_session()
-    except Exception:
-        from snowflake.snowpark import Session
-        sess = Session.builder.config("connection_name", "my-snowflake").create()
-    sess.sql(f"USE WAREHOUSE {WH}").collect()
-    sess.sql(f"USE DATABASE {DB}").collect()
-    sess.sql(f"USE SCHEMA {SCH}").collect()
-    return sess.sql(sql).to_pandas()
+    # Qualify bare V_AEO_* views and AEO_* tables
+    sql = re.sub(r'\b(V_AEO_\w+|AEO_QUESTIONS|AEO_RESPONSES|AEO_RUNS|AEO_RUN_CONFIG|AEO_SCORES)\b',
+                 f'{DB}.{SCH}.\\1', sql)
+    return _get_session().sql(sql).to_pandas()
 
 
 def config_label(domain: bool, citation: bool, agentic: bool, self_critique: bool) -> str:

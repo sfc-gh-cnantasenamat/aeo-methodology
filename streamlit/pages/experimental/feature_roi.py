@@ -137,11 +137,11 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Combined Avg %":     st.column_config.ProgressColumn(
-            "Combined Avg %",     format="%.1f%%", min_value=0, max_value=100, color="auto"),
+            "Combined Avg %",     format="%.1f%%", min_value=0, max_value=100),
         "Expected Lift (pp)": st.column_config.ProgressColumn(
             "Expected Lift (pp)", format="%.1f",   min_value=-10, max_value=20),
         "Actual Lift (pp)":   st.column_config.ProgressColumn(
-            "Actual Lift (pp)",   format="%.1f",   min_value=-10, max_value=20, color="auto"),
+            "Actual Lift (pp)",   format="%.1f",   min_value=-10, max_value=20),
     },
 )
 
@@ -156,8 +156,8 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Score ON":  st.column_config.ProgressColumn(
-            "Avg Score (ON)",  format="%.1f%%", min_value=0, max_value=100, color="auto"),
+            "Avg Score (ON)",  format="%.1f%%", min_value=0, max_value=100),
         "Score OFF": st.column_config.ProgressColumn(
-            "Avg Score (OFF)", format="%.1f%%", min_value=0, max_value=100, color="auto"),
+            "Avg Score (OFF)", format="%.1f%%", min_value=0, max_value=100),
     },
 )

@@ -219,8 +219,8 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Avg Score (ON)":  st.column_config.ProgressColumn(
-            "Avg Score (ON)",  format="%.1f%%", min_value=0, max_value=100, color="auto"),
+            "Avg Score (ON)",  format="%.1f%%", min_value=0, max_value=100),
         "Avg Score (OFF)": st.column_config.ProgressColumn(
-            "Avg Score (OFF)", format="%.1f%%", min_value=0, max_value=100, color="auto"),
+            "Avg Score (OFF)", format="%.1f%%", min_value=0, max_value=100),
     },
 )

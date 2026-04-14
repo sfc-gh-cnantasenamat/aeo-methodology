@@ -163,8 +163,8 @@ else:
         hide_index=True,
         column_config={
             "Avg Score %":  st.column_config.ProgressColumn(
-                "Avg Score %",  format="%.1f%%", min_value=0, max_value=100, color="auto"),
+                "Avg Score %",  format="%.1f%%", min_value=0, max_value=100),
             "Best Score %": st.column_config.ProgressColumn(
-                "Best Score %", format="%.1f%%", min_value=0, max_value=100, color="auto"),
+                "Best Score %", format="%.1f%%", min_value=0, max_value=100),
         },
     )

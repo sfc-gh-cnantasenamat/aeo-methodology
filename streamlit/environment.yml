@@ -4,3 +4,4 @@ channels:
 dependencies:
   - plotly
   - pandas
+  - numpy

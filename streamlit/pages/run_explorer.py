@@ -67,38 +67,15 @@ show = filtered[
     "RECOMMENDATION":"Recommendation",
 }).copy()
 
-show["Config"]    = show["Config"].apply(lambda x: [x])
-show["Type"]      = show["Type"].apply(lambda x: [x])
-show["Category"]  = show["Category"].apply(lambda x: [x])
-show["MH Pass"]   = show["MH Pass"].apply(lambda x: ["Pass"] if x == 1 else ["Fail"])
-
-all_configs    = sorted(df["Config"].unique().tolist())
-all_types      = sorted(df["QUESTION_TYPE"].unique().tolist())
-all_categories = sorted(df["CATEGORY"].unique().tolist())
+show["MH Pass"] = show["MH Pass"].apply(lambda x: "Pass" if x == 1 else "Fail")
 
 st.dataframe(
     show,
     column_config={
-        "Category": st.column_config.MultiselectColumn(
-            "Category",
-            options=all_categories,
-            color="auto",
-        ),
-        "Config": st.column_config.MultiselectColumn(
-            "Config",
-            options=all_configs,
-            color="auto",
-        ),
-        "Type": st.column_config.MultiselectColumn(
-            "Type",
-            options=all_types,
-            color="auto",
-        ),
-        "MH Pass": st.column_config.MultiselectColumn(
-            "MH Pass",
-            options=["Pass", "Fail"],
-            color=["#15803d", "#9d174d"],
-        ),
+        "Category": st.column_config.TextColumn("Category"),
+        "Config": st.column_config.TextColumn("Config"),
+        "Type": st.column_config.TextColumn("Type"),
+        "MH Pass": st.column_config.TextColumn("MH Pass"),
         "Score %": st.column_config.ProgressColumn(
             "Score %",
             format="%.1f%%",
@@ -107,19 +84,19 @@ st.dataframe(
             color="auto",
         ),
         "Correctness": st.column_config.ProgressColumn(
-            "Correctness", format="%.1f", min_value=0, max_value=10, color="auto",
+            "Correctness", format="%.1f", min_value=0, max_value=10,
         ),
         "Completeness": st.column_config.ProgressColumn(
-            "Completeness", format="%.1f", min_value=0, max_value=10, color="auto",
+            "Completeness", format="%.1f", min_value=0, max_value=10,
         ),
         "Recency": st.column_config.ProgressColumn(
-            "Recency", format="%.1f", min_value=0, max_value=10, color="auto",
+            "Recency", format="%.1f", min_value=0, max_value=10,
         ),
         "Citation": st.column_config.ProgressColumn(
-            "Citation", format="%.1f", min_value=0, max_value=10, color="auto",
+            "Citation", format="%.1f", min_value=0, max_value=10,
         ),
         "Recommendation": st.column_config.ProgressColumn(
-            "Recommendation", format="%.1f", min_value=0, max_value=10, color="auto",
+            "Recommendation", format="%.1f", min_value=0, max_value=10,
         ),
     },
     use_container_width=True,
