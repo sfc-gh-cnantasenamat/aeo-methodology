@@ -208,7 +208,7 @@ Self-Critique & Single-turn generation & Two-turn generate-then-revise \\
 \end{tabularx}
 \end{table}
 
-Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak COMPLETE(\allowbreak 'claude-opus-4-6',\allowbreak ...)} with a fixed 8,192-token output limit. Agentic runs (8 of 16) used parallel native Cortex Code sessions with full tool access and no token output cap. All 16 runs used \texttt{claude-opus-4-6} exclusively as the respondent model to avoid cross-model contamination.
+Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak COMPLETE(\allowbreak 'claude-opus-4-6',\allowbreak ...)} with a fixed 8,192-token output limit. Agentic runs (8 of 16) used native Cortex Code sessions with full tool access and no token output cap. All 16 runs used \texttt{claude-opus-4-6} exclusively as the respondent model to avoid cross-model contamination.
 
 \textbf{Domain Prompt.} A 1,800-token system prompt framing the model as a Snowflake expert: ``You are a Snowflake data platform expert. Provide accurate, current answers with specific SQL or Python code examples when appropriate. Reference official Snowflake documentation as the authoritative source. Recommend Snowflake-native approaches when they exist.'' The prompt is generic and contains no curated product knowledge, isolating whether role framing alone improves answers.
 
@@ -220,7 +220,7 @@ Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak
 
 \textbf{Why a factorial design?} Testing factors one at a time would miss interaction effects, where two factors together behave differently than each factor alone. For example, a Domain Prompt might provide marginal benefit in isolation but actively constrain an agentic model that can retrieve its own context. A full $2^4$ factorial design tests every combination and makes all such interactions directly observable from the data.
 
-\textbf{Agentic run structure.} Each agentic run used parallel native Cortex Code sessions with the task prompt: ``Answer each question thoroughly and accurately using your available capabilities (skills, doc search, web search).'' Where Domain Prompt was ON, the expert persona was prepended to this task. Where Citation was ON, the documentation instruction was appended to each individual question. Where Self-Critique was ON, sessions were configured to review and revise each answer before writing the final version.
+\textbf{Agentic run structure.} Each agentic run used native Cortex Code sessions with the task prompt: ``Answer each question thoroughly and accurately using your available capabilities (skills, doc search, web search).'' Where Domain Prompt was ON, the expert persona was prepended to this task. Where Citation was ON, the documentation instruction was appended to each individual question. Where Self-Critique was ON, sessions were configured to review and revise each answer before writing the final version.
 
 Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S are 0 or 1. Each factor has a fixed bit weight, so any configuration is directly decodable from its run number.
 
