@@ -202,13 +202,13 @@ We tested four binary augmentation factors in all 16 possible combinations:
 \midrule
 Domain Prompt & No system message & 1,800-token Snowflake product knowledge primer \\
 Citation & Raw question only & ``Cite official Snowflake docs'' appended to question \\
-Agentic Tools & Single \texttt{CORTEX.COMPLETE} call (parametric only) & Cortex Code subagent with web search, doc search, skills \\
+Agentic Tools & Single \texttt{CORTEX.COMPLETE} call (parametric only) & Native Cortex Code session with web search, doc search, skills \\
 Self-Critique & Single-turn generation & Two-turn generate-then-revise \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak COMPLETE(\allowbreak 'claude-opus-4-6',\allowbreak ...)} with a fixed 8,192-token output limit. Agentic runs (8 of 16) launched parallel Cortex Code subagents with full tool access and no token output cap. All 16 runs used \texttt{claude-opus-4-6} exclusively as the respondent model to avoid cross-model contamination.
+Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak COMPLETE(\allowbreak 'claude-opus-4-6',\allowbreak ...)} with a fixed 8,192-token output limit. Agentic runs (8 of 16) used parallel native Cortex Code sessions with full tool access and no token output cap. All 16 runs used \texttt{claude-opus-4-6} exclusively as the respondent model to avoid cross-model contamination.
 
 \textbf{Domain Prompt.} A 1,800-token system prompt framing the model as a Snowflake expert: ``You are a Snowflake data platform expert. Provide accurate, current answers with specific SQL or Python code examples when appropriate. Reference official Snowflake documentation as the authoritative source. Recommend Snowflake-native approaches when they exist.'' The prompt is generic and contains no curated product knowledge, isolating whether role framing alone improves answers.
 
@@ -220,11 +220,11 @@ Non-agentic runs (8 of 16) used \texttt{SNOWFLAKE.\allowbreak CORTEX.\allowbreak
 
 \textbf{Why a factorial design?} Testing factors one at a time would miss interaction effects, where two factors together behave differently than each factor alone. For example, a Domain Prompt might provide marginal benefit in isolation but actively constrain an agentic model that can retrieve its own context. A full $2^4$ factorial design tests every combination and makes all such interactions directly observable from the data.
 
-\textbf{Agentic run structure.} Each agentic run launched parallel Cortex Code subagents with the task prompt: ``Answer each question thoroughly and accurately using your available capabilities (skills, doc search, web search).'' Where Domain Prompt was ON, the expert persona was prepended to this task. Where Citation was ON, the documentation instruction was appended to each individual question. Where Self-Critique was ON, subagents were instructed to review and revise each answer before writing the final version.
+\textbf{Agentic run structure.} Each agentic run used parallel native Cortex Code sessions with the task prompt: ``Answer each question thoroughly and accurately using your available capabilities (skills, doc search, web search).'' Where Domain Prompt was ON, the expert persona was prepended to this task. Where Citation was ON, the documentation instruction was appended to each individual question. Where Self-Critique was ON, sessions were configured to review and revise each answer before writing the final version.
 
 Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S are 0 or 1. Each factor has a fixed bit weight, so any configuration is directly decodable from its run number.
 
-Subagents were sandboxed to prevent access to canonical answers, scoring rubrics, or benchmark files.
+Sessions were sandboxed to prevent access to canonical answers, scoring rubrics, or benchmark files.
 
 % ============================================================
 \section{Results}
@@ -263,7 +263,7 @@ Baseline    &              &              &              &              & \textb
 \end{tabularx}
 \end{table}
 
-The engine split is clear: Cortex Code subagents (with tool access) averaged 72.4\% score and 80.8\% MH, compared to 61.6\% score and 61.6\% MH for single \texttt{CORTEX.COMPLETE} calls. The agentic/non-agentic divide is clean at this scale: the top 6 configurations are all agentic, while the bottom 10 are predominantly non-agentic. The 29.1pp score range (53.2\% to 82.3\%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
+The engine split is clear: native Cortex Code sessions (with tool access) averaged 72.4\% score and 80.8\% MH, compared to 61.6\% score and 61.6\% MH for single \texttt{CORTEX.COMPLETE} calls. The agentic/non-agentic divide is clean at this scale: the top 6 configurations are all agentic, while the bottom 10 are predominantly non-agentic. The 29.1pp score range (53.2\% to 82.3\%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
 
 \subsection{Main Effects}
 

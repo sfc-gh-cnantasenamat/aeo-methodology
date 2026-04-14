@@ -79,10 +79,10 @@ We tested four binary augmentation factors in all 16 possible combinations:
 |--------|-----|-----|
 | **Domain Prompt** | No system message | 1,800-token Snowflake product knowledge primer |
 | **Citation** | Raw question only | "Cite official Snowflake docs" appended to question |
-| **Agentic Tools** | Single `CORTEX.COMPLETE` call (parametric only) | Cortex Code subagent with web search, doc search, skills |
+| **Agentic Tools** | Single `CORTEX.COMPLETE` call (parametric only) | Native Cortex Code session with web search, doc search, skills |
 | **Self-Critique** | Single-turn generation | Two-turn generate-then-revise |
 
-Non-agentic runs (8 of 16) used `SNOWFLAKE.CORTEX.COMPLETE('claude-opus-4-6', ...)` with a fixed 8,192-token output limit. Agentic runs (8 of 16) launched parallel Cortex Code subagents with full tool access and no token output cap. All 16 runs used `claude-opus-4-6` exclusively as the respondent model to avoid cross-model contamination.
+Non-agentic runs (8 of 16) used `SNOWFLAKE.CORTEX.COMPLETE('claude-opus-4-6', ...)` with a fixed 8,192-token output limit. Agentic runs (8 of 16) used parallel native Cortex Code sessions with full tool access and no token output cap. All 16 runs used `claude-opus-4-6` exclusively as the respondent model to avoid cross-model contamination.
 
 **Domain Prompt.** A 1,800-token system prompt framing the model as a Snowflake expert. The prompt is generic and contains no curated product knowledge, isolating whether role framing alone improves answers.
 
@@ -94,7 +94,7 @@ Non-agentic runs (8 of 16) used `SNOWFLAKE.CORTEX.COMPLETE('claude-opus-4-6', ..
 
 **Why a factorial design?** Testing factors one at a time would miss interaction effects, where two factors together behave differently than each factor alone. A full 2^4 factorial design tests every combination and makes all such interactions directly observable from the data.
 
-Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S are 0 or 1. Subagents were sandboxed to prevent access to canonical answers, scoring rubrics, or benchmark files.
+Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S are 0 or 1. Sessions were sandboxed to prevent access to canonical answers, scoring rubrics, or benchmark files.
 
 ## Results
 
@@ -121,7 +121,7 @@ The 16 configurations produced scores ranging from 53.2% to 82.3%. Config abbrev
 | S | | | | ✓ | 56.1% | 60.5% |
 | Baseline | | | | | **53.2%** | 62.7% |
 
-The engine split is clear: Cortex Code subagents (with tool access) averaged 72.4% score and 80.8% MH, compared to 61.6% score and 61.6% MH for single `CORTEX.COMPLETE` calls. The top 6 configurations are all agentic, while the bottom 10 are predominantly non-agentic. The 29.1pp score range (53.2% to 82.3%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
+The engine split is clear: native Cortex Code sessions (with tool access) averaged 72.4% score and 80.8% MH, compared to 61.6% score and 61.6% MH for single `CORTEX.COMPLETE` calls. The top 6 configurations are all agentic, while the bottom 10 are predominantly non-agentic. The 29.1pp score range (53.2% to 82.3%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
 
 ### Main Effects
 
