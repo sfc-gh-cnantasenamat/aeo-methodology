@@ -2,7 +2,7 @@
 
 ## Overview
 
-AEO (AI Engine Optimization) is a benchmark that measures how accurately AI coding assistants answer Snowflake developer questions. It uses a **2^4 factorial experiment design** with 4 binary factors (Domain Prompt, Citation, Agentic, Self-Critique) tested in all 16 combinations on Claude Opus 4.6. Each of the 50 questions is scored by a 3-judge LLM panel on 5 dimensions (Correctness, Completeness, Recency, Citation, Recommendation) plus 4 binary must-have elements.
+AEO (AI Engine Optimization) is a benchmark that measures how accurately AI coding assistants answer Snowflake developer questions. It uses a **2^4 factorial experiment design** with 4 binary factors (Domain Prompt, Citation, Agentic, Self-Critique) tested in all 16 combinations on Claude Opus 4.6. Each of the 128 questions (32 product categories, 4 questions each) is scored by a 3-judge LLM panel on 5 dimensions (Correctness, Completeness, Recency, Citation, Recommendation) plus up to 5 binary must-have elements.
 
 ## Repository structure
 
@@ -12,14 +12,15 @@ results/                # Analysis views sliced by category, dimension, factor, 
 scores/                 # Per-question JSON scoring files for all 16 runs
 slides/                 # Markdown source for methodology and results presentations
 paper/                  # Internal whitepaper (see Paper section below)
+streamlit/              # AEO dashboard (deployed to Streamlit in Snowflake)
 ```
 
 ## Snowflake data layer
 
-All benchmark data lives in **`DEVREL.AEO_OBSERVABILITY`** (connection: `devrel`).
+All benchmark data lives in **`DEVREL.CNANTASENAMAT_DEV`** (local connection: `my-snowflake`).
 
 **Tables:**
-- `AEO_QUESTIONS` — 50-question bank with canonical answers and must-have checklists
+- `AEO_QUESTIONS` — 128-question bank with canonical answers and must-have checklists
 - `AEO_RUNS` — Run metadata (which factors were active, model, timestamp)
 - `AEO_RESPONSES` — Generated responses per run per question
 - `AEO_SCORES` — Judge scores per run per question per dimension
