@@ -70,7 +70,6 @@ ax.set_yticks(y)
 ax.set_yticklabels(FACTORS, fontsize=11)
 ax.axvline(0, color='black', linewidth=0.8)
 ax.set_xlabel('Effect (percentage points)', fontsize=11)
-ax.set_title('Main Effects of Each Factor on Answer Quality\n(128 questions, 32 categories)', fontsize=13, fontweight='bold', pad=15)
 ax.legend(loc='lower right', fontsize=10)
 
 for bar in bars1:
