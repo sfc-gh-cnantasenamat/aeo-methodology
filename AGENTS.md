@@ -88,3 +88,8 @@ LaTeX auxiliary files (`.aux`, `.log`, `.out`) are excluded via `.gitignore`.
 ### Keeping Markdown and LaTeX in sync
 
 `paper.md` is the source of truth. When editing content, update `paper.md` first, then mirror the changes into `paper/latex/paper.tex` and recompile the PDF.
+
+## To-Do
+
+- [ ] **PM prompt testing interface.** Allow PMs to submit their own system prompts and question configurations through a self-serve interface (Streamlit) so they can test how prompt changes affect benchmark scores without engineering involvement.
+- [ ] **Scoring comparison: custom pipeline vs TruLens native.** Document a side-by-side comparison of our custom 3-judge LLM scoring pipeline against TruLens native feedback functions (RAG Triad: groundedness, answer relevance, context relevance). Identify where our approach diverges (5-dimension rubric, must-have binary checks, canonical answer grounding, panel averaging across three models) and where TruLens native methods could replace or complement it. Capture this as a written analysis that explains the enhancements we made over the baseline TruLens approach and the tradeoffs involved.
