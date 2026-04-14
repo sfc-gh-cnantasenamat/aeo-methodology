@@ -7,32 +7,26 @@ DB   = "DEVREL"
 SCH  = "CNANTASENAMAT_DEV"
 WH   = "SNOWADHOC"
 
-# Acquire SiS session at import time — this is the only context where
-# get_active_session() is guaranteed to work in Streamlit in Snowflake.
-# Calling it inside @st.cache_resource fails because the Snowpark context
-# variable is not propagated into the cache thread.
-_SIS_SESSION = None
-try:
-    from snowflake.snowpark.context import get_active_session
-    _SIS_SESSION = get_active_session()
-except Exception:
-    pass
-
-
-@st.cache_resource(show_spinner="Connecting to Snowflake…")
-def _get_local_session():
-    """Local-only Snowpark session — never called in SiS."""
-    from snowflake.snowpark import Session
-    return Session.builder.config("connection_name", "my-snowflake").create()
-
 
 @st.cache_data(ttl=300, show_spinner="Querying Snowflake…")
 def run_query(sql: str) -> pd.DataFrame:
-    session = _SIS_SESSION if _SIS_SESSION is not None else _get_local_session()
-    session.sql(f"USE WAREHOUSE {WH}").collect()
-    session.sql(f"USE DATABASE {DB}").collect()
-    session.sql(f"USE SCHEMA {SCH}").collect()
-    return session.sql(sql).to_pandas()
+    """Execute SQL and return a DataFrame.
+
+    get_active_session() is called here (at render time inside @st.cache_data),
+    not at module level. Module-level calls fail in SiS because st.Page()
+    pre-imports page modules before the Snowpark session context is ready.
+    Inside @st.cache_data the full request context is available.
+    """
+    try:
+        from snowflake.snowpark.context import get_active_session
+        sess = get_active_session()
+    except Exception:
+        from snowflake.snowpark import Session
+        sess = Session.builder.config("connection_name", "my-snowflake").create()
+    sess.sql(f"USE WAREHOUSE {WH}").collect()
+    sess.sql(f"USE DATABASE {DB}").collect()
+    sess.sql(f"USE SCHEMA {SCH}").collect()
+    return sess.sql(sql).to_pandas()
 
 
 def config_label(domain: bool, citation: bool, agentic: bool, self_critique: bool) -> str:
