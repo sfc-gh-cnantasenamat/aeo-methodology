@@ -38,14 +38,21 @@
 
 ```mermaid
 flowchart TD
-    A[50 Benchmark Questions] --> B{3 Conditions}
-    B --> C[Baseline\nBare LLM]
-    B --> D[Augmented\nSystem Prompt]
-    B --> E[Native\nCortex Code]
+    A["128 Benchmark Questions
+    32 Categories · 4 Task Types"] --> B["2⁴ Factorial Design
+    16 Runs"]
 
-    C --> F[Generated Responses]
-    D --> F
-    E --> F
+    B --> B1["4 Factors
+    Domain Prompt · Citation
+    Agentic · Self-Critique"]
+
+    B1 --> E1["CORTEX.COMPLETE
+    Agentic = off · 8 runs"]
+    B1 --> E2["Native Cortex Code
+    Agentic = on · 8 runs"]
+
+    E1 --> F[Generated Responses]
+    E2 --> F
 
     F --> G{3-Judge Panel}
     G --> G1[claude-opus-4-6]
@@ -56,10 +63,13 @@ flowchart TD
     G2 --> H
     G3 --> H
 
-    H --> I[5-Dimension Score\nmax 10 pts]
-    H --> J[Must-Have Check\n4x PASS/FAIL]
+    H --> I["5-Dimension Score
+    max 10 pts"]
+    H --> J["Must-Have Check
+    4× PASS/FAIL"]
 
     I --> K[(DEVREL.AEO_OBSERVABILITY)]
     J --> K
-    K --> L[Leaderboard & Analysis\nSnowsight]
+    K --> L["Leaderboard & Analysis
+    Snowsight"]
 ```
