@@ -9,45 +9,27 @@ WH   = "SNOWADHOC"
 
 
 @st.cache_resource(show_spinner="Connecting to Snowflake…")
-def _local_connection():
-    """Local-only connector — only called when not running in SiS."""
-    import snowflake.connector
-    return snowflake.connector.connect(
-        connection_name="my-snowflake",
-        warehouse=WH,
-        database=DB,
-        schema=SCH,
-    )
+def _get_session():
+    """Get a Snowpark session — works in both SiS and local dev.
+
+    In SiS:  get_active_session() returns the framework-managed session.
+    Locally: falls back to a named connection in ~/.snowflake/connections.toml.
+    """
+    try:
+        from snowflake.snowpark.context import get_active_session
+        return get_active_session()
+    except Exception:
+        from snowflake.snowpark import Session
+        return Session.builder.config("connection_name", "my-snowflake").create()
 
 
 @st.cache_data(ttl=300, show_spinner="Querying Snowflake…")
 def run_query(sql: str) -> pd.DataFrame:
-    # st.connection("snowflake") is Streamlit's official SiS connection API.
-    # It uses Streamlit's framework-level session management (not Python
-    # contextvars), so it works in SiS regardless of cache/thread context.
-    # Locally without [connections.snowflake] in secrets.toml it raises,
-    # so we fall through to the connector.
-    try:
-        conn = st.connection("snowflake")
-        sess = conn.session
-    except Exception:
-        sess = None
-
-    if sess is not None:
-        sess.sql(f"USE WAREHOUSE {WH}").collect()
-        sess.sql(f"USE DATABASE {DB}").collect()
-        sess.sql(f"USE SCHEMA {SCH}").collect()
-        return sess.sql(sql).to_pandas()
-
-    # Local development fallback
-    cur = _local_connection().cursor()
-    cur.execute(f"USE WAREHOUSE {WH}")
-    cur.execute(f"USE DATABASE {DB}")
-    cur.execute(f"USE SCHEMA {SCH}")
-    cur.execute(sql)
-    df = cur.fetch_pandas_all()
-    cur.close()
-    return df
+    session = _get_session()
+    session.sql(f"USE WAREHOUSE {WH}").collect()
+    session.sql(f"USE DATABASE {DB}").collect()
+    session.sql(f"USE SCHEMA {SCH}").collect()
+    return session.sql(sql).to_pandas()
 
 
 def config_label(domain: bool, citation: bool, agentic: bool, self_critique: bool) -> str:
