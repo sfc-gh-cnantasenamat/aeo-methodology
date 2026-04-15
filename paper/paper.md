@@ -10,7 +10,7 @@ AI coding assistants are now part of the Snowflake developer workflow, but there
 
 ## Note on Audiences
 
-This paper serves two distinct readers. **Engineering and platform teams** who configure AI developer tools will find the core value in the Introduction through the factorial experiment results: what levers actually improve answer quality, and by how much. **Product managers** responsible for specific Snowflake feature areas can skip directly to the [Category Intelligence for Product Teams](#category-intelligence-for-product-teams) section (after the Main Effects subsection in Results): it contains per-category analysis of where AI currently struggles with developer questions about their product area, what that pattern reveals about documentation coverage gaps, and a concrete action framework tied to each gap type.
+This paper serves two distinct readers. **Engineering and platform teams** who configure AI developer tools will find the core value in the Introduction through the factorial experiment results: what levers actually improve answer quality, and by how much. **Product managers** responsible for specific Snowflake feature areas can skip directly to the [Product Category Intelligence](#product-category-intelligence) section (after the Main Effects subsection in Results): it contains per-category analysis of where AI currently struggles with developer questions about their product area, what that pattern reveals about documentation coverage gaps, and a concrete action framework tied to each gap type.
 
 ## Introduction
 
@@ -106,7 +106,7 @@ Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S a
 
 The 16 configurations produced scores ranging from 53.2% to 82.3%. Config abbreviations: D = Domain Prompt, C = Citation, A = Agentic, S = Self-Critique; Baseline = all factors OFF.
 
-**TL;DR:** The best configuration (Citation + Agentic, no domain prompt or self-critique) scored 82.3%, a 29.1pp improvement over the bare LLM baseline of 53.2%. For a breakdown of how individual Snowflake product categories performed under each configuration, see [Category Intelligence for Product Teams](#category-intelligence-for-product-teams).
+**TL;DR:** The best configuration (Citation + Agentic, no domain prompt or self-critique) scored 82.3%, a 29.1pp improvement over the bare LLM baseline of 53.2%. For a breakdown of how individual Snowflake product categories performed under each configuration, see [Product Category Intelligence](#product-category-intelligence).
 
 | Config | Domain | Citation | Agentic | Self-Critique | Score | MH |
 |--------|:------:|:--------:|:-------:|:-------------:|------:|---:|
@@ -151,7 +151,7 @@ The factorial design lets us compute the average impact of turning each factor O
 
 **Self-critique is counterproductive on both metrics.** It hurts score (-2.7pp) and dramatically hurts must-have pass rate (-9.8pp) across the board. The two-turn "generate then revise" pattern causes the model to second-guess correct content, introduce hedging, and sometimes remove accurate details present in the first pass.
 
-### Category Intelligence for Product Teams
+### Product Category Intelligence
 
 Low AI scores on your product category are primarily a signal about documentation coverage, not a prompt configuration problem. Product managers cannot control how developers phrase questions to AI assistants, and they cannot control which retrieval configuration a tool uses. What they can control is the quality, completeness, and structure of the documentation that AI systems retrieve from. The analysis below reframes the category-level results around that lens.
 
