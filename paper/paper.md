@@ -6,7 +6,11 @@ Chanin Nantasenamat, Daniel Myers, Umesh Unnikrishnan
 
 ## Summary
 
-AI coding assistants are now part of the Snowflake developer workflow, but there is no systematic way to measure whether those assistants give developers correct, current answers. We built an AEO benchmark that evaluates AI answer quality across 128 Snowflake developer questions spanning 32 product categories. Using a 2^4 factorial experiment design, we tested 16 combinations of four augmentation factors (domain prompt, citation instruction, agentic tools, self-critique) to isolate what actually improves answer quality. The best configuration (citation + agentic tools, no domain prompt) scored 82.3%, a 29.1 percentage-point improvement over the bare LLM baseline of 53.2%. Agentic tool access was the dominant factor (+10.9pp average), while self-critique was consistently counterproductive (-2.7pp average). These findings directly inform how Snowflake should configure its AI-powered developer tools.
+AI coding assistants are now part of the Snowflake developer workflow, but there is no systematic way to measure whether those assistants give developers correct, current answers. We built an AEO benchmark that evaluates AI answer quality across 128 Snowflake developer questions spanning 32 product categories. Using a 2^4 factorial experiment design, we tested 16 combinations of four augmentation factors (domain prompt, citation instruction, agentic tools, self-critique) to isolate what actually improves answer quality. The best configuration (citation + agentic tools, no domain prompt) scored 82.3%, a 29.1 percentage-point (pp) improvement over the bare LLM baseline of 53.2%. Agentic tool access was the dominant factor (+10.9pp average), while self-critique was consistently counterproductive (-2.7pp average). These findings directly inform how Snowflake should configure its AI-powered developer tools. For product managers, the most actionable finding from the category-level analysis is that Debug questions are the weakest content type in 41% of product categories (13 of 32), pointing to widespread gaps in troubleshooting documentation across the platform rather than any problem with AI configuration.
+
+## Note on Audiences
+
+This paper serves two distinct readers. **Engineering and platform teams** who configure AI developer tools will find the core value in the Introduction through the factorial experiment results: what levers actually improve answer quality, and by how much. **Product managers** responsible for specific Snowflake feature areas can skip directly to the [Category Intelligence for Product Teams](#category-intelligence-for-product-teams) section (after the Main Effects subsection in Results): it contains per-category analysis of where AI currently struggles with developer questions about their product area, what that pattern reveals about documentation coverage gaps, and a concrete action framework tied to each gap type.
 
 ## Introduction
 
@@ -102,6 +106,8 @@ Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S a
 
 The 16 configurations produced scores ranging from 53.2% to 82.3%. Config abbreviations: D = Domain Prompt, C = Citation, A = Agentic, S = Self-Critique; Baseline = all factors OFF.
 
+**TL;DR:** The best configuration (Citation + Agentic, no domain prompt or self-critique) scored 82.3%, a 29.1pp improvement over the bare LLM baseline of 53.2%. For a breakdown of how individual Snowflake product categories performed under each configuration, see [Category Intelligence for Product Teams](#category-intelligence-for-product-teams).
+
 | Config | Domain | Citation | Agentic | Self-Critique | Score | MH |
 |--------|:------:|:--------:|:-------:|:-------------:|------:|---:|
 | C+A | | ✓ | ✓ | | **82.3%** | 87.7% |
@@ -121,7 +127,7 @@ The 16 configurations produced scores ranging from 53.2% to 82.3%. Config abbrev
 | S | | | | ✓ | 56.1% | 60.5% |
 | Baseline | | | | | **53.2%** | 62.7% |
 
-The engine split is clear: native Cortex Code sessions (with tool access) averaged 72.4% score and 80.8% MH, compared to 61.6% score and 61.6% MH for single `CORTEX.COMPLETE` calls. The top 6 configurations are all agentic, while the bottom 10 are predominantly non-agentic. The 29.1pp score range (53.2% to 82.3%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
+The engine split is clear: native Cortex Code sessions (with tool access) averaged 72.4% score and 80.8% MH, compared to 61.6% score and 61.6% MH for single `CORTEX.COMPLETE` calls. The top 6 configurations are all agentic (using Cortex Code, which has access to agentic tool calls), while the bottom 10 are predominantly non-agentic (single API calls to the LLM model without agentic tool calls). The 29.1pp score range (53.2% to 82.3%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
 
 ### Main Effects
 
@@ -129,9 +135,9 @@ The factorial design lets us compute the average impact of turning each factor O
 
 | Factor | Score Effect | MH Effect |
 |--------|------------:|----------:|
-| Agentic Tools | **+10.9pp** | positive (dominant) |
+| Agentic Tools | **+10.9pp** | **+19.2pp** |
 | Citation Instruction | +8.8pp | -4.6pp |
-| Domain Prompt | -0.8pp | marginal |
+| Domain Prompt | -0.8pp | -0.1pp |
 | Self-Critique | -2.7pp | -9.8pp |
 
 ![Main Effects of Each Factor on Answer Quality](assets/fig_01_main_effects.png)
@@ -145,49 +151,73 @@ The factorial design lets us compute the average impact of turning each factor O
 
 **Self-critique is counterproductive on both metrics.** It hurts score (-2.7pp) and dramatically hurts must-have pass rate (-9.8pp) across the board. The two-turn "generate then revise" pattern causes the model to second-guess correct content, introduce hedging, and sometimes remove accurate details present in the first pass.
 
-### Category Performance
+### Category Intelligence for Product Teams
 
-The table below compares the baseline (all factors OFF) against the best configuration (C+A: citation + agentic tools) across all 32 product categories:
+Low AI scores on your product category are primarily a signal about documentation coverage, not a prompt configuration problem. Product managers cannot control how developers phrase questions to AI assistants, and they cannot control which retrieval configuration a tool uses. What they can control is the quality, completeness, and structure of the documentation that AI systems retrieve from. The analysis below reframes the category-level results around that lens.
 
-| Category | Baseline | Best (C+A) | Delta |
-|----------|--------:|----------:|------:|
-| Openflow | 26.7% | 83.2% | +56.5pp |
-| dbt Projects on Snowflake | 42.2% | 90.3% | +48.1pp |
-| Database Security | 43.0% | 84.2% | +41.2pp |
-| Cortex AI Functions | 43.7% | 83.0% | +39.3pp |
-| Cortex Code | 49.8% | 88.8% | +39.0pp |
-| Cost Management | 51.0% | 87.5% | +36.5pp |
-| Native Apps Framework | 47.8% | 82.8% | +35.0pp |
-| AI Observability & Evaluation | 46.3% | 80.2% | +33.9pp |
-| Data Clean Rooms | 46.5% | 79.3% | +32.8pp |
-| Database Change Management (DCM) | 46.2% | 78.0% | +31.8pp |
-| Collaboration & Data Sharing | 55.3% | 86.8% | +31.5pp |
-| Snowflake ML | 53.7% | 84.3% | +30.6pp |
-| Semantic Views & Cortex Analyst | 48.8% | 79.2% | +30.4pp |
-| Cortex AI Function Studio | 54.7% | 84.7% | +30.0pp |
-| Snowpark Connect & Migration | 51.3% | 81.2% | +29.9pp |
-| Cortex Search | 59.3% | 88.3% | +29.0pp |
-| Cortex Agents | 49.5% | 78.5% | +29.0pp |
-| Data Pipelines (Streams, Tasks, Snowpipe) | 54.5% | 81.5% | +27.0pp |
-| Snowflake Fundamentals & Architecture | 62.2% | 87.5% | +25.3pp |
-| Streamlit in Snowflake | 61.3% | 86.3% | +25.0pp |
-| Snowpark | 61.5% | 86.2% | +24.7pp |
-| Data Governance & Security | 66.2% | 90.8% | +24.6pp |
-| Snowflake Postgres | 38.0% | 61.8% | +23.8pp |
-| Hybrid Tables | 59.5% | 82.8% | +23.3pp |
-| SQL Performance & Optimization | 59.5% | 82.7% | +23.2pp |
-| Snowflake Notebooks (Workspaces) | 58.3% | 80.8% | +22.5pp |
-| Data Loading (COPY, Snowpipe, Streaming) | 55.6% | 77.2% | +21.6pp |
-| Snowpark Container Services | 66.0% | 85.3% | +19.3pp |
-| Apache Iceberg Tables | 69.3% | 88.3% | +19.0pp |
-| Dynamic Tables | 57.7% | 75.0% | +17.3pp |
-| Snowsight | 61.2% | 76.8% | +15.6pp |
-| Data Quality & Observability | 54.3% | 69.2% | +14.9pp |
+The table below shows, for each of the 32 product categories, the overall score under the best configuration (C+A: citation + agentic tools) and the score broken down by question type. The weakest question type per category is highlighted, as this points most directly to a specific documentation gap.
 
-Every category improved. The largest gains occurred in Openflow (+56.5pp), dbt Projects on Snowflake (+48.1pp), and Database Security (+41.2pp). Openflow also had the lowest baseline score of any category (26.7%), reflecting near-total absence of this feature in parametric model knowledge; agentic retrieval effectively filled that gap. At the other end, Snowflake Postgres remained the weakest category even under the best configuration (61.8%), driven by the operational specificity of its questions where even targeted retrieval did not reliably surface complete procedural answers. Data Quality & Observability also scored below 70% under C+A (69.2%), suggesting that newer platform capabilities with rapidly evolving documentation present a persistent challenge regardless of augmentation strategy.
+| Category | Overall | Explain | Implement | Debug | Compare | Weakest |
+|----------|--------:|--------:|---------:|------:|--------:|---------|
+| AI Observability & Evaluation | 80.2% | 84.0% | 83.3% | 73.3% | 80.0% | **Debug** |
+| Apache Iceberg Tables | 88.3% | 80.7% | 97.3% | 88.0% | 87.3% | **Explain** |
+| Collaboration & Data Sharing | 86.8% | 86.0% | 88.0% | 85.3% | 88.0% | **Debug** |
+| Cortex AI Function Studio | 84.7% | 90.0% | 78.0% | 84.7% | 86.0% | **Implement** |
+| Cortex AI Functions | 83.0% | 86.0% | 99.3% | 64.0% | 82.7% | **Debug** |
+| Cortex Agents | 78.5% | 86.0% | 93.3% | 52.7% | 82.0% | **Debug** |
+| Cortex Code | 88.8% | 86.0% | 90.0% | 94.0% | 85.3% | **Compare** |
+| Cortex Search | 88.4% | 90.7% | 87.3% | 92.7% | 82.7% | **Compare** |
+| Cost Management | 87.5% | 88.7% | 79.3% | 87.3% | 94.7% | **Implement** |
+| Data Clean Rooms | 79.3% | 84.0% | 74.0% | 76.7% | 82.7% | **Implement** |
+| Data Governance & Security | 90.8% | 86.7% | 96.7% | 88.0% | 92.0% | **Explain** |
+| Data Loading (COPY, Snowpipe, Streaming) | 77.2% | 85.3% | 82.0% | 54.7% | 86.7% | **Debug** |
+| Data Pipelines (Streams, Tasks, Snowpipe) | 81.5% | 88.7% | 71.3% | 81.3% | 84.7% | **Implement** |
+| Data Quality & Observability | 69.2% | 87.3% | 52.7% | 86.0% | 50.7% | **Compare** |
+| Database Change Management (DCM) | 78.0% | 82.0% | 78.7% | 67.3% | 84.0% | **Debug** |
+| Database Security | 84.2% | 95.3% | 89.3% | 82.0% | 70.0% | **Compare** |
+| Dynamic Tables | 75.0% | 94.7% | 76.7% | 64.7% | 64.0% | **Compare** |
+| Hybrid Tables | 82.8% | 86.0% | 87.3% | 78.7% | 79.3% | **Debug** |
+| Native Apps Framework | 82.8% | 82.0% | 79.3% | 83.3% | 86.7% | **Implement** |
+| Openflow | 83.2% | 86.7% | 80.7% | 83.3% | 82.0% | **Implement** |
+| SQL Performance & Optimization | 82.7% | 76.7% | 92.7% | 85.3% | 76.0% | **Compare** |
+| Semantic Views & Cortex Analyst | 79.2% | 80.0% | 75.3% | 73.3% | 88.0% | **Debug** |
+| Snowflake Fundamentals & Architecture | 87.5% | 88.0% | 89.3% | 83.3% | 89.3% | **Debug** |
+| Snowflake ML | 84.3% | 89.3% | 76.0% | 81.3% | 90.7% | **Implement** |
+| Snowflake Notebooks (Workspaces) | 80.8% | 84.7% | 79.3% | 80.7% | 78.7% | **Compare** |
+| Snowflake Postgres | 61.8% | 80.0% | 45.3% | 39.3% | 82.7% | **Debug** |
+| Snowpark | 86.2% | 87.3% | 80.0% | 93.3% | 84.0% | **Implement** |
+| Snowpark Connect & Migration | 81.2% | 89.3% | 84.7% | 78.7% | 72.0% | **Compare** |
+| Snowpark Container Services (SPCS) | 85.3% | 96.7% | 82.0% | 86.7% | 76.0% | **Compare** |
+| Snowsight | 76.8% | 84.0% | 84.7% | 53.3% | 85.3% | **Debug** |
+| Streamlit in Snowflake | 86.3% | 92.0% | 90.7% | 72.0% | 90.7% | **Debug** |
+| dbt Projects on Snowflake | 90.3% | 92.7% | 94.0% | 86.0% | 88.7% | **Debug** |
 
-![Category Improvement: Baseline vs Best Configuration](assets/fig_02_dumbbell_chart.png)
-*Figure 2. Dumbbell chart showing per-category improvement from baseline to best configuration (C+A) across all 32 categories. Categories are sorted by delta. Every category shows a positive gain, with Openflow benefiting the most (+56.5pp).*
+**Debug questions are the most common weak point across categories.** Debug is the weakest question type in 13 of 32 categories (41%). Compare is second (9/32) and Implement is third (8/32). Only 2 categories (Apache Iceberg Tables and Data Governance & Security) are weakest on Explain questions, suggesting conceptual documentation is relatively well-served across the platform.
+
+The gap between Debug and the category average is often large. Cortex Agents has a 25.8pp gap (Debug 52.7% vs. 78.5% overall), Snowsight has a 23.5pp gap (Debug 53.3% vs. 76.8%), and Snowflake Postgres has a 22.5pp gap (Debug 39.3% vs. 61.8%). These are not marginal weaknesses; they indicate that even the best-configured AI assistant fails on a large share of realistic troubleshooting questions for these areas.
+
+**PM Action Framework.** Each question type maps to a distinct documentation content type. When a category's weakest type is identified, the corresponding documentation action is concrete:
+
+| Weakest Type | What AI struggles with | Documentation gap | Recommended action |
+|---|---|---|---|
+| **Debug** | Interpreting errors, diagnostic steps, recovery procedures | Troubleshooting guides, runbooks, common error patterns are missing or sparse | Publish how-to-debug guides per feature, document common error messages and their resolutions, add diagnostic decision trees |
+| **Compare** | When-to-use decisions, tradeoffs between similar features | Decision guides and "when to use X vs Y" content are absent | Publish explicit comparison pages, add architectural decision guidance, document tradeoffs in context-of-use terms |
+| **Implement** | Procedural steps, end-to-end code examples, correct syntax | How-to guides are incomplete, missing working code, or reflect outdated APIs | Audit step-by-step tutorials for completeness, add working end-to-end code examples, update deprecated syntax |
+| **Explain** | Conceptual understanding, architecture, how components relate | Conceptual overview pages are thin or absent | Strengthen concept docs, add architecture diagrams, explain "why this feature exists" and "how it fits the platform" |
+
+**Category-specific observations:**
+
+- **Snowflake Postgres** is the most challenging category overall (61.8%) and has severe weaknesses in both Debug (39.3%) and Implement (45.3%), suggesting that operational and procedural documentation for Postgres-specific workflows (health checks, tuning, connection management) is a high-priority gap.
+- **Data Quality & Observability** scores below 70% overall and is weak on both Compare (50.7%) and Implement (52.7%), indicating that architectural guidance ("when to use DMFs vs. other approaches") and step-by-step setup documentation are both thin.
+- **Cortex Agents** has a 25.8pp gap between its Debug score (52.7%) and its overall score (78.5%). For a product whose core value proposition is handling complex multi-step tasks, the absence of AI-accessible troubleshooting content for agent failures is a high-risk gap.
+- **Cortex AI Functions** has a Debug score of 64.0% against an overall score of 83.0% (a 19pp gap). Given the volume of developer questions about why Cortex functions return unexpected results or fail, troubleshooting guides for each function type are a direct documentation need.
+- **Dynamic Tables** and **Snowsight** each have Debug scores below 55% (64.7% and 53.3% respectively). Both are high-traffic features where developers regularly encounter refresh failures, lag issues, and UI configuration errors in production.
+- **Streamlit in Snowflake** scores 86.3% overall but has a 14.3pp Debug gap (72.0%), meaning AI handles Explain and Implement questions well but fails on troubleshooting. Developers hitting deployment errors or permission issues in SiS get poor AI assistance.
+- **Database Security** is weak on Compare (70.0%), a 14.2pp gap from its overall score of 84.2%. Security architecture decisions ("when to use row access policies vs. column masking vs. tag-based masking") are exactly the tradeoff-heavy questions developers need guidance on.
+- **Data Pipelines (Streams, Tasks, Snowpipe)** has an Implement score of 71.3% against an overall of 81.5% (a 10.2pp gap). End-to-end pipeline setup documentation covering all three components together appears to be incomplete.
+- **Database Change Management (DCM)** has a Debug score of 67.3% (10.7pp gap). As a newer platform feature, troubleshooting content for DCM deployment failures is sparse.
+- **Data Loading** has a Debug score of 54.7% despite being one of the most common developer workflows on Snowflake. Diagnosing COPY INTO errors, Snowpipe ingestion failures, and streaming pipeline issues are frequent developer needs with poor AI coverage.
+- **dbt Projects on Snowflake**, **Data Governance & Security**, and **Cortex Code** are the three highest-scoring categories overall, and their within-category gaps are small across all question types, indicating documentation is relatively complete for these areas.
 
 ### Scoring Dimension Analysis
 
@@ -203,12 +233,12 @@ The four non-Citation dimensions each improve by approximately 19 to 21pp under 
 
 ### Full Factorial Heatmap
 
-The heatmap below shows all 16 runs against all 32 product categories, with rows grouped by whether the agentic tools factor is ON (upper half) or OFF (lower half). The color gradient makes the agentic divide immediately visible: the upper half is predominantly green (high scores), while the lower half shifts toward yellow and red.
+The heatmap below shows all 16 runs against all 32 product categories, with columns grouped by whether the agentic tools factor is ON (left half) or OFF (right half). The color gradient makes the agentic divide immediately visible: the left half is predominantly green (high scores), while the right half shifts toward yellow and red.
 
 ![2^4 Factorial Heatmap: Score % by Run and Product Category](assets/fig_03_category_heatmap.png)
-*Figure 3. Category-level heatmap of all 16 factorial runs across 32 product categories. Rows are grouped by Agentic factor (upper = ON, lower = OFF) and sorted by average score within each group. The rightmost column shows the run average. Factor abbreviations: D = Domain Prompt, C = Citation, A = Agentic, S = Self-Critique.*
+*Figure 3. Category-level heatmap of all 16 factorial runs across 32 product categories. Columns are grouped by Agentic factor (left = ON, right = OFF) and sorted by average score within each group. The rightmost column shows the run average. Factor abbreviations: D = Domain Prompt, C = Citation, A = Agentic, S = Self-Critique.*
 
-Two structural patterns stand out. First, row color darkens sharply at the boundary between the agentic and non-agentic groups, confirming that tool access is the primary performance driver across all categories. Second, within the agentic group, configurations that include Self-Critique consistently score slightly lower than their matched counterparts without it, reinforcing the main-effects finding that the generate-then-revise step degrades rather than improves answer quality at this scale.
+Two structural patterns stand out. First, column color darkens sharply at the boundary between the agentic and non-agentic groups, confirming that tool access is the primary performance driver across all categories. Second, within the agentic group, configurations that include Self-Critique consistently score slightly lower than their matched counterparts without it, reinforcing the main-effects finding that the generate-then-revise step degrades rather than improves answer quality at this scale.
 
 ## Conclusion
 
@@ -226,6 +256,8 @@ Beyond the main effects, two-way interaction effects reveal that factors do not 
 
 For product teams configuring Snowflake AI developer tools, the prescription is straightforward: give the agent tool access, instruct it to cite sources, and stay out of its way.
 
+**For product managers**, the category-level findings point to a different kind of action. Debug questions are the weakest type in 13 of 32 categories, and the gap between Debug scores and overall scores is often large—up to 25pp in some categories. This is not a prompting problem. It is a documentation coverage problem. Troubleshooting guides, runbooks, and documented error patterns are the content types most directly indexed and surfaced by AI retrieval systems. A PM who wants to improve AI answer quality for developer questions about their product area has one high-leverage action available: invest in troubleshooting documentation. Use the per-category question-type table above to identify your weakest content type, then apply the PM Action Framework to determine which documentation gaps to prioritize first.
+
 ### Limitations
 
 This benchmark has several limitations worth noting:
@@ -237,7 +269,12 @@ This benchmark has several limitations worth noting:
 
 ### Next Steps
 
-The immediate priorities are automating the pipeline for scheduled runs (to detect regressions as models and documentation change), expanding to multi-agent testing (Claude Code, Codex, Cursor) to understand competitive positioning, and building a PM-facing Streamlit interface for self-serve prompt configuration testing.
+The immediate priorities are:
+
+- **Automate for regression detection.** Run the benchmark on a scheduled cadence so that changes to underlying models or documentation surface as score regressions rather than surprises.
+- **Replicate across models.** All 16 runs in this experiment used `claude-opus-4-6` as the respondent. The configuration findings (agentic tools dominate, self-critique degrades) are internally consistent but may not generalize to other models (GPT-4o, Gemini 2.0, Llama 3, Command R+). Running the same 2^4 factorial design with multiple respondent models would test whether the configuration hierarchy is model-agnostic or model-specific. This is the most significant gap in the current work for competitive positioning use cases.
+- **Expand question bank depth per category.** Four questions per category gives noisy per-category estimates (each question is 25% of the category score). Expanding to 8–12 questions per category would halve the standard error and make category-level comparisons more reliable for PM decision-making.
+- **Build PM self-serve tooling.** A PM-facing Streamlit interface that shows per-category question-type scores, surfaces the documentation gap diagnosis, and links to the relevant documentation areas would close the loop between benchmark findings and documentation investment decisions.
 
 ## References
 

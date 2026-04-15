@@ -28,7 +28,6 @@ pages = st.navigation(
         st.Page("pages/category_dumbbell.py",  title="Category Performance",  icon=":material/category:"),
         st.Page("pages/factorial_heatmap.py",  title="Factorial Heatmap",     icon=":material/grid_view:"),
         st.Page("pages/run_explorer.py",       title="Questions Explorer",    icon=":material/manage_search:"),
-        st.Page("pages/model_comparison.py",   title="Model Comparison",      icon=":material/compare:"),
     ],
     position="top",
 )
