@@ -4,21 +4,15 @@
 
 ## Methodology
 
-**Question bank:** 50 questions across 13 product categories, covering four task types: Explain, Implement, Debug, and Compare.
+**Question bank:** 128 questions across 32 product categories, covering four task types: Explain, Implement, Debug, and Compare.
 
-**Conditions tested:**
-
-| Condition | Description |
-|-----------|-------------|
-| Baseline | Bare LLM with no system prompt |
-| Augmented | LLM with a Snowflake-focused system prompt |
-| Native | Full Cortex Code harness |
+**Experiment design:** A 2⁴ fully factorial experiment across 4 binary factors (Domain Prompt, Citation, Agentic, Self-Critique), producing 16 runs for the primary model (claude-opus-4-6). Additional baseline-only runs benchmark alternative models for cross-model comparison.
 
 **Scoring:** Each response is scored on 5 dimensions (Correctness, Completeness, Recency, Citation, Recommendation), each rated 0–2 for a maximum of 10 points. Each question also has 4 must-have elements graded PASS/FAIL.
 
 **Judge panel:** Scores are averaged across 3 independent LLM judges (claude-opus-4-6, openai-gpt-5.4, llama4-maverick) to reduce single-model bias.
 
-**Storage:** All runs, responses, and scores are stored in `DEVREL.AEO_OBSERVABILITY` on Snowhouse for leaderboard analysis and Snowsight visualization.
+**Storage:** All runs, responses, and scores are stored in `DEVREL.CNANTASENAMAT_DEV` on Snowhouse for leaderboard analysis and Snowsight visualization.
 
 ## Repository Structure
 
@@ -28,6 +22,9 @@
 | [`results/`](results/) | Analysis views sliced by category, question type, dimension, factor, engine, and more |
 | [`scores/`](scores/) | Per-question JSON scoring files for all 16 experimental runs |
 | [`slides/`](slides/) | Markdown source for methodology and results presentations |
+| [`scripts/`](scripts/) | Orchestrator, sweep scripts, and utilities for running and scoring benchmarks |
+| [`streamlit/`](streamlit/) | Multi-page Streamlit app for leaderboard, heatmaps, and model comparison |
+| [`paper/`](paper/) | Research paper (Markdown + LaTeX/PDF) and supporting assets |
 
 ## Presentations
 
@@ -68,7 +65,7 @@ flowchart TD
     H --> J["Must-Have Check
     4× PASS/FAIL"]
 
-    I --> K[(DEVREL.AEO_OBSERVABILITY)]
+    I --> K[(DEVREL.CNANTASENAMAT_DEV)]
     J --> K
     K --> L["Leaderboard & Analysis
     Snowsight"]

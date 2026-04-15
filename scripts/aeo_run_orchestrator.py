@@ -52,7 +52,7 @@ CONNECTION_PROFILES = {
     "snowhouse": {
         "connection_name": "my-snowflake",
         "role": "DEVREL_INGEST_RL",
-        "warehouse": "SNOWADHOC",
+        "warehouse": "SNOWADHOC_SMALL",
         "database": "DEVREL",
         "schema": "CNANTASENAMAT_DEV",
     },
