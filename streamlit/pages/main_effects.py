@@ -111,6 +111,12 @@ lb["Config"] = lb.apply(
     lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
 )
 
+# Factorial analysis requires only the 2^4 design runs (claude-opus-4-6).
+# Baseline-only runs for other models are excluded because the naive
+# mean comparison (ON minus OFF) is confounded when OFF rows contain
+# different respondent models.
+lb_factorial = lb[lb["MODEL"] == "claude-opus-4-6"].copy()
+
 FEATURES = [
     ("DOMAIN_PROMPT", "Domain Prompt"),
     ("CITATION",      "Citation"),
@@ -128,10 +134,10 @@ def badge2(val, positive=True):
 # --- Marginal gain per feature ---
 gains = []
 for col, label in FEATURES:
-    on      = lb[lb[col] == True]["SCORE_PCT"].mean()
-    off     = lb[lb[col] == False]["SCORE_PCT"].mean()
-    mh_on   = lb[lb[col] == True]["MH_PCT"].mean()
-    mh_off  = lb[lb[col] == False]["MH_PCT"].mean()
+    on      = lb_factorial[lb_factorial[col] == True]["SCORE_PCT"].mean()
+    off     = lb_factorial[lb_factorial[col] == False]["SCORE_PCT"].mean()
+    mh_on   = lb_factorial[lb_factorial[col] == True]["MH_PCT"].mean()
+    mh_off  = lb_factorial[lb_factorial[col] == False]["MH_PCT"].mean()
     gains.append({
         "Feature":         label,
         "col":             col,
@@ -203,17 +209,17 @@ feat_cols  = [f[0] for f in FEATURES]
 feat_names = [f[1] for f in FEATURES]
 
 baseline_mask = (
-    (lb["DOMAIN_PROMPT"] == False) & (lb["CITATION"] == False) &
-    (lb["AGENTIC"] == False)       & (lb["SELF_CRITIQUE"] == False)
+    (lb_factorial["DOMAIN_PROMPT"] == False) & (lb_factorial["CITATION"] == False) &
+    (lb_factorial["AGENTIC"] == False)       & (lb_factorial["SELF_CRITIQUE"] == False)
 )
-baseline_score = lb[baseline_mask]["SCORE_PCT"].mean()
+baseline_score = lb_factorial[baseline_mask]["SCORE_PCT"].mean()
 
 rows_int = []
 for i in range(len(FEATURES)):
     for j in range(i + 1, len(FEATURES)):
         fi, fj = feat_cols[i], feat_cols[j]
         ni, nj = feat_names[i], feat_names[j]
-        both        = lb[(lb[fi] == True) & (lb[fj] == True)]["SCORE_PCT"].mean()
+        both        = lb_factorial[(lb_factorial[fi] == True) & (lb_factorial[fj] == True)]["SCORE_PCT"].mean()
         ind_i       = gain_df[gain_df["col"] == fi]["Score Lift (pp)"].values[0]
         ind_j       = gain_df[gain_df["col"] == fj]["Score Lift (pp)"].values[0]
         actual_lift = both - baseline_score
