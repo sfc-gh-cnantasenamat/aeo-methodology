@@ -210,7 +210,9 @@ The table below shows, for each of the 32 product categories, the overall score 
 
 The gap between Debug and the category average is often large. Cortex Agents has a 25.8pp gap (Debug 52.7% vs. 78.5% overall), Snowsight has a 23.5pp gap (Debug 53.3% vs. 76.8%), and Snowflake Postgres has a 22.5pp gap (Debug 39.3% vs. 61.8%). These are not marginal weaknesses; they indicate that even the best-configured AI assistant fails on a large share of realistic troubleshooting questions for these areas.
 
-#### Question Type to Documentation Action
+#### Diagnosing and Fixing Documentation Gaps
+
+AI systems that answer developer questions function as documentation retrieval engines at their core. Whether through real-time retrieval (agentic runs that search current documentation) or pattern recall from training data (non-agentic API calls), the ceiling on answer quality is set by what exists in the documentation. A model cannot correctly diagnose an error whose resolution is undocumented, correctly explain a feature whose conceptual overview is absent, or correctly compare two features when no comparison guide exists. Poor scores on a question type are therefore not primarily a model failure. They are a documentation coverage signal. The model is doing the best it can with what is available to retrieve.
 
 Each question type reflects a distinct genre of documentation. When AI fails on a question type, that failure signals that the documentation covering that genre is thin or absent for the category in question.
 
@@ -284,7 +286,7 @@ Beyond the main effects, two-way interaction effects reveal that factors do not 
 
 For product teams configuring Snowflake AI developer tools, the prescription is straightforward: give the agent tool access, instruct it to cite sources, and stay out of its way.
 
-**For product managers**, the category-level findings point to a different kind of action. Debug questions are the weakest type in 13 of 32 categories, and the gap between Debug scores and overall scores is often large—up to 25pp in some categories. This is not a prompting problem. It is a documentation coverage problem. Troubleshooting guides, runbooks, and documented error patterns are the content types most directly indexed and surfaced by AI retrieval systems. A PM who wants to improve AI answer quality for developer questions about their product area has one high-leverage action available: invest in troubleshooting documentation. Use the per-category question-type table above to identify the weakest content type, then use the Question Type to Documentation Action table to determine which documentation gaps to prioritize first.
+**For product managers**, the category-level findings point to a different kind of action. Debug questions are the weakest type in 13 of 32 categories, and the gap between Debug scores and overall scores is often large—up to 25pp in some categories. This is not a prompting problem. It is a documentation coverage problem. Troubleshooting guides, runbooks, and documented error patterns are the content types most directly indexed and surfaced by AI retrieval systems. A PM who wants to improve AI answer quality for developer questions about their product area has one high-leverage action available: invest in troubleshooting documentation. Use the per-category question-type table above to identify the weakest content type, then use the Diagnosing and Fixing Documentation Gaps table to determine which documentation gaps to prioritize first.
 
 ### Limitations
 
