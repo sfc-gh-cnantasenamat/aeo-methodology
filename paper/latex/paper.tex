@@ -372,11 +372,26 @@ dbt Projects on Snowflake               & 90.3\% & 92.7\% & 94.0\% & 86.0\% & 88
 
 The gap between Debug and the category average is often large. Cortex Agents has a 25.8pp gap (Debug 52.7\% vs. 78.5\% overall), Snowsight has a 23.5pp gap (Debug 53.3\% vs. 76.8\%), and Snowflake Postgres has a 22.5pp gap (Debug 39.3\% vs. 61.8\%). These are not marginal weaknesses; they indicate that even the best-configured AI assistant fails on a large share of realistic troubleshooting questions for these areas.
 
-\textbf{PM Action Framework.} Table~\ref{tab:pm_action} maps each question type to the documentation gap it signals and the recommended action.
+\subsubsection*{Question Type to Documentation Action}
+\label{sec:question_type_action}
+
+Each question type reflects a distinct genre of documentation. When AI fails on a question type, that failure signals that the documentation covering that genre is thin or absent for the category in question.
+
+The four question types correspond to four primary ways developers consume documentation:
+
+\textbf{Debug} questions test documentation of failure states: error messages, diagnostic steps, and recovery procedures. Poor Debug scores indicate that troubleshooting guides, runbooks, and documented error patterns are missing or sparse.
+
+\textbf{Compare} questions test decision guidance documentation: when to use one feature instead of another, tradeoffs, and architectural choices. Poor Compare scores indicate that decision guides and ``when to use X vs.\ Y'' pages are absent.
+
+\textbf{Implement} questions test procedural documentation: working code examples, step-by-step tutorials, and correct API syntax. Poor Implement scores indicate that how-to guides are incomplete, missing working code, or reflect outdated APIs.
+
+\textbf{Explain} questions test conceptual documentation: what a feature does, how it fits the platform, and why it exists. Poor Explain scores indicate that conceptual overview pages are thin or absent.
+
+Table~\ref{tab:pm_action} provides a quick reference: find the weakest question type for a category in Table~\ref{tab:category_intelligence}, then read across to identify the specific documentation gap and the recommended first action.
 
 \begin{table}[H]
 \centering
-\caption{PM Action Framework: each weakest question type signals a distinct documentation gap and points to a specific remediation action.}
+\caption{Question Type to Documentation Action: each weakest question type signals a distinct documentation gap and points to a specific remediation action.}
 \label{tab:pm_action}
 \small
 \begin{tabularx}{\linewidth}{@{}l X X X@{}}
@@ -467,7 +482,7 @@ Beyond the main effects, the factor interactions reveal that factors do not act 
 
 For product teams configuring Snowflake AI developer tools, the prescription is straightforward: give the agent tool access, instruct it to cite sources, and stay out of its way.
 
-\textbf{For product managers}, the category-level findings point to a different kind of action. Debug questions are the weakest type in 13 of 32 categories, and the gap between Debug scores and overall scores is often large---up to 25pp in some categories. This is not a prompting problem. It is a documentation coverage problem. Troubleshooting guides, runbooks, and documented error patterns are the content types most directly indexed and surfaced by AI retrieval systems. A PM who wants to improve AI answer quality for developer questions about their product area has one high-leverage action available: invest in troubleshooting documentation. Use Table~\ref{tab:category_intelligence} to identify the weakest content type, then apply the PM Action Framework (Table~\ref{tab:pm_action}) to determine which documentation gaps to prioritize first.
+\textbf{For product managers}, the category-level findings point to a different kind of action. Debug questions are the weakest type in 13 of 32 categories, and the gap between Debug scores and overall scores is often large---up to 25pp in some categories. This is not a prompting problem. It is a documentation coverage problem. Troubleshooting guides, runbooks, and documented error patterns are the content types most directly indexed and surfaced by AI retrieval systems. A PM who wants to improve AI answer quality for developer questions about their product area has one high-leverage action available: invest in troubleshooting documentation. Use Table~\ref{tab:category_intelligence} to identify the weakest content type, then use Table~\ref{tab:pm_action} (Question Type to Documentation Action) to determine which documentation gaps to prioritize first.
 
 \subsection*{Limitations}
 
