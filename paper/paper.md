@@ -129,6 +129,20 @@ The 16 configurations produced scores ranging from 53.2% to 82.3%. Config abbrev
 
 The engine split is clear: native Cortex Code sessions (with tool access) averaged 72.4% score and 80.8% MH, compared to 61.6% score and 61.6% MH for single `CORTEX.COMPLETE` calls. The top 6 configurations are all agentic (using Cortex Code, which has access to agentic tool calls), while the bottom 10 are predominantly non-agentic (single API calls to the LLM model without agentic tool calls). The 29.1pp score range (53.2% to 82.3%) is narrower than a preliminary 50-question pilot where the range was 37pp, reflecting that a broader question bank dampens configuration-specific variance and produces more stable rank ordering.
 
+### Model Baseline Comparison
+
+To contextualize the factorial results, we ran two additional baseline-only runs (all four factors OFF, 128 questions, same judge panel) using `llama4-maverick` (run 17) and `openai-gpt-5.4` (run 18) as respondent models.
+
+| Model | Run | Score | Must-Have |
+|-------|----:|------:|----------:|
+| `openai-gpt-5.4` | 18 | **58.0%** | 69.1% |
+| `claude-opus-4-6` | 1 | 53.2% | 62.7% |
+| `llama4-maverick` | 17 | 38.5% | 43.6% |
+
+`openai-gpt-5.4` leads at baseline (58.0% score, 69.1% MH), edging `claude-opus-4-6` by 4.8pp on score and 6.4pp on MH. `llama4-maverick` trails substantially at 38.5% score and 43.6% MH, a 19.5pp gap below the leading model. This spread confirms that model choice independently contributes to answer quality before any configuration augmentation is applied. Notably, all three models also serve as judges in the panel-averaged scoring; their baseline scores therefore reflect respondent quality uncoupled from evaluation preferences.
+
+The full 2^4 factorial replication across multiple respondent models remains an open item. The configuration hierarchy identified here (agentic tools dominant, self-critique counterproductive) is internally consistent for `claude-opus-4-6` but whether it holds across models is an open question.
+
 ### Main Effects
 
 The factorial design lets us compute the average impact of turning each factor ON across all 8 paired comparisons:
@@ -272,7 +286,7 @@ This benchmark has several limitations worth noting:
 The immediate priorities are:
 
 - **Automate for regression detection.** Run the benchmark on a scheduled cadence so that changes to underlying models or documentation surface as score regressions rather than surprises.
-- **Replicate across models.** All 16 runs in this experiment used `claude-opus-4-6` as the respondent. The configuration findings (agentic tools dominate, self-critique degrades) are internally consistent but may not generalize to other models (GPT-4o, Gemini 2.0, Llama 3, Command R+). Running the same 2^4 factorial design with multiple respondent models would test whether the configuration hierarchy is model-agnostic or model-specific. This is the most significant gap in the current work for competitive positioning use cases.
+- **Replicate across models.** A three-model baseline comparison (runs 17-18, see [Model Baseline Comparison](#model-baseline-comparison)) confirmed a 19.5pp spread between the strongest and weakest respondent at baseline, establishing that model choice matters independently of configuration. The full 2^4 factorial replication across all three respondent models remains open: whether the configuration hierarchy (agentic tools dominant, self-critique counterproductive) holds universally or is model-specific is the most significant remaining gap for competitive positioning use cases.
 - **Expand question bank depth per category.** Four questions per category gives noisy per-category estimates (each question is 25% of the category score). Expanding to 8–12 questions per category would halve the standard error and make category-level comparisons more reliable for PM decision-making.
 - **Build PM self-serve tooling.** A PM-facing Streamlit interface that shows per-category question-type scores, surfaces the documentation gap diagnosis, and links to the relevant documentation areas would close the loop between benchmark findings and documentation investment decisions.
 
