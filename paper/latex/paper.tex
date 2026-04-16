@@ -381,13 +381,15 @@ Each question type reflects a distinct genre of documentation. When AI fails on 
 
 The four question types correspond to four primary ways developers consume documentation:
 
-\textbf{Debug} questions test documentation of failure states: error messages, diagnostic steps, and recovery procedures. Poor Debug scores indicate that troubleshooting guides, runbooks, and documented error patterns are missing or sparse.
+\begin{enumerate}[nosep]
+  \item \textbf{Debug} questions test documentation of failure states: error messages, diagnostic steps, and recovery procedures. Poor Debug scores indicate that troubleshooting guides, runbooks, and documented error patterns are missing or sparse.
 
-\textbf{Compare} questions test decision guidance documentation: when to use one feature instead of another, tradeoffs, and architectural choices. Poor Compare scores indicate that decision guides and ``when to use X vs.\ Y'' pages are absent.
+  \item \textbf{Compare} questions test decision guidance documentation: when to use one feature instead of another, tradeoffs, and architectural choices. Poor Compare scores indicate that decision guides and ``when to use X vs.\ Y'' pages are absent.
 
-\textbf{Implement} questions test procedural documentation: working code examples, step-by-step tutorials, and correct API syntax. Poor Implement scores indicate that how-to guides are incomplete, missing working code, or reflect outdated APIs.
+  \item \textbf{Implement} questions test procedural documentation: working code examples, step-by-step tutorials, and correct API syntax. Poor Implement scores indicate that how-to guides are incomplete, missing working code, or reflect outdated APIs.
 
-\textbf{Explain} questions test conceptual documentation: what a feature does, how it fits the platform, and why it exists. Poor Explain scores indicate that conceptual overview pages are thin or absent.
+  \item \textbf{Explain} questions test conceptual documentation: what a feature does, how it fits the platform, and why it exists. Poor Explain scores indicate that conceptual overview pages are thin or absent.
+\end{enumerate}
 
 Table~\ref{tab:pm_action} provides a quick reference: find the weakest question type for a category in Table~\ref{tab:category_intelligence}, then read across to identify the specific documentation gap and the recommended first action.
 
