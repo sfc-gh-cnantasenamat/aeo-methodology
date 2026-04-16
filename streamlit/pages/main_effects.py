@@ -2,20 +2,68 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from utils.db import run_query, config_label
 
+# ---------------------------------------------------------------------------
+# Load leaderboard data early — needed for error bar computation below
+# ---------------------------------------------------------------------------
+lb = run_query("SELECT * FROM V_AEO_LEADERBOARD ORDER BY SCORE_PCT DESC")
+lb["Config"] = lb.apply(
+    lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
+)
+
+# Factorial analysis requires only the 2^4 design runs (claude-opus-4-6).
+# Baseline-only runs for other models are excluded because the naive
+# mean comparison (ON minus OFF) is confounded when OFF rows contain
+# different respondent models.
+lb_factorial = lb[lb["MODEL"] == "claude-opus-4-6"].copy()
+
+FEATURES = [
+    ("DOMAIN_PROMPT", "Domain Prompt"),
+    ("CITATION",      "Citation"),
+    ("AGENTIC",       "Agentic"),
+    ("SELF_CRITIQUE", "Self-Critique"),
+]
+
+ALL_FACTOR_COLS = [col for col, _ in FEATURES]
+
+
+def compute_effect_se(df, factor_col, metric_col):
+    """SE via 8 paired contrasts in a 2^4 factorial design.
+
+    For factor F, the other 3 factors define 8 unique combinations. For each
+    combination the difference (F=ON) − (F=OFF) is a paired contrast. The SE
+    of the mean effect is std(contrasts, ddof=1) / sqrt(8).
+    """
+    other_cols = [c for c in ALL_FACTOR_COLS if c != factor_col]
+    diffs = []
+    for _, grp in df.groupby(other_cols):
+        on_val  = grp[grp[factor_col] == True][metric_col]
+        off_val = grp[grp[factor_col] == False][metric_col]
+        if len(on_val) >= 1 and len(off_val) >= 1:
+            diffs.append(float(on_val.mean()) - float(off_val.mean()))
+    arr = np.array(diffs)
+    return float(np.std(arr, ddof=1) / np.sqrt(len(arr)))
+
+
 st.title(":material/insights: Main Effects")
 st.caption(
     "Average marginal effect of each factor across all 8 paired comparisons "
-    "(ON minus OFF), in percentage points."
+    "(ON minus OFF), in percentage points. Error bars = ±1 SE (8 paired contrasts)."
 )
 
 df = run_query("SELECT * FROM V_AEO_FACTORIAL_EFFECTS")
 
 # Sort by absolute score effect descending
 df = df.sort_values("SCORE_EFFECT_PP", ascending=False).reset_index(drop=True)
+
+# Map view FACTOR label → lb_factorial column name, then compute SE per row
+label_to_col = {label: col for col, label in FEATURES}
+score_se = [compute_effect_se(lb_factorial, label_to_col[f], "SCORE_PCT") for f in df["FACTOR"]]
+mh_se    = [compute_effect_se(lb_factorial, label_to_col[f], "MH_PCT")    for f in df["FACTOR"]]
 
 def bar_color(vals):
     return ["#4dac26" if v >= 0 else "#d01c8b" for v in vals]
@@ -32,6 +80,8 @@ fig.add_trace(go.Bar(
     textposition="outside",
     width=0.35,
     offset=-0.2,
+    error_x=dict(type="data", array=score_se, visible=True,
+                 color="rgba(0,0,0,0.55)", thickness=1.5, width=5),
 ))
 fig.add_trace(go.Bar(
     name="Must-Have effect (pp)",
@@ -44,6 +94,8 @@ fig.add_trace(go.Bar(
     textposition="outside",
     width=0.35,
     offset=0.2,
+    error_x=dict(type="data", array=mh_se, visible=True,
+                 color="rgba(0,0,0,0.55)", thickness=1.5, width=5),
 ))
 
 x_lim = max(abs(df["SCORE_EFFECT_PP"].max()), abs(df["MH_EFFECT_PP"].max()),
@@ -106,23 +158,7 @@ st.divider()
 st.header(":material/show_chart: Score Lift by Feature")
 st.caption("Marginal score lift from each configuration feature and their interactions.")
 
-lb = run_query("SELECT * FROM V_AEO_LEADERBOARD ORDER BY SCORE_PCT DESC")
-lb["Config"] = lb.apply(
-    lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
-)
-
-# Factorial analysis requires only the 2^4 design runs (claude-opus-4-6).
-# Baseline-only runs for other models are excluded because the naive
-# mean comparison (ON minus OFF) is confounded when OFF rows contain
-# different respondent models.
-lb_factorial = lb[lb["MODEL"] == "claude-opus-4-6"].copy()
-
-FEATURES = [
-    ("DOMAIN_PROMPT", "Domain Prompt"),
-    ("CITATION",      "Citation"),
-    ("AGENTIC",       "Agentic"),
-    ("SELF_CRITIQUE", "Self-Critique"),
-]
+# lb, lb_factorial, and FEATURES are already defined at the top of the file.
 
 def badge2(val, positive=True):
     bg = "#15803d" if positive else "#9d174d"
@@ -166,7 +202,7 @@ with col_bar:
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         yaxis=dict(title="Score lift (pp)", gridcolor="#333333", color="#cccccc"),
-        height=380,
+        height=500,
         margin=dict(t=20),
     )
     st.plotly_chart(fig_lift, use_container_width=True)
@@ -198,15 +234,18 @@ with col_bar_text:
 
 st.divider()
 
-# --- Interaction effects ---
-st.subheader("Feature interaction effects")
+# --- Factor interaction heatmap ---
+st.header(":material/grid_on: Factor Interaction Heatmap")
 st.caption(
-    "Synergy > 0: the pair outperforms the sum of individual gains (superadditive). "
-    "Synergy < 0: features interfere with each other."
+    "Synergy (pp): the extra score lift when both features are ON together, "
+    "beyond what their individual main effects would predict. "
+    "Positive means the pair works better in combination than expected. "
+    "Diagonal cells are blank (self-pairs are not meaningful)."
 )
 
 feat_cols  = [f[0] for f in FEATURES]
 feat_names = [f[1] for f in FEATURES]
+n = len(FEATURES)
 
 baseline_mask = (
     (lb_factorial["DOMAIN_PROMPT"] == False) & (lb_factorial["CITATION"] == False) &
@@ -214,52 +253,101 @@ baseline_mask = (
 )
 baseline_score = lb_factorial[baseline_mask]["SCORE_PCT"].mean()
 
-rows_int = []
-for i in range(len(FEATURES)):
-    for j in range(i + 1, len(FEATURES)):
+# Build n×n matrix: diagonal = NaN (blank), off-diagonal = pairwise synergy
+matrix = [[float("nan")] * n for _ in range(n)]
+text   = [[""] * n for _ in range(n)]
+pairs  = []
+
+for i in range(n):
+    for j in range(i + 1, n):
         fi, fj = feat_cols[i], feat_cols[j]
-        ni, nj = feat_names[i], feat_names[j]
         both        = lb_factorial[(lb_factorial[fi] == True) & (lb_factorial[fj] == True)]["SCORE_PCT"].mean()
         ind_i       = gain_df[gain_df["col"] == fi]["Score Lift (pp)"].values[0]
         ind_j       = gain_df[gain_df["col"] == fj]["Score Lift (pp)"].values[0]
         actual_lift = both - baseline_score
         synergy     = round(actual_lift - (ind_i + ind_j), 1)
-        rows_int.append({
-            "Pair":                f"{ni} + {nj}",
-            "Combined Avg %":      round(both, 1),
-            "Expected Lift (pp)":  round(ind_i + ind_j, 1),
-            "Actual Lift (pp)":    round(actual_lift, 1),
-            "Synergy (pp)":        synergy,
-        })
+        matrix[i][j] = synergy
+        matrix[j][i] = synergy
+        text[i][j]   = f"{synergy:+.1f}pp"
+        text[j][i]   = f"{synergy:+.1f}pp"
+        pairs.append({"pair": f"{feat_names[i]} + {feat_names[j]}", "synergy": synergy,
+                      "ind_i": ind_i, "ind_j": ind_j, "actual_lift": round(actual_lift, 1)})
 
-int_df = pd.DataFrame(rows_int).sort_values("Synergy (pp)", ascending=False)
-st.dataframe(
-    int_df,
-    use_container_width=True,
-    hide_index=True,
-    column_config={
-        "Combined Avg %":     st.column_config.ProgressColumn(
-            "Combined Avg %",     format="%.1f%%", min_value=0, max_value=100),
-        "Expected Lift (pp)": st.column_config.ProgressColumn(
-            "Expected Lift (pp)", format="%.1f",   min_value=-10, max_value=20),
-        "Actual Lift (pp)":   st.column_config.ProgressColumn(
-            "Actual Lift (pp)",   format="%.1f",   min_value=-10, max_value=20),
-    },
+pairs_df   = pd.DataFrame(pairs).sort_values("synergy", ascending=False).reset_index(drop=True)
+best_pair  = pairs_df.iloc[0]
+worst_pair = pairs_df.iloc[-1]
+
+z = np.array(matrix, dtype=float)
+abs_max = float(max(abs(np.nanmin(z)), abs(np.nanmax(z))))
+
+# Colorscale matching the Score Lift bar chart: pink (negative) → dark → cyan (positive)
+lift_colorscale = [
+    [0.0, "#fd3db5"],
+    [0.5, "#111827"],
+    [1.0, "#22d3ee"],
+]
+
+fig_hm = go.Figure(go.Heatmap(
+    z=z,
+    x=feat_names,
+    y=feat_names,
+    text=text,
+    texttemplate="%{text}",
+    colorscale=lift_colorscale,
+    zmid=0,
+    zmin=-abs_max,
+    zmax=abs_max,
+    colorbar=dict(title="pp", ticksuffix="pp"),
+    hoverongaps=False,
+    xgap=2,
+    ygap=2,
+))
+
+fig_hm.update_layout(
+    template="plotly_dark",
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="#000000",
+    height=420,
+    margin=dict(t=20, b=20, l=120, r=20),
+    xaxis=dict(side="bottom", showgrid=False),
+    yaxis=dict(showgrid=False),
+    font=dict(size=13),
 )
 
-st.divider()
+col_hm, col_hm_text = st.columns([2, 1])
 
-# --- Full marginal gain table ---
-st.subheader("Marginal gain detail")
-show_gains = gain_df[["Feature", "Score OFF", "Score ON", "Score Lift (pp)", "MH Lift (pp)"]].copy()
-st.dataframe(
-    show_gains,
-    use_container_width=True,
-    hide_index=True,
-    column_config={
-        "Score ON":  st.column_config.ProgressColumn(
-            "Avg Score (ON)",  format="%.1f%%", min_value=0, max_value=100),
-        "Score OFF": st.column_config.ProgressColumn(
-            "Avg Score (OFF)", format="%.1f%%", min_value=0, max_value=100),
-    },
-)
+with col_hm:
+    st.plotly_chart(fig_hm, use_container_width=True)
+
+with col_hm_text:
+    st.subheader(":material/lightbulb: Key Insights")
+
+    def badge3(val, positive=True):
+        bg = "#15803d" if positive else "#9d174d"
+        return (
+            f'<span style="background:{bg};color:#ffffff;padding:1px 7px;'
+            f'border-radius:9999px;font-size:0.85em;font-weight:600;">{val}</span>'
+        )
+
+    best_expected  = round(best_pair["ind_i"] + best_pair["ind_j"], 1)
+    worst_expected = round(worst_pair["ind_i"] + worst_pair["ind_j"], 1)
+
+    st.markdown(
+        f"""
+        <p><strong>Strongest synergy: {best_pair['pair']}.</strong>
+        Their individual effects predict {badge3(f"{best_expected:+.1f}pp", best_expected >= 0)},
+        but together they deliver {badge3(f"{best_pair['actual_lift']:+.1f}pp", best_pair['actual_lift'] >= 0)},
+        a synergy of {badge3(f"{best_pair['synergy']:+.1f}pp", best_pair['synergy'] >= 0)}.
+        They amplify each other beyond what either contributes alone.</p>
+
+        <p><strong>Weakest synergy: {worst_pair['pair']}.</strong>
+        Expected {badge3(f"{worst_expected:+.1f}pp", worst_expected >= 0)},
+        actual {badge3(f"{worst_pair['actual_lift']:+.1f}pp", worst_pair['actual_lift'] >= 0)},
+        synergy {badge3(f"{worst_pair['synergy']:+.1f}pp", worst_pair['synergy'] >= 0)}.
+        Each feature largely delivers its benefit independently with little extra from pairing.</p>
+
+        <p>A high synergy value does not mean either feature is individually strong.
+        It means the combination produces more than a naive sum would predict.</p>
+        """,
+        unsafe_allow_html=True,
+    )
