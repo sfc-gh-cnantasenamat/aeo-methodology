@@ -10,7 +10,7 @@ AI coding assistants are now part of the Snowflake developer workflow, but there
 
 ## Note on Audiences
 
-This paper serves two distinct readers. **Engineering and platform teams** who configure AI developer tools will find the core value in the Introduction through the factorial experiment results: what levers actually improve answer quality, and by how much. **Product managers** responsible for specific Snowflake feature areas can skip directly to the [Product Category Intelligence](#product-category-intelligence) section (after the Impact of Each Configuration Factor subsection in Results): it contains per-category analysis of where AI currently struggles with developer questions about their product area, what that pattern reveals about documentation coverage gaps, and a concrete action framework tied to each gap type.
+This paper serves two distinct readers. **Engineering and platform teams** who configure AI developer tools will find the core value in the Introduction through the factorial experiment results: what levers actually improve answer quality, and by how much. **Product managers** responsible for specific Snowflake feature areas can skip directly to the [Product Category Intelligence](#product-category-intelligence) section (after the How Each Factor Affects Answer Quality subsection in Results): it contains per-category analysis of where AI currently struggles with developer questions about their product area, what that pattern reveals about documentation coverage gaps, and a concrete action framework tied to each gap type.
 
 ## Introduction
 
@@ -143,7 +143,7 @@ To contextualize the factorial results, we ran two additional baseline-only runs
 
 The full 2^4 factorial replication across multiple respondent models remains an open item. The configuration hierarchy identified here (agentic tools dominant, self-critique counterproductive) is internally consistent for `claude-opus-4-6` but whether it holds across models is an open question.
 
-### Impact of Each Configuration Factor
+### How Each Factor Affects Answer Quality
 
 The factorial design lets us compute the average impact of turning each factor ON across all 8 paired comparisons:
 
