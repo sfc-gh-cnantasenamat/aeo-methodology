@@ -155,7 +155,7 @@ The factorial design lets us compute the average impact of turning each factor O
 | Self-Critique | -2.7pp | -9.8pp |
 
 ![Main Effects of Each Factor on Answer Quality](assets/fig_01_main_effects.png)
-*Figure 1. Average marginal effect of each augmentation factor on answer quality, measured as score lift (blue bars) and must-have compliance lift (orange bars) in percentage points. Each bar is the mean of 8 paired contrasts from the 2^4 factorial experiment, with error bars showing ±1 SE. Agentic tools is the only factor that improves both metrics simultaneously (+10.9 pp score, +19.2 pp must-have). Citation instruction lifts score (+8.8 pp) but depresses must-have compliance (-4.6 pp). Self-Critique harms both metrics (-2.7 pp score, -9.8 pp must-have), and Domain Prompt is near-neutral on both (-0.8 pp score, -0.1 pp must-have).*
+*Figure 1. How much turning each factor ON improves or hurts answer quality, in percentage points. Blue bars show score; orange bars show must-have compliance (whether answers cover the required key facts). Each bar is the average across 8 paired test runs; error bars show ±1 SE. Agentic tools is the only factor that helps both metrics (+10.9 pp score, +19.2 pp must-have). Citation instruction improves score (+8.8 pp) but reduces must-have compliance (-4.6 pp). Self-Critique hurts both (-2.7 pp score, -9.8 pp must-have). Domain Prompt has almost no effect either way (-0.8 pp score, -0.1 pp must-have).*
 
 **Agentic tools are the dominant factor.** They improve both score and must-have compliance in every single paired comparison. The ability to search current documentation and invoke specialized skills is more valuable than any prompting strategy.
 
