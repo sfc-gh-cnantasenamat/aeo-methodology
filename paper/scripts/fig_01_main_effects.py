@@ -48,42 +48,87 @@ plt.rcParams.update({
     'figure.facecolor': 'white',
 })
 
-BLUE = '#2563EB'
+BLUE   = '#2563EB'
 ORANGE = '#EA580C'
 
 fig, ax = plt.subplots(figsize=(8, 4.5))
 
+# Main effects: mean(ON) - mean(OFF)
 main_effects_score = []
-main_effects_mh = []
+main_effects_mh    = []
 for fi in range(4):
-    on_mask = factor_matrix[:, fi] == 1
+    on_mask  = factor_matrix[:, fi] == 1
     off_mask = factor_matrix[:, fi] == 0
     main_effects_score.append(scores[on_mask].mean() - scores[off_mask].mean())
     main_effects_mh.append(mh[on_mask].mean() - mh[off_mask].mean())
 
-y = np.arange(4)
-h = 0.35
-bars1 = ax.barh(y + h/2, main_effects_score, h, label='Score Effect (pp)', color=BLUE, edgecolor='white')
-bars2 = ax.barh(y - h/2, main_effects_mh, h, label='Must-Have Effect (pp)', color=ORANGE, edgecolor='white')
+# SE via 8 paired contrasts: for factor fi, the other 3 factors define
+# 8 unique combinations; each pair's contrast is (ON - OFF).
+# SE = std(contrasts, ddof=1) / sqrt(8).
+se_score = []
+se_mh    = []
+for fi in range(4):
+    other = [j for j in range(4) if j != fi]
+    diffs_s, diffs_m = [], []
+    for combo_idx in range(8):
+        combo    = [(combo_idx >> k) & 1 for k in range(3)]
+        mask_on  = factor_matrix[:, fi] == 1
+        mask_off = factor_matrix[:, fi] == 0
+        for k, of in enumerate(other):
+            mask_on  = mask_on  & (factor_matrix[:, of] == combo[k])
+            mask_off = mask_off & (factor_matrix[:, of] == combo[k])
+        if mask_on.sum() >= 1 and mask_off.sum() >= 1:
+            diffs_s.append(float(scores[mask_on].mean()) - float(scores[mask_off].mean()))
+            diffs_m.append(float(mh[mask_on].mean())     - float(mh[mask_off].mean()))
+    arr_s = np.array(diffs_s)
+    arr_m = np.array(diffs_m)
+    se_score.append(np.std(arr_s, ddof=1) / np.sqrt(len(arr_s)))
+    se_mh.append(np.std(arr_m, ddof=1) / np.sqrt(len(arr_m)))
+
+y   = np.arange(4)
+h   = 0.35
+err_kw = dict(ecolor='#333333', capsize=3, elinewidth=1.2, capthick=1.2)
+
+bars1 = ax.barh(y + h/2, main_effects_score, h,
+                label='Score Effect (pp)', color=BLUE, edgecolor='white',
+                xerr=se_score, error_kw=err_kw)
+bars2 = ax.barh(y - h/2, main_effects_mh, h,
+                label='Must-Have Effect (pp)', color=ORANGE, edgecolor='white',
+                xerr=se_mh, error_kw=err_kw)
 
 ax.set_yticks(y)
 ax.set_yticklabels(FACTORS, fontsize=11)
 ax.axvline(0, color='black', linewidth=0.8)
 ax.set_xlabel('Effect (percentage points)', fontsize=11)
 ax.legend(loc='lower right', fontsize=10)
+ax.text(0.99, 0.01, '±1 SE (8 paired contrasts)',
+        transform=ax.transAxes, ha='right', va='bottom',
+        fontsize=8, color='#666666')
 
-for bar in bars1:
-    w = bar.get_width()
-    ax.text(w + (0.3 if w >= 0 else -0.3), bar.get_y() + bar.get_height()/2,
-            f'{w:+.1f}', va='center', ha='left' if w >= 0 else 'right', fontsize=9, fontweight='bold')
-for bar in bars2:
-    w = bar.get_width()
-    ax.text(w + (0.3 if w >= 0 else -0.3), bar.get_y() + bar.get_height()/2,
-            f'{w:+.1f}', va='center', ha='left' if w >= 0 else 'right', fontsize=9, fontweight='bold')
+# Value labels — offset past the error bar cap
+for i, bar in enumerate(bars1):
+    w   = bar.get_width()
+    pad = se_score[i] + 0.4
+    ax.text(w + (pad if w >= 0 else -pad),
+            bar.get_y() + bar.get_height() / 2,
+            f'{w:+.1f}', va='center',
+            ha='left' if w >= 0 else 'right',
+            fontsize=9, fontweight='bold')
+for i, bar in enumerate(bars2):
+    w   = bar.get_width()
+    pad = se_mh[i] + 0.4
+    ax.text(w + (pad if w >= 0 else -pad),
+            bar.get_y() + bar.get_height() / 2,
+            f'{w:+.1f}', va='center',
+            ha='left' if w >= 0 else 'right',
+            fontsize=9, fontweight='bold')
 
 plt.tight_layout()
 plt.savefig(f'{OUT}/fig_01_main_effects.pdf', bbox_inches='tight')
+plt.savefig(f'{OUT}/fig_01_main_effects.png', dpi=150, bbox_inches='tight')
 plt.close()
 
-size = os.path.getsize(f'{OUT}/fig_01_main_effects.pdf')
-print(f"Done! fig_01_main_effects.pdf ({size // 1024} KB)")
+size_pdf = os.path.getsize(f'{OUT}/fig_01_main_effects.pdf')
+size_png = os.path.getsize(f'{OUT}/fig_01_main_effects.png')
+print(f"Done! fig_01_main_effects.pdf ({size_pdf // 1024} KB), "
+      f"fig_01_main_effects.png ({size_png // 1024} KB)")
