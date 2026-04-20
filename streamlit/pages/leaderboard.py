@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from utils.db import run_query, config_label
 
 st.title(":material/leaderboard: Leaderboard")
-st.caption("All 16 factorial runs ranked by average score %, with must-have (MH) compliance.")
+st.caption("16 factorial runs (claude-opus-4-6, 3-judge panel) ranked by average score %, with must-have (MH) compliance. Model comparison runs (17–24) are on the Model Comparison page.")
 st.markdown(
     "<style>div[data-testid='stMetricDelta'] svg { display: none !important; }</style>",
     unsafe_allow_html=True,

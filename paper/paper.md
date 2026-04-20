@@ -131,17 +131,31 @@ The engine split is clear: native Cortex Code sessions (with tool access) averag
 
 ### Model Baseline Comparison
 
-To contextualize the factorial results, we ran two additional baseline-only runs (all four factors OFF, 128 questions, same judge panel) using `llama4-maverick` (run 17) and `openai-gpt-5.4` (run 18) as respondent models.
+To contextualize the factorial results, we ran eight additional runs across five respondent models under baseline conditions (all four factors OFF, 128 questions, 5-judge panel): runs 17–21 use `SNOWFLAKE.CORTEX.COMPLETE` (cortex_complete mode), and runs 22–24 use native Cortex Code sessions (cortex_cli mode, agentic factor ON, all other factors OFF).
+
+**CORTEX.COMPLETE baseline (runs 17–21):**
 
 | Model | Run | Score | Must-Have |
 |-------|----:|------:|----------:|
-| `openai-gpt-5.4` | 18 | **58.0%** | 69.1% |
-| `claude-opus-4-6` | 1 | 53.2% | 62.7% |
-| `llama4-maverick` | 17 | 38.5% | 43.6% |
+| `claude-opus-4-7` | 21 | **63.7%** | 78.5% |
+| `openai-gpt-5.4` | 18 | 57.1% | 64.9% |
+| `gemini-3.1-pro` | 19 | 56.6% | 67.2% |
+| `claude-opus-4-6` | 20 | 53.1% | 58.6% |
+| `llama4-maverick` | 17 | 37.4% | 40.6% |
 
-`openai-gpt-5.4` leads at baseline (58.0% score, 69.1% MH), edging `claude-opus-4-6` by 4.8pp on score and 6.4pp on MH. `llama4-maverick` trails substantially at 38.5% score and 43.6% MH, a 19.5pp gap below the leading model. This spread confirms that model choice independently contributes to answer quality before any configuration augmentation is applied. Notably, all three models also serve as judges in the panel-averaged scoring; their baseline scores therefore reflect respondent quality uncoupled from evaluation preferences.
+`claude-opus-4-7` leads at 63.7%, a 26.3pp spread over `llama4-maverick` at 37.4%. `openai-gpt-5.4` and `gemini-3.1-pro` cluster closely (57.1% and 56.6%), while `claude-opus-4-6` sits at 53.1%. This spread confirms that model choice independently contributes to answer quality before any configuration augmentation is applied.
 
-The full 2^4 factorial replication across multiple respondent models remains an open item. The configuration hierarchy identified here (agentic tools dominant, self-critique counterproductive) is internally consistent for `claude-opus-4-6` but whether it holds across models is an open question.
+**cortex_cli baseline (runs 22–24, agentic factor ON only):**
+
+| Model | Run | Score | Must-Have |
+|-------|----:|------:|----------:|
+| `openai-gpt-5.4` | 24 | **63.7%** | 78.5% |
+| `claude-opus-4-6` | 22 | 63.2% | 79.1% |
+| `claude-opus-4-7` | 23 | 63.0% | 79.2% |
+
+In cortex_cli mode, all three models converge tightly to 63.0–63.7%, a range of only 0.7pp. This compression indicates that agentic tool access substantially equalizes parametric knowledge differences: `openai-gpt-5.4` gains +6.6pp from cortex_complete to cortex_cli, while `claude-opus-4-6` gains +10.1pp and `claude-opus-4-7` gains −0.7pp (already near its ceiling in cortex_complete mode). The agentic lift is largest for models with the widest gap between their parametric knowledge and current documentation.
+
+Notably, all five models also serve as judges in the panel-averaged scoring for runs 17–24; their baseline respondent scores are therefore decoupled from their evaluation preferences. The full $2^4$ factorial replication across all five respondent models remains an open item addressed in Next Steps.
 
 ### How Each Factor Affects Answer Quality
 
@@ -292,7 +306,7 @@ For product teams configuring Snowflake AI developer tools, the prescription is 
 
 6. **Compare and Implement gaps are the second and third most common failure patterns.** Compare is weakest in 9 of 32 categories (28%), indicating absent decision guidance and "when to use X vs Y" content. Implement is weakest in 8 of 32 categories (25%), reflecting incomplete how-to tutorials and code examples. See the [PM Action Framework](#product-category-intelligence) in the Results section for the documentation action that maps to each gap type.
 
-7. **Model choice matters independently of documentation.** The three-model baseline comparison shows a 19.5pp spread between the strongest respondent (`openai-gpt-5.4` at 58.0%) and the weakest (`llama4-maverick` at 38.5%) before any configuration augmentation. This means that teams evaluating or recommending AI coding assistants for developer use should treat model selection as a first-order decision alongside documentation investment.
+7. **Model choice matters independently of documentation, but agentic tools compress the gap.** The five-model baseline comparison shows a 26.3pp spread between the strongest cortex_complete respondent (`claude-opus-4-7` at 63.7%) and the weakest (`llama4-maverick` at 37.4%) before any augmentation. In cortex_cli mode, however, `openai-gpt-5.4`, `claude-opus-4-6`, and `claude-opus-4-7` converge to 63.0–63.7%, a spread of only 0.7pp. Tool access substantially equalizes model differences: teams evaluating AI coding assistants should treat both model selection and agentic tool access as first-order decisions alongside documentation investment.
 
 **Immediate first action for any PM:** open the per-category table in [Product Category Intelligence](#product-category-intelligence), find your product area, read the Weakest column, then follow the corresponding row in the PM Action Framework to identify the specific documentation type to invest in first.
 
@@ -300,9 +314,9 @@ For product teams configuring Snowflake AI developer tools, the prescription is 
 
 This benchmark has several limitations worth noting:
 
-- **Single respondent model.** All 16 runs use `claude-opus-4-6`; results may differ for other models.
+- **Factorial design uses a single respondent model.** All 16 factorial runs use `claude-opus-4-6`; the configuration hierarchy (agentic tools dominant, self-critique counterproductive) is established for this model. The five-model baseline comparison (runs 17–21) and three-model cortex_cli comparison (runs 22–24) provide model-level ranking but do not replicate the full factorial design across all models.
 - **Question bank coverage.** The 128-question bank spans 32 categories with 4 questions each; individual category estimates carry higher variance than aggregate scores.
-- **LLM-as-judge scoring.** Even with a 3-model panel, LLM judges may differ from human expert evaluation on nuanced questions. The must-have elements are binary checks that do not capture partial credit for closely related facts.
+- **LLM-as-judge scoring.** The factorial runs use a 3-model judge panel; the model comparison runs use a 5-model panel. LLM judges may differ from human expert evaluation on nuanced questions. The must-have elements are binary checks that do not capture partial credit for closely related facts.
 - **No TruLens integration in production scoring.** Although we built a TruLens integration (instrumented app, custom feedback functions, Snowflake connector), the 16-run factorial experiment used our custom 3-judge pipeline rather than TruLens. This means we lack standardized OpenTelemetry tracing of retrieval and generation spans, which would provide deeper observability into why agentic runs perform better. The custom pipeline also does not produce the RAG Triad metrics (groundedness, answer relevance, context relevance) that would enable direct comparison with other TruLens-evaluated systems. Migrating the scoring pipeline to TruLens would unify evaluation with Snowflake AI Observability and make results visible in Snowsight under `AI & ML > Evaluations`.
 
 ### Next Steps
@@ -310,7 +324,7 @@ This benchmark has several limitations worth noting:
 The immediate priorities are:
 
 - **Automate for regression detection.** Run the benchmark on a scheduled cadence so that changes to underlying models or documentation surface as score regressions rather than surprises.
-- **Replicate across models.** A three-model baseline comparison (runs 17-18, see [Model Baseline Comparison](#model-baseline-comparison)) confirmed a 19.5pp spread between the strongest and weakest respondent at baseline, establishing that model choice matters independently of configuration. The full 2^4 factorial replication across all three respondent models remains open: whether the configuration hierarchy (agentic tools dominant, self-critique counterproductive) holds universally or is model-specific is the most significant remaining gap for competitive positioning use cases.
+- **Replicate full factorial across models.** A five-model baseline comparison (runs 17–21) and three-model cortex_cli comparison (runs 22–24) confirm that model choice contributes substantially to answer quality and that agentic tool access equalizes differences across models. The full $2^4$ factorial design replicated across all five respondent models remains the most significant open item: whether the configuration hierarchy (agentic tools dominant, self-critique counterproductive) holds universally or is model-specific is critical for competitive positioning use cases.
 - **Expand question bank depth per category.** Four questions per category gives noisy per-category estimates (each question is 25% of the category score). Expanding to 8–12 questions per category would halve the standard error and make category-level comparisons more reliable for PM decision-making.
 - **Build PM self-serve tooling.** A PM-facing Streamlit interface that shows per-category question-type scores, surfaces the documentation gap diagnosis, and links to the relevant documentation areas would close the loop between benchmark findings and documentation investment decisions.
 
@@ -321,4 +335,4 @@ The immediate priorities are:
 
 ---
 
-*April 13, 2026*
+*April 20, 2026*

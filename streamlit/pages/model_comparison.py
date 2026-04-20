@@ -184,3 +184,94 @@ st.subheader(":material/table: Full Category x Model Table")
 display = pivot.copy()
 display.columns.name = None
 st.dataframe(display, use_container_width=True, hide_index=True)
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# Cortex Code (cortex_cli) vs CORTEX.COMPLETE — agentic lift per model
+# (runs 22-24: cortex_cli  vs  runs 18, 20, 21: cortex_complete)
+# ---------------------------------------------------------------------------
+st.subheader(":material/bolt: Cortex Code vs CORTEX.COMPLETE — Agentic Lift")
+st.caption(
+    "Baseline conditions (no domain prompt, citation, or self-critique). "
+    "cortex_complete = single SNOWFLAKE.CORTEX.COMPLETE call. "
+    "cortex_cli = native Cortex Code session with tool access."
+)
+
+cli_df = run_query("""
+    SELECT r.MODEL,
+           r.AGENTIC,
+           ROUND(AVG(s.TOTAL_SCORE) / 50.0 * 100, 1) AS SCORE_PCT,
+           ROUND(AVG(s.MUST_HAVE_PASS) * 100, 1)      AS MH_PCT
+    FROM AEO_RUNS r
+    JOIN AEO_SCORES s ON r.RUN_ID = s.RUN_ID
+    WHERE r.RUN_ID IN (18, 20, 21, 22, 23, 24)
+    GROUP BY r.MODEL, r.AGENTIC
+    ORDER BY r.MODEL, r.AGENTIC
+""")
+
+if not cli_df.empty:
+    cli_df["Mode"] = cli_df["AGENTIC"].map({True: "cortex_cli", False: "cortex_complete"})
+
+    # Models that have both modes
+    paired_models = (
+        cli_df.groupby("MODEL")["Mode"].nunique()
+        .where(lambda x: x == 2).dropna().index.tolist()
+    )
+    paired = cli_df[cli_df["MODEL"].isin(paired_models)].copy()
+
+    COLORS_MODE = {"cortex_complete": "#fd3db5", "cortex_cli": "#22d3ee"}
+
+    col_bar, col_lift = st.columns([2, 1])
+
+    with col_bar:
+        fig_cli = go.Figure()
+        for mode in ["cortex_complete", "cortex_cli"]:
+            sub = paired[paired["Mode"] == mode].sort_values("MODEL")
+            fig_cli.add_trace(go.Bar(
+                name=mode,
+                x=sub["MODEL"],
+                y=sub["SCORE_PCT"],
+                marker_color=COLORS_MODE[mode],
+                text=sub["SCORE_PCT"].map(lambda v: f"{v:.1f}%"),
+                textposition="outside",
+            ))
+        fig_cli.update_layout(
+            barmode="group",
+            xaxis=dict(title="Model", color="#cccccc", gridcolor="#333333"),
+            yaxis=dict(title="Score %", range=[0, 80], color="#cccccc", gridcolor="#333333"),
+            template="plotly_dark",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h", y=-0.18),
+            height=400,
+            margin=dict(t=30, b=60),
+        )
+        st.plotly_chart(fig_cli, use_container_width=True)
+
+    with col_lift:
+        st.subheader(":material/lightbulb: Agentic Lift")
+        pivot_modes = paired.pivot(index="MODEL", columns="Mode", values="SCORE_PCT").reset_index()
+        if "cortex_complete" in pivot_modes.columns and "cortex_cli" in pivot_modes.columns:
+            pivot_modes["Lift (pp)"] = (
+                pivot_modes["cortex_cli"] - pivot_modes["cortex_complete"]
+            ).round(1)
+            for _, row in pivot_modes.iterrows():
+                lift = row["Lift (pp)"]
+                color = "#15803d" if lift >= 0 else "#9d174d"
+                st.markdown(
+                    f'<p><strong>{row["MODEL"]}</strong>: '
+                    f'<span style="background:{color};color:#fff;padding:1px 7px;'
+                    f'border-radius:9999px;font-size:0.85em;font-weight:600;">'
+                    f'{lift:+.1f}pp</span> '
+                    f'({row["cortex_complete"]:.1f}% → {row["cortex_cli"]:.1f}%)</p>',
+                    unsafe_allow_html=True,
+                )
+
+    # Summary table
+    st.subheader(":material/table: Mode Comparison Table")
+    summary = paired.pivot(index="MODEL", columns="Mode", values=["SCORE_PCT", "MH_PCT"])
+    summary.columns = [f"{m} {c.replace('_PCT', '%')}" for c, m in summary.columns]
+    summary = summary.reset_index()
+    summary.columns.name = None
+    st.dataframe(summary, use_container_width=True, hide_index=True)

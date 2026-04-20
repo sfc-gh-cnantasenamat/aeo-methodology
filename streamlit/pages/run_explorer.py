@@ -81,7 +81,6 @@ st.dataframe(
             format="%.1f%%",
             min_value=0,
             max_value=100,
-            color="auto",
         ),
         "Correctness": st.column_config.ProgressColumn(
             "Correctness", format="%.1f", min_value=0, max_value=10,

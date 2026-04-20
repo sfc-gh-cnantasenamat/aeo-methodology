@@ -21,15 +21,25 @@ else:
     st.set_page_config(layout="wide")
 
 pages = st.navigation(
-    [
-        st.Page("pages/home.py",              title="Home",                  icon=":material/home:"),
-        st.Page("pages/leaderboard.py",       title="Leaderboard",          icon=":material/leaderboard:"),
-        st.Page("pages/main_effects.py",       title="Main Effects",          icon=":material/insights:"),
-        st.Page("pages/category_dumbbell.py",  title="Category Performance",  icon=":material/category:"),
-        st.Page("pages/factorial_heatmap.py",  title="Factorial Heatmap",     icon=":material/grid_view:"),
-        st.Page("pages/run_explorer.py",       title="Questions Explorer",    icon=":material/manage_search:"),
-    ],
-    position="top",
+    {
+        "": [
+            st.Page("pages/home.py",              title="Home",                  icon=":material/home:"),
+        ],
+        "Analysis": [
+            st.Page("pages/leaderboard.py",       title="Leaderboard",          icon=":material/leaderboard:"),
+            st.Page("pages/main_effects.py",       title="Main Effects",          icon=":material/insights:"),
+            st.Page("pages/category_dumbbell.py",  title="Category Performance",  icon=":material/category:"),
+            st.Page("pages/factorial_heatmap.py",  title="Factorial Heatmap",     icon=":material/grid_view:"),
+            st.Page("pages/run_explorer.py",       title="Questions Explorer",    icon=":material/manage_search:"),
+        ],
+        "Tools": [
+            st.Page("pages/test_prompt.py",  title="Test your Prompt",  icon=":material/science:"),
+            st.Page("pages/test_skill.py",   title="Test your Skill",   icon=":material/extension:"),
+        ],
+    },
+    position="sidebar",
 )
+
+st.sidebar.title(":material/query_stats: AEO Benchmark")
 
 pages.run()

@@ -1,0 +1,33 @@
+definition_version: 2
+
+entities:
+  aeo_benchmark_dashboard:
+    type: streamlit
+    identifier:
+      name: AEO_BENCHMARK_DASHBOARD
+      database: CHANINN_DEMO_DATA
+      schema: APPS
+    query_warehouse: CHANIN_XS
+    runtime_name: SYSTEM$ST_CONTAINER_RUNTIME_PY3_11
+    compute_pool: HOL_COMPUTE_POOL
+    external_access_integrations:
+      - PYPI_ACCESS_INTEGRATION
+    main_file: app.py
+    artifacts:
+      - app.py
+      - pyproject.toml
+      - environment.yml
+      - .streamlit/config.toml
+      - pages/category_dumbbell.py
+      - pages/factorial_heatmap.py
+      - pages/home.py
+      - pages/leaderboard.py
+      - pages/main_effects.py
+      - pages/model_comparison.py
+      - pages/run_explorer.py
+      - pages/test_prompt.py
+      - pages/test_skill.py
+      - utils/__init__.py
+      - utils/db.py
+      - utils/scoring.py
+      - utils/spcs.py

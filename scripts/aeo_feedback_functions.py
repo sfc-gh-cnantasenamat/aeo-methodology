@@ -360,8 +360,10 @@ def aeo_total_score(
 
 JUDGE_PANEL = [
     "claude-opus-4-6",
+    "claude-opus-4-7",
     "openai-gpt-5.4",
     "llama4-maverick",
+    "gemini-3.1-pro",
 ]
 
 

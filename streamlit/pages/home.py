@@ -39,7 +39,7 @@ with col_left:
     st.markdown(
         "The **Snowflake Developer Relations** team built AEO to evaluate "
         "AI-powered answer quality across Snowflake's product surface. "
-        "A panel of **3 LLM judges** scores every response, removing "
+        "A panel of **3–5 LLM judges** scores every response, removing "
         "single-model bias."
     )
 
@@ -53,7 +53,7 @@ with col_left:
         "| **C** — Citation | Require the agent to cite documentation |\n"
         "| **A** — Agentic | Use **Cortex Code** for multi-step agentic retrieval |\n"
         "| **S** — Self-Critique | Add a self-critique refinement pass |\n\n"
-        f"This yields **16 configurations** tested against "
+        f"This yields **16 factorial configurations** tested against "
         f"**{int(s['TOTAL_QUESTIONS'])} expert-curated questions** "
         f"across **{int(s['TOTAL_CATEGORIES'])} Snowflake topic categories**. "
         "Half the runs (A=TRUE) invoke **native Cortex Code** for retrieval; "
@@ -92,7 +92,7 @@ with col_right:
         f"1. Send all **{int(s['TOTAL_QUESTIONS'])} questions** to the agent\n"
         "2. Collect the raw text response — via **native Cortex Code** (agentic runs) "
         "or direct `SNOWFLAKE.CORTEX.COMPLETE` API (non-agentic runs)\n"
-        "3. Score each response with **3 independent LLM judges** "
+        "3. Score each response with **3–5 independent LLM judges** "
         f"→ {int(s['TOTAL_SCORES']):,} scores total\n"
         "4. Average judge scores to get a per-question, per-run score\n"
         "5. Aggregate across questions to compare configurations\n\n"
