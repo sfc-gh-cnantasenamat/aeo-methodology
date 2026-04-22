@@ -6,7 +6,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from utils.db import run_query, config_label
 
 st.title(":material/category: Category Performance")
-st.caption("Per-category improvement from Baseline (all OFF) to the best configuration (C+A).")
 
 df = run_query("""
     SELECT CATEGORY,
@@ -73,9 +72,6 @@ lowest_best = df.nsmallest(1, "BEST_PCT").iloc[0]
 
 col_plot, col_text = st.columns([7, 3])
 
-with col_plot:
-    st.plotly_chart(fig, use_container_width=True)
-
 with col_text:
     st.subheader(":material/lightbulb: Key Insights")
 
@@ -113,12 +109,15 @@ with col_text:
         unsafe_allow_html=True,
     )
 
+with col_plot:
+    st.caption("Per-category improvement from Baseline (all OFF) to the best configuration (C+A).")
+    st.plotly_chart(fig, use_container_width=True)
+
 # ===========================================================================
 # Priority Matrix
 # ===========================================================================
 st.divider()
 st.header(":material/priority_high: Priority Matrix")
-st.caption("Identify which categories offer the highest improvement potential.")
 
 # --- Load per-question data ---
 pq = run_query("""
@@ -151,13 +150,40 @@ overall_mean = cat_stats["mean_score"].mean()
 median_gap   = cat_stats["gap"].median()
 
 # --- Bubble chart ---
-st.caption(
-    "x = current avg score  |  y = gap to best achievable score  |  "
-    "bubble size = number of questions"
-)
+priority_cat = cat_stats.sort_values("potential", ascending=False).iloc[0]
+hardest_cat  = cat_stats.sort_values("mean_score").iloc[0]
+
 col_bub, col_bub_text = st.columns([7, 3])
 
+with col_bub_text:
+    st.subheader(":material/lightbulb: Key Insights")
+    st.markdown(
+        f"""
+        <p>Top-right quadrant (high score, large gap) are quick wins: the model
+        already performs well but the best configs still leave headroom. These
+        categories respond best to prompt tuning.</p>
+
+        <p>Bottom-left (low score, small gap) are hard ceilings. Even the best
+        config barely improves on the average. These likely require training
+        data improvements.</p>
+
+        <p>{badge(priority_cat['CATEGORY'], True)} has the highest total improvement
+        potential, meaning the gap between average and best performance is large
+        across many questions.</p>
+
+        <p>{badge(hardest_cat['CATEGORY'], False)} is the hardest category
+        overall with a mean score of
+        {badge(f"{hardest_cat['mean_score']:.1f}%", False)}.</p>
+        """,
+        unsafe_allow_html=True,
+    )
+
 with col_bub:
+    st.caption("Identify which categories offer the highest improvement potential.")
+    st.caption(
+        "x = current avg score  |  y = gap to best achievable score  |  "
+        "bubble size = number of questions"
+    )
     fig2 = go.Figure()
     for _, row in cat_stats.iterrows():
         fig2.add_trace(go.Scatter(
@@ -183,10 +209,10 @@ with col_bub:
                 f"Questions: {row['n_questions']}<extra></extra>"
             ),
         ))
-    fig2.add_vline(x=overall_mean, line_dash="dash", line_color="#555555",
-                   annotation_text="Avg", annotation_font_color="#888888")
-    fig2.add_hline(y=median_gap,   line_dash="dash", line_color="#555555",
-                   annotation_text="Median gap", annotation_font_color="#888888")
+    fig2.add_vline(x=overall_mean, line_dash="dash", line_color="#f97316", layer="below",
+                   annotation_text="Avg", annotation_font_color="#f97316")
+    fig2.add_hline(y=median_gap,   line_dash="dash", line_color="#f97316", layer="below",
+                   annotation_text="Median gap", annotation_font_color="#f97316")
     fig2.update_layout(
         xaxis=dict(title="Avg Score %", gridcolor="#333333", color="#cccccc"),
         yaxis=dict(title="Gap to best score (pp)", gridcolor="#333333", color="#cccccc"),
@@ -198,35 +224,9 @@ with col_bub:
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-with col_bub_text:
-    st.subheader(":material/lightbulb: Key Insights")
-
-    priority_cat = cat_stats.sort_values("potential", ascending=False).iloc[0]
-    hardest_cat  = cat_stats.sort_values("mean_score").iloc[0]
-
-    st.markdown(
-        f"""
-        <p>Top-right quadrant (high score, large gap) are quick wins: the model
-        already performs well but the best configs still leave headroom. These
-        categories respond best to prompt tuning.</p>
-
-        <p>Bottom-left (low score, small gap) are hard ceilings. Even the best
-        config barely improves on the average. These likely require training
-        data improvements.</p>
-
-        <p>{badge(priority_cat['CATEGORY'], True)} has the highest total improvement
-        potential, meaning the gap between average and best performance is large
-        across many questions.</p>
-
-        <p>{badge(hardest_cat['CATEGORY'], False)} is the hardest category
-        overall with a mean score of
-        {badge(f"{hardest_cat['mean_score']:.1f}%", False)}.</p>
-        """,
-        unsafe_allow_html=True,
-    )
-
 # --- Impact table ---
-st.subheader("Category impact table")
+st.subheader(":material/table_chart: Category impact table")
+st.caption("Ranked by improvement potential — categories with the highest gap between average and best score across the most questions.")
 show_impact = (
     cat_stats
     .sort_values("potential", ascending=False)

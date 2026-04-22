@@ -13,7 +13,22 @@ scores/                 # Per-question JSON scoring files for all 16 runs
 slides/                 # Markdown source for methodology and results presentations
 paper/                  # Internal whitepaper (see Paper section below)
 streamlit/              # AEO dashboard (deployed to Streamlit in Snowflake)
+streamlit-app-local/    # Local development copy — safe to iterate freely
+streamlit-app-snowhouse/ # Snowhouse-specific copy (DEVREL.CNANTASENAMAT_DEV)
+streamlit-app-devrel/   # DevRel-specific copy (CHANINN_DEMO_DATA.APPS)
 ```
+
+### Streamlit app directories
+
+Three separate directories exist to prevent local tweaks from accidentally breaking the deployed versions:
+
+| Directory | Purpose | Target |
+|-----------|---------|--------|
+| `streamlit-app-local/` | Local development and experimentation. Iterate freely here without risk of breaking either deployed app. | `streamlit run app.py` locally |
+| `streamlit-app-snowhouse/` | Snowhouse deployment source. Contains Snowhouse-specific files (`pyproject-snowhouse.toml`, `snowflake.yml` with `STREAMLIT_DEDICATED_POOL`). | `DEVREL.CNANTASENAMAT_DEV.AEO_BENCHMARK_DASHBOARD` |
+| `streamlit-app-devrel/` | DevRel deployment source. Contains DevRel-specific files (`snowflake-devrel.yml`, full `pyproject.toml` with PyPI deps via `PYPI_ACCESS_INTEGRATION`). | `CHANINN_DEMO_DATA.APPS.AEO_BENCHMARK_DASHBOARD` |
+
+**Rule:** always make changes in `streamlit-app-local/` first and verify locally before manually propagating to the Snowhouse or DevRel directories and redeploying.
 
 ## Snowflake data layer
 
@@ -30,6 +45,10 @@ All benchmark data lives in **`DEVREL.CNANTASENAMAT_DEV`** (local connection: `m
 - `V_AEO_FACTORIAL_EFFECTS` — Main effects and interaction effects of each factor
 - `V_AEO_PER_QUESTION_HEATMAP` — Score matrix (run x question)
 - `V_AEO_JUDGE_AGREEMENT` — Inter-judge correlation and disagreement analysis
+
+## Streamlit dashboard
+
+The interactive benchmark dashboard lives in `streamlit/`. It is deployed to two Snowflake accounts (Snowhouse and DevRel). For full deployment instructions, environment-specific constants, Snowflake objects, SPCS setup, and known pitfalls see `streamlit/DEPLOYMENT.md`.
 
 ## Git workflow
 

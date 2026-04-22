@@ -1,0 +1,31 @@
+definition_version: 2
+
+entities:
+  aeo_benchmark_dashboard:
+    type: streamlit
+    identifier:
+      name: AEO_BENCHMARK_DASHBOARD
+      database: DEVREL
+      schema: CNANTASENAMAT_DEV
+    query_warehouse: SNOWADHOC
+    runtime_name: SYSTEM$ST_CONTAINER_RUNTIME_PY3_11
+    compute_pool: STREAMLIT_DEDICATED_POOL
+    main_file: app.py
+    artifacts:
+      - app.py
+      - pyproject.toml
+      - environment.yml
+      - .streamlit/config.toml
+      - pages/category_performance.py
+      - pages/factorial_heatmap.py
+      - pages/factors_influence.py
+      - pages/home.py
+      - pages/leaderboard.py
+      - pages/model_comparison.py
+      - pages/questions_explorer.py
+      - pages/test_prompt.py
+      - pages/test_skill.py
+      - utils/__init__.py
+      - utils/db.py
+      - utils/scoring.py
+      - utils/spcs.py

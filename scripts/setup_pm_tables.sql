@@ -57,6 +57,30 @@ CREATE TABLE IF NOT EXISTS AEO_SKILL_TESTS (
 );
 
 -- ---------------------------------------------------------------------------
+-- Table: AEO_QUESTION_CANDIDATES — staging queue for user-submitted questions
+--        Admin reviews and approves before questions enter AEO_QUESTIONS.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS AEO_QUESTION_CANDIDATES (
+    SUBMISSION_ID    VARCHAR        NOT NULL,
+    SUBMITTED_AT     TIMESTAMP_NTZ  DEFAULT CURRENT_TIMESTAMP(),
+    SUBMITTED_BY     VARCHAR        DEFAULT 'local',
+    QUESTION_TEXT    VARCHAR        NOT NULL,
+    CATEGORY         VARCHAR,
+    QUESTION_TYPE    VARCHAR,
+    CANONICAL_ANSWER VARCHAR,
+    MUST_HAVE_1      VARCHAR,
+    MUST_HAVE_2      VARCHAR,
+    MUST_HAVE_3      VARCHAR,
+    MUST_HAVE_4      VARCHAR,
+    MUST_HAVE_5      VARCHAR,
+    STATUS           VARCHAR        DEFAULT 'pending',  -- pending | approved | rejected
+    REVIEWED_AT      TIMESTAMP_NTZ,
+    REVIEWED_BY      VARCHAR,
+    ADMIN_NOTES      VARCHAR,
+    PRIMARY KEY (SUBMISSION_ID)
+);
+
+-- ---------------------------------------------------------------------------
 -- Stage: AEO_SKILL_STAGE — stores uploaded SKILL.md files
 -- ---------------------------------------------------------------------------
 CREATE STAGE IF NOT EXISTS AEO_SKILL_STAGE

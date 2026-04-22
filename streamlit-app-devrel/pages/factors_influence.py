@@ -1,4 +1,4 @@
-"""Page 2 — Main Effects: factorial effect of each factor on Score % and MH %."""
+"""Page — Factors Influence: main effects, score lift, interactions, and dimension breakdown."""
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
@@ -11,6 +11,25 @@ from utils.db import run_query, config_label
 # Load leaderboard data early — needed for error bar computation below
 # ---------------------------------------------------------------------------
 lb = run_query("SELECT * FROM V_AEO_LEADERBOARD ORDER BY SCORE_PCT DESC")
+
+# ---------------------------------------------------------------------------
+# Load per-question data for Dimension breakdown section
+# ---------------------------------------------------------------------------
+dim_df = run_query("""
+    SELECT q.QUESTION_ID, q.QUESTION_TEXT, q.CATEGORY, q.QUESTION_TYPE,
+           h.RUN_ID, h.DOMAIN_PROMPT, h.CITATION, h.AGENTIC, h.SELF_CRITIQUE,
+           rc.MODEL,
+           h.TOTAL_SCORE, h.MUST_HAVE_PASS,
+           h.CORRECTNESS, h.COMPLETENESS, h.RECENCY, h.CITATION_SCORE, h.RECOMMENDATION
+    FROM V_AEO_PER_QUESTION_HEATMAP h
+    JOIN AEO_QUESTIONS q   ON h.QUESTION_ID = q.QUESTION_ID
+    JOIN (SELECT DISTINCT RUN_ID, MODEL FROM AEO_RUN_CONFIG) rc ON h.RUN_ID = rc.RUN_ID
+    ORDER BY h.RUN_ID, q.QUESTION_ID
+""")
+dim_df["Config"]  = dim_df.apply(
+    lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
+)
+dim_df["Score %"] = (dim_df["TOTAL_SCORE"] / 50.0 * 100).round(1)
 lb["Config"] = lb.apply(
     lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
 )
@@ -49,7 +68,9 @@ def compute_effect_se(df, factor_col, metric_col):
     return float(np.std(arr, ddof=1) / np.sqrt(len(arr)))
 
 
-st.title(":material/insights: Main Effects")
+st.title("Factors Influence")
+
+st.header(":material/insights: Main Effects")
 st.caption(
     "Average marginal effect of each factor across all 8 paired comparisons "
     "(ON minus OFF), in percentage points. Error bars = ±1 SE (8 paired contrasts)."
@@ -350,4 +371,148 @@ with col_hm_text:
         It means the combination produces more than a naive sum would predict.</p>
         """,
         unsafe_allow_html=True,
+    )
+
+# ===========================================================================
+# Dimension breakdown
+# ===========================================================================
+st.divider()
+st.header("Dimension Breakdown by Question")
+
+q_options = sorted(dim_df["QUESTION_ID"].unique())
+sel_q = st.selectbox("Select a question to inspect", q_options)
+
+q_df = dim_df[dim_df["QUESTION_ID"] == sel_q]
+if not q_df.empty:
+    q_text = q_df.iloc[0]["QUESTION_TEXT"]
+    st.markdown(f"**{sel_q}**: {q_text}")
+
+    fig_dim = go.Figure()
+    dims_radar = ["Correctness", "Completeness", "Recency", "Citation", "Recommendation"]
+    dim_cols   = ["CORRECTNESS", "COMPLETENESS", "RECENCY", "CITATION_SCORE", "RECOMMENDATION"]
+    for _, row in q_df.iterrows():
+        vals = [row[c] for c in dim_cols]
+        fig_dim.add_trace(go.Scatterpolar(
+            r=vals + [vals[0]],
+            theta=dims_radar + [dims_radar[0]],
+            fill="toself",
+            name=row["Config"],
+            opacity=0.7,
+        ))
+    fig_dim.update_layout(
+        polar=dict(
+            bgcolor="rgba(30,30,30,0.6)",
+            radialaxis=dict(
+                range=[0, 10],
+                gridcolor="#555555",
+                linecolor="#555555",
+                tickfont=dict(color="#cccccc"),
+            ),
+            angularaxis=dict(
+                gridcolor="#555555",
+                linecolor="#555555",
+                tickfont=dict(color="#cccccc"),
+            ),
+        ),
+        title=f"Dimension scores — {sel_q}",
+        height=420,
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
+
+    col_radar, col_radar_text = st.columns([2, 1])
+
+    with col_radar:
+        st.plotly_chart(fig_dim, use_container_width=True)
+
+    with col_radar_text:
+        st.subheader(":material/lightbulb: Key Insights")
+
+        def badge_dim(val, positive):
+            bg = "#15803d" if positive else "#9d174d"
+            return (
+                f'<span style="background:{bg};color:#ffffff;padding:1px 7px;'
+                f'border-radius:9999px;font-size:0.85em;font-weight:600;">{val}</span>'
+            )
+
+        q_category = q_df.iloc[0]["CATEGORY"]
+        q_type     = q_df.iloc[0]["QUESTION_TYPE"]
+        n_configs  = len(q_df)
+
+        best_row  = q_df.loc[q_df["Score %"].idxmax()]
+        worst_row = q_df.loc[q_df["Score %"].idxmin()]
+        score_gap = best_row["Score %"] - worst_row["Score %"]
+
+        dim_means = q_df[dim_cols].mean()
+        best_dim  = dims_radar[dim_means.argmax()]
+        worst_dim = dims_radar[dim_means.argmin()]
+
+        best_score_badge  = badge_dim(f"{best_row['Score %']:.1f}%", True)
+        worst_score_badge = badge_dim(f"{worst_row['Score %']:.1f}%", False)
+        gap_badge         = badge_dim(f"+{score_gap:.1f}pp", True)
+        best_config       = best_row["Config"]
+        worst_config      = worst_row["Config"]
+        best_score_only   = badge_dim(f"{best_row['Score %']:.1f}%", True)
+
+        if n_configs > 1:
+            comparison = (
+                f"<p><strong>{best_config} performs best</strong> on this question "
+                f"with a score of {best_score_badge}, compared to "
+                f"{worst_score_badge} for {worst_config}, "
+                f"a gap of {gap_badge}.</p>"
+            )
+        else:
+            comparison = (
+                f"<p>Only one configuration is selected. "
+                f"<strong>{best_config}</strong> scores "
+                f"{best_score_only} on this question.</p>"
+            )
+
+        st.markdown(
+            f"""
+            <p>A <strong>{q_type}</strong> question in
+            <strong>{q_category}</strong>.</p>
+
+            {comparison}
+
+            <p><strong>{best_dim} is the strongest dimension</strong> on average
+            across the selected configurations for this question.</p>
+
+            <p><strong>{worst_dim} is the weakest dimension,</strong> suggesting
+            this question challenges the model on that criterion regardless of
+            configuration.</p>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # --- Per-config scores table ---
+    table_cols = ["Config"]
+    if "MODEL" in q_df.columns:
+        table_cols.append("MODEL")
+    table_cols += ["Score %"] + dim_cols
+
+    ranked = q_df.sort_values("Score %", ascending=False)[table_cols].rename(columns={
+        "MODEL":         "Model",
+        "CORRECTNESS":   "Correctness",
+        "COMPLETENESS":  "Completeness",
+        "RECENCY":       "Recency",
+        "CITATION_SCORE":"Citation",
+        "RECOMMENDATION":"Recommendation",
+    }).reset_index(drop=True)
+
+    st.dataframe(
+        ranked,
+        column_config={
+            "Score %": st.column_config.ProgressColumn(
+                "Score %", format="%.1f%%", min_value=0, max_value=100,
+            ),
+            "Correctness":   st.column_config.ProgressColumn("Correctness",   format="%.1f", min_value=0, max_value=10),
+            "Completeness":  st.column_config.ProgressColumn("Completeness",  format="%.1f", min_value=0, max_value=10),
+            "Recency":       st.column_config.ProgressColumn("Recency",       format="%.1f", min_value=0, max_value=10),
+            "Citation":      st.column_config.ProgressColumn("Citation",      format="%.1f", min_value=0, max_value=10),
+            "Recommendation":st.column_config.ProgressColumn("Recommendation",format="%.1f", min_value=0, max_value=10),
+        },
+        use_container_width=True,
+        hide_index=True,
     )

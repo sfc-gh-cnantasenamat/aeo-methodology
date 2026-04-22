@@ -6,3 +6,19 @@
 *.lof
 *.lot
 *.synctex.gz
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Streamlit build output
+**/output/
+
+# macOS
+.DS_Store
+
+# Local dev / test scratch
+streamlit-test/
