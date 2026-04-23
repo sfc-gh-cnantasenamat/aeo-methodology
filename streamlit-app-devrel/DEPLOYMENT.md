@@ -60,12 +60,12 @@ are auto-detected at runtime in `utils/db.py` via `get_active_session().get_curr
 
 ### Read-only benchmark data — `AEO_OBSERVABILITY.EVAL_SCHEMA` on DevRel
 
-Tables: `AEO_QUESTIONS`, `AEO_RESPONSES`, `AEO_RUNS`, `AEO_RUN_CONFIG`, `AEO_SCORES`
+Tables: `AEO_QUESTIONS`, `AEO_RUNS`, `AEO_RUN_CONFIG`, `AEO_SCORES`, `AEO_TRANSCRIPT`
 
 Views: `V_AEO_LEADERBOARD`, `V_AEO_FACTORIAL_EFFECTS`, `V_AEO_PER_QUESTION_HEATMAP`,
-`V_AEO_JUDGE_AGREEMENT`
+`V_AEO_JUDGE_AGREEMENT`, `V_AEO_TRANSCRIPT_STATS`
 
-Note: `V_AEO_MODEL_COMPARISON` does not exist on DevRel as of April 2026. Pages that query it will error on DevRel until it is created.
+Note: `AEO_RESPONSES` is now 4 columns only (`RUN_ID`, `QUESTION_ID`, `RESPONSE_TEXT`, `GENERATED_AT`). All observability data (tokens, tool calls, turns, timing) lives in `AEO_TRANSCRIPT`. `V_AEO_MODEL_COMPARISON` does not exist on DevRel as of April 2026. Pages that query it will error on DevRel until it is created.
 
 ### Stored procedures — `CHANINN_DEMO_DATA.APPS` on DevRel
 
@@ -152,6 +152,8 @@ All constants are set from `ENV` at module load time:
 The `AEO_TRIGGER_INTERACTIVE` SP on DevRel uses the short path (`/AEO_DB/...`),
 which Snowflake resolves to the full registry URL automatically.
 
+**Pending:** Dockerfile was updated to v3 (adds Cortex CLI install, copies `transcript_capture.py`, `RUN_MODE` dispatch). Next image push should be tagged `:v5` and the SP specs updated to match.
+
 ---
 
 ## Known pitfalls
@@ -177,6 +179,8 @@ which Snowflake resolves to the full registry URL automatically.
 | `Object 'CHANINN_DEMO_DATA.APPS.AEO_TRIGGER_INTERACTIVE' does not exist` | SP not created in new account schema | Create SP in `CHANINN_DEMO_DATA.APPS` with DevRel-specific defaults (`CHANIN_XS`, `ACCOUNTADMIN`, `CHANINN_DEMO_DATA.APPS`) |
 | `Object 'CHANINN_DEMO_DATA.APPS.AEO_SCORE_RESPONSE' does not exist` | SP not created in new account schema | Create SP in `CHANINN_DEMO_DATA.APPS`; replace hardcoded `DEVREL.CNANTASENAMAT_DEV.AEO_QUESTIONS` reference with `AEO_OBSERVABILITY.EVAL_SCHEMA.AEO_QUESTIONS` |
 | SPCS job `FAILED`: `invalid identifier 'COMPLETED_AT'` | `AEO_INTERACTIVE_RESULTS` created from Snowhouse DDL which lacked `COMPLETED_AT`; container script requires it | `ALTER TABLE CHANINN_DEMO_DATA.APPS.AEO_INTERACTIVE_RESULTS ADD COLUMN COMPLETED_AT TIMESTAMP_NTZ;` (also applied to Snowhouse for parity) |
+| `AEO_TRANSCRIPT` missing on DevRel | New table not yet created in `AEO_OBSERVABILITY.EVAL_SCHEMA` | Create with DDL from `GET_DDL` on Snowhouse. 25 columns including `TOOL_CALL_*` per-tool counts, `INPUT_TOKENS`, `OUTPUT_TOKENS`, `CACHE_READ_TOKENS`, `CACHE_WRITE_TOKENS`, `FIRST_REQUEST_ID`, `LAST_REQUEST_ID`, `GENERATION_SECS`. |
+| `V_AEO_TRANSCRIPT_STATS` missing on DevRel | View not yet created in `AEO_OBSERVABILITY.EVAL_SCHEMA` | Recreate from `GET_DDL` on Snowhouse. Uses `LEFT JOIN AEO_TRANSCRIPT` so runs without transcript data still appear. |
 
 ---
 

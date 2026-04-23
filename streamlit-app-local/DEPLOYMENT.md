@@ -55,9 +55,11 @@ Objects exist on **both** accounts under their respective schemas (`DEVREL.CNANT
 
 ### Views (read-only proxies over `AEO_OBSERVABILITY.EVAL_SCHEMA`)
 
-`AEO_QUESTIONS`, `AEO_RESPONSES`, `AEO_RUNS`, `AEO_RUN_CONFIG`, `AEO_SCORES`,
+`AEO_QUESTIONS`, `AEO_RUNS`, `AEO_RUN_CONFIG`, `AEO_SCORES`, `AEO_TRANSCRIPT`,
 `V_AEO_LEADERBOARD`, `V_AEO_FACTORIAL_EFFECTS`, `V_AEO_PER_QUESTION_HEATMAP`,
-`V_AEO_MODEL_COMPARISON`, `V_AEO_JUDGE_AGREEMENT`
+`V_AEO_MODEL_COMPARISON`, `V_AEO_JUDGE_AGREEMENT`, `V_AEO_TRANSCRIPT_STATS`
+
+Note: `AEO_RESPONSES` is now 4 columns only (`RUN_ID`, `QUESTION_ID`, `RESPONSE_TEXT`, `GENERATED_AT`). All observability data (tokens, tool calls, turns, timing) lives in `AEO_TRANSCRIPT`.
 
 ### Stored procedures
 
@@ -140,6 +142,8 @@ All constants (`DB`, `SCH`, `WH`, `ROLE`, `SPCS_ROLE`) are set from `ENV` at mod
 The `AEO_TRIGGER_INTERACTIVE` SP on DevRel uses the short path (`/AEO_DB/...`),
 which Snowflake resolves to the full registry URL automatically.
 
+**Pending:** Dockerfile was updated to v3 (adds Cortex CLI install, copies `transcript_capture.py`, `RUN_MODE` dispatch). Next image push should be tagged `:v5` and the SP specs updated to match.
+
 ---
 
 ## Known pitfalls
@@ -161,6 +165,8 @@ which Snowflake resolves to the full registry URL automatically.
 | `Failed to retrieve packages … dns error … pypi.org/simple/pandas` on Snowhouse | Full `pyproject.toml` (with deps listed) was deployed to Snowhouse. `STREAMLIT_DEDICATED_POOL` pre-installs all packages so no PyPI fetch is needed, but listing them causes the runtime to attempt it and fail with a DNS error (no EAI). | Always use the pyproject swap in the Snowhouse deploy command: `cp pyproject-snowhouse.toml pyproject.toml` before deploying, restore after. `pyproject-snowhouse.toml` has `dependencies = []`. |
 | `PYPI_ACCESS_INTEGRATION` not authorized for `DEVREL_ADMIN_RL` on Snowhouse | `DEVREL_ADMIN_RL` does not have `USAGE` on the EAI | Not needed on Snowhouse — `STREAMLIT_DEDICATED_POOL` pre-installs plotly. Remove EAI from `snowflake.yml` |
 | `snowflake.yml` becomes identical to `snowflake-devrel.yml` | Swap-restore command interrupted or partially failed | Reconstructed from `SHOW STREAMLITS` + `GET_DDL`. Correct Snowhouse config: `DEVREL.CNANTASENAMAT_DEV`, `SNOWADHOC`, `STREAMLIT_DEDICATED_POOL`, no EAI |
+| `AEO_TRANSCRIPT` missing on new account | New table not yet created | Create on both accounts: `DEVREL.CNANTASENAMAT_DEV` (Snowhouse) and `AEO_OBSERVABILITY.EVAL_SCHEMA` (DevRel). DDL in `scripts/spcs/setup-snowhouse.sql`. 25 columns including `TOOL_CALL_*` per-tool counts, `INPUT_TOKENS`, `OUTPUT_TOKENS`, `CACHE_READ_TOKENS`, `CACHE_WRITE_TOKENS`, `FIRST_REQUEST_ID`, `LAST_REQUEST_ID`, `GENERATION_SECS`. |
+| `V_AEO_TRANSCRIPT_STATS` missing | View not yet created on new account | Recreate from `GET_DDL` on Snowhouse. Uses `LEFT JOIN AEO_TRANSCRIPT` so runs without transcript data still appear. |
 
 ---
 
