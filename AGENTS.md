@@ -37,7 +37,8 @@ All benchmark data lives in **`DEVREL.CNANTASENAMAT_DEV`** (local connection: `m
 **Tables:**
 - `AEO_QUESTIONS` — 128-question bank with canonical answers and must-have checklists
 - `AEO_RUNS` — Run metadata (which factors were active, model, timestamp)
-- `AEO_RESPONSES` — Generated responses per run per question
+- `AEO_RESPONSES` — Generated responses per run per question (4 columns: `RUN_ID`, `QUESTION_ID`, `RESPONSE_TEXT`, `GENERATED_AT`)
+- `AEO_TRANSCRIPT` — Observability data per run per question (25 columns; see schema below)
 - `AEO_SCORES` — Judge scores per run per question per dimension
 
 **Views:**
@@ -45,6 +46,36 @@ All benchmark data lives in **`DEVREL.CNANTASENAMAT_DEV`** (local connection: `m
 - `V_AEO_FACTORIAL_EFFECTS` — Main effects and interaction effects of each factor
 - `V_AEO_PER_QUESTION_HEATMAP` — Score matrix (run x question)
 - `V_AEO_JUDGE_AGREEMENT` — Inter-judge correlation and disagreement analysis
+- `V_AEO_TRANSCRIPT_STATS` — Per-run aggregates: total turns, tool calls (per tool), cache hit pct/rate, avg generation secs
+
+**`AEO_TRANSCRIPT` schema:**
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `RUN_ID` | VARCHAR | Foreign key to `AEO_RUNS` |
+| `QUESTION_ID` | INTEGER | Foreign key to `AEO_QUESTIONS` |
+| `N_TURNS` | INTEGER | Number of conversation turns |
+| `N_TOOL_CALLS` | INTEGER | Total tool calls across all turns |
+| `TOOL_CALL_BASH` | INTEGER | Count of `bash` tool calls |
+| `TOOL_CALL_READ` | INTEGER | Count of `read` tool calls |
+| `TOOL_CALL_WRITE` | INTEGER | Count of `write` tool calls |
+| `TOOL_CALL_EDIT` | INTEGER | Count of `edit` tool calls |
+| `TOOL_CALL_GLOB` | INTEGER | Count of `glob` tool calls |
+| `TOOL_CALL_GREP` | INTEGER | Count of `grep` tool calls |
+| `TOOL_CALL_SQL_EXECUTE` | INTEGER | Count of `sql_execute` tool calls |
+| `TOOL_CALL_SKILL` | INTEGER | Count of `skill` tool calls |
+| `TOOL_CALL_WEB_FETCH` | INTEGER | Count of `web_fetch` tool calls |
+| `TOOL_CALL_WEB_SEARCH` | INTEGER | Count of `web_search` tool calls |
+| `TOOL_CALL_OTHER` | INTEGER | Sum of all tool calls not in the tracked list above |
+| `N_THINKING_BLOCKS` | INTEGER | Number of extended thinking blocks in the response |
+| `TRANSCRIPT_JSONL` | TEXT | Full conversation as newline-delimited JSON |
+| `INPUT_TOKENS` | INTEGER | Total prompt tokens (including cache reads/writes) |
+| `OUTPUT_TOKENS` | INTEGER | Total completion tokens |
+| `CACHE_READ_TOKENS` | INTEGER | Tokens served from the prompt cache |
+| `CACHE_WRITE_TOKENS` | INTEGER | Tokens written to the prompt cache |
+| `FIRST_REQUEST_ID` | VARCHAR | REQUEST_ID of the first API turn (from `CORTEX_CODE_CLI_USAGE_HISTORY`) |
+| `LAST_REQUEST_ID` | VARCHAR | REQUEST_ID of the last API turn |
+| `GENERATION_SECS` | FLOAT | Wall-clock seconds from prompt submission to response |
 
 ## Streamlit dashboard
 
@@ -442,3 +473,92 @@ To redeploy: re-add `[snowhouse-deploy]` to `connections.toml` (same PAT as `my-
 | 3 | `DEVREL_ADMIN_RL` lacks `USAGE` on `PYPI_ACCESS_INTEGRATION` | Removed `external_access_integrations` block from `snowflake.yml`; container runtime pre-installs plotly, pandas, and snowflake packages so PyPI access is not required |
 | 4 | Literal `$$` inside a `$$`-quoted SP body terminates the body early | Used `dq = '$' + '$'` so the string is assembled at Python runtime, never appearing as a literal `$$` in the SQL source |
 | 5 | `snow streamlit deploy --role` flag silently ignored for PAT auth | Confirmed via `SELECT CURRENT_ROLE()` — role stayed `MARKETING_SENSITIVE_RO`; workaround is the dedicated connection entry (fix #2) |
+
+---
+
+## Session Log: 2026-04-23 — Transcript Capture, Token Attribution, AEO_TRANSCRIPT Table
+
+### What Was Built
+
+#### `AEO_TRANSCRIPT` table (new)
+
+Observability data previously crammed into `AEO_RESPONSES` was extracted into a dedicated `AEO_TRANSCRIPT` table (25 columns). `AEO_RESPONSES` now has only 4 columns: `RUN_ID`, `QUESTION_ID`, `RESPONSE_TEXT`, `GENERATED_AT`. The transcript table holds all per-question runtime metrics: turn counts, tool call breakdowns, token counts, cache metrics, request IDs, and generation time.
+
+Exists on both schemas:
+- Snowhouse: `DEVREL.CNANTASENAMAT_DEV.AEO_TRANSCRIPT`
+- DevRel: `AEO_OBSERVABILITY.EVAL_SCHEMA.AEO_TRANSCRIPT`
+
+#### Token attribution via `CORTEX_CODE_CLI_USAGE_HISTORY`
+
+`cortex_cli` runs previously left `INPUT_TOKENS`/`OUTPUT_TOKENS` as NULL because the Cortex CLI does not print token counts. Token data is now fetched post-generation from:
+
+```
+SNOWFLAKE.ACCOUNT_USAGE.CORTEX_CODE_CLI_USAGE_HISTORY
+```
+
+Key facts about this view:
+- Near-real-time (seconds to minutes latency); a `FETCH_TOKENS_DELAY_SECS = 5` sleep is used before querying.
+- No `SESSION_ID` column — token rows cannot be joined to a specific session directly.
+- Attribution uses a **time-window query**: `WHERE USER_NAME = CURRENT_USER() AND USAGE_TIME BETWEEN t_before AND t_after`. This works because questions are processed sequentially within each batch.
+- `TOKENS_GRANULAR` format: `{"claude-opus-4-6": {"input": N, "output": N, "cache_read_input": N, "cache_write_input": N}}`
+- `input` in `TOKENS_GRANULAR` is raw input tokens only (excludes cache); `INPUT_TOKENS` stored in `AEO_TRANSCRIPT` = `input + cache_read_input + cache_write_input`.
+- `FIRST_REQUEST_ID` = `MIN_BY(REQUEST_ID, USAGE_TIME)` over the time window; `LAST_REQUEST_ID` = `MAX_BY(REQUEST_ID, USAGE_TIME)`.
+
+#### `transcript_capture.py` additions
+
+New function `fetch_cli_tokens(cur, t_before, t_after, model) -> dict` added to `scripts/spcs/transcript_capture.py`. It:
+1. Sleeps `FETCH_TOKENS_DELAY_SECS` to allow the view to catch up.
+2. Validates the model name against `_MODEL_NAME_RE` before interpolating into SQL (injection guard).
+3. Returns a dict with keys: `prompt_tokens`, `completion_tokens`, `cache_read_tokens`, `cache_write_tokens`, `first_request_id`, `last_request_id`.
+
+#### Per-tool `TOOL_CALL_*` columns
+
+`TOOL_CALLS VARIANT` (a JSON array) was replaced with 11 individual integer columns. Tracked tools:
+
+```
+bash, read, write, edit, glob, grep, sql_execute, skill, web_fetch, web_search
+```
+
+`TOOL_CALL_OTHER` catches all tool calls not in the tracked list so that `N_TOOL_CALLS = sum(all TOOL_CALL_* columns)` always holds.
+
+#### `V_AEO_TRANSCRIPT_STATS` view
+
+Recreated on Snowhouse with a `LEFT JOIN` to `AEO_TRANSCRIPT` so runs without transcript data still appear. Includes:
+- `TOTAL_TOOL_CALL_*` for all 11 tool columns
+- `CACHE_HIT_PCT` = `cache_read / total_input * 100` (cost efficiency metric)
+- `CACHE_HIT_RATE` = `cache_read / (cache_read + cache_write) * 100` (traditional hit rate)
+- `AVG_GENERATION_SECS`
+
+#### Dockerfile updated (v3)
+
+`scripts/spcs/Dockerfile` now:
+- Installs the Cortex CLI via `curl` (required for `cortex_cli` generation mode).
+- Adds a hard-fail guard: `RUN ls /root/.local/bin/cortex || exit 1`.
+- Copies `transcript_capture.py` alongside `aeo_spcs_runner.py`.
+- `CMD` dispatches on `RUN_MODE`: `interactive` runs `aeo_spcs_interactive.py`; default runs `aeo_spcs_runner.py`.
+
+#### JSONL availability inside Docker/SPCS confirmed
+
+Tested by running `cortex -p` inside a `python:3.11-slim` container. The CLI (v1.0.66) wrote the conversation JSONL to `/root/.snowflake/cortex/conversations/` — the same path `transcript_capture.py` reads from. No extra volume mounts or config needed.
+
+---
+
+### Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Time-window token attribution instead of session join | `CORTEX_CODE_CLI_USAGE_HISTORY` has no `SESSION_ID`; sequential processing makes time-window attribution unambiguous |
+| `TOOL_CALL_OTHER` catch-all column | Ensures `N_TOOL_CALLS` is always the sum of all per-tool columns; new tools accumulate here without a schema change |
+| Separate `AEO_TRANSCRIPT` table | Keeps `AEO_RESPONSES` minimal (response text only) and allows transcript data to be NULL-absent for non-`cortex_cli` runs without nulling out response rows |
+| `CACHE_HIT_PCT` vs `CACHE_HIT_RATE` | Both kept: `CACHE_HIT_PCT` = cost efficiency (fraction of total input served from cache); `CACHE_HIT_RATE` = traditional cache effectiveness (hits as fraction of all cache activity) |
+
+---
+
+### Fixes Made
+
+| # | Problem | Fix |
+|---|---------|-----|
+| 1 | `INPUT_TOKENS` / `OUTPUT_TOKENS` were NULL for `cortex_cli` runs | Added `fetch_cli_tokens()` querying `CORTEX_CODE_CLI_USAGE_HISTORY` post-generation |
+| 2 | `ALTER TABLE ADD COLUMN col1, col2` rejected by Snowflake | Snowflake requires one `ADD COLUMN` clause per `ALTER TABLE` statement; ran separate statements |
+| 3 | Model name interpolated into SQL without validation | Added `_MODEL_NAME_RE = re.compile(r'^[\w][\w\-\.]*$')` guard before interpolation |
+| 4 | `PARSE_JSON(%s)` in a `VALUES` parameterized query fails | Replaced with a `SELECT` form; then removed entirely when `TOOL_CALLS VARIANT` column was dropped |
