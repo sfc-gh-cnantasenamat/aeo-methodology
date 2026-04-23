@@ -562,3 +562,69 @@ Tested by running `cortex -p` inside a `python:3.11-slim` container. The CLI (v1
 | 2 | `ALTER TABLE ADD COLUMN col1, col2` rejected by Snowflake | Snowflake requires one `ADD COLUMN` clause per `ALTER TABLE` statement; ran separate statements |
 | 3 | Model name interpolated into SQL without validation | Added `_MODEL_NAME_RE = re.compile(r'^[\w][\w\-\.]*$')` guard before interpolation |
 | 4 | `PARSE_JSON(%s)` in a `VALUES` parameterized query fails | Replaced with a `SELECT` form; then removed entirely when `TOOL_CALLS VARIANT` column was dropped |
+
+---
+
+## Session Log: 2026-04-23 — SPCS Image v5, Build/Push Procedure
+
+### What Was Done
+
+#### Docker image v5 built and pushed
+
+The Dockerfile was updated to v3 logic (Cortex CLI install, `transcript_capture.py` copy, `RUN_MODE` dispatch). The resulting image was built and pushed to the Snowhouse registry as `:v5`:
+
+```bash
+REGISTRY="sfcogsops-snowhouse-aws-us-west-2.registry.snowflakecomputing.com/devrel/cnantasenamat_dev/aeo_repo"
+
+docker build --platform linux/amd64 \
+  -t ${REGISTRY}/aeo-benchmark:v5 \
+  /Users/cnantasenamat/Documents/Coco/aeo/dev/spcs/
+
+snow spcs image-registry login --connection my-snowflake
+
+docker push ${REGISTRY}/aeo-benchmark:v5
+```
+
+Image digest: `sha256:d45eb57d9854725c9e5b324bf73cc8e7004c960618fde86241e84ca89f26151c`
+
+#### Image versioning clarification
+
+The Docker image tag (`:v4`, `:v5`) and the runner script internal version ("v2", "v3" as in `aeo_spcs_runner.py` filename) are independent counters:
+
+| Counter | Current value | What it tracks |
+|---------|--------------|----------------|
+| Runner script version | v3 (`aeo_spcs_runner.py`) | Python logic changes: generation modes, transcript capture, token attribution |
+| Docker image tag | `:v5` | Every `docker build + push` to the Snowflake registry |
+
+The image tag increments once per push regardless of how many script changes are bundled in that push. Do not conflate the two.
+
+#### Files added to `scripts/spcs/` in the repo
+
+Previously these files existed only in the local `dev/spcs/` working directory. They are now tracked in the repo:
+
+| File | Purpose |
+|------|---------|
+| `setup-snowhouse.sql` | Snowhouse SPCS infrastructure DDL + 8-batch job launch SQL |
+| `aeo-job-snowhouse.yaml` | Single-batch SPCS job spec (used for ad-hoc runs) |
+| `transcript_capture.py` | JSONL transcript reader + `CORTEX_CODE_CLI_USAGE_HISTORY` token fetcher |
+| `aeo_spcs_runner.py` | v3 batch runner (updated from v2 already in repo) |
+
+#### `snow spcs image-registry login` is the correct login method
+
+`docker login <registry>` with stored credentials fails when the session token expires. The correct approach is:
+
+```bash
+snow spcs image-registry login --connection my-snowflake
+```
+
+This refreshes the token via the Snow CLI and updates Docker's credential store. Run it immediately before every `docker push`.
+
+---
+
+### Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Always `--platform linux/amd64` for builds | SPCS compute pools run on x86; building on Apple Silicon without the flag produces an arm64 image that silently fails to start |
+| Login via `snow spcs image-registry login` not `docker login` | `docker login` with cached tokens expires; Snow CLI refreshes the session token automatically |
+| Keep image tag and script version as independent counters | Script can be updated and pushed multiple times between image rebuilds; conflating them creates confusion about what is deployed |

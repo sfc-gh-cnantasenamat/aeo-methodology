@@ -146,6 +146,36 @@ which Snowflake resolves to the full registry URL automatically.
 
 Dockerfile v3 (Cortex CLI install, `transcript_capture.py`, `RUN_MODE` dispatch) — image pushed as `:v5` to Snowhouse registry (2026-04-23).
 
+**Image versioning note:** The Docker image tag (`:v4`, `:v5`) and the runner script version ("v3" as in `aeo_spcs_runner.py`) are independent counters. The image tag increments every time a new image is built and pushed to the registry. The script version reflects internal logic changes to the Python runner. Do not conflate them.
+
+### Build and push procedure (Snowhouse)
+
+Get the registry URL:
+```sql
+USE WAREHOUSE SNOWADHOC;
+SHOW IMAGE REPOSITORIES IN SCHEMA DEVREL.CNANTASENAMAT_DEV;
+-- copy repository_url from output
+```
+
+Build, login, and push:
+```bash
+REGISTRY="sfcogsops-snowhouse-aws-us-west-2.registry.snowflakecomputing.com/devrel/cnantasenamat_dev/aeo_repo"
+SNOW=/Library/Frameworks/Python.framework/Versions/3.11/bin/snow
+
+# Build (always linux/amd64 — SPCS runs on x86)
+docker build --platform linux/amd64 \
+  -t ${REGISTRY}/aeo-benchmark:v<N> \
+  /path/to/aeo/dev/spcs/
+
+# Login via Snow CLI (handles token refresh automatically)
+$SNOW spcs image-registry login --connection my-snowflake
+
+# Push
+docker push ${REGISTRY}/aeo-benchmark:v<N>
+```
+
+After pushing, update all `image:` references in `scripts/spcs/setup-snowhouse.sql` and `scripts/spcs/aeo-job-snowhouse.yaml` to the new tag.
+
 ---
 
 ## Known pitfalls
