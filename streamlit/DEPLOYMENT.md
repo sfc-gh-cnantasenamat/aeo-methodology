@@ -138,13 +138,13 @@ All constants (`DB`, `SCH`, `WH`, `ROLE`, `SPCS_ROLE`) are set from `ENV` at mod
 
 | Account | Image path |
 |---|---|
-| Snowhouse | `/AEO_DB/PUBLIC/AEO_REPO/aeo-benchmark:v4` |
-| DevRel | `sfdevrel-sfdevrel-enterprise.registry.snowflakecomputing.com/aeo_db/public/aeo_repo/aeo-benchmark:v4` |
+| Snowhouse | `/DEVREL/CNANTASENAMAT_DEV/AEO_REPO/aeo-benchmark:v5` |
+| DevRel | `sfdevrel-sfdevrel-enterprise.registry.snowflakecomputing.com/aeo_db/public/aeo_repo/aeo-benchmark:v5` |
 
 The `AEO_TRIGGER_INTERACTIVE` SP on DevRel uses the short path (`/AEO_DB/...`),
 which Snowflake resolves to the full registry URL automatically.
 
-**Pending:** Dockerfile was updated to v3 (adds Cortex CLI install, copies `transcript_capture.py`, `RUN_MODE` dispatch). Next image push should be tagged `:v5` and the SP specs updated to match.
+Dockerfile v3 (Cortex CLI install, `transcript_capture.py`, `RUN_MODE` dispatch) — image pushed as `:v5` to Snowhouse registry (2026-04-23).
 
 ---
 

@@ -1,0 +1,13 @@
+spec:
+  containers:
+  - name: aeo-runner
+    image: /DEVREL/CNANTASENAMAT_DEV/AEO_REPO/aeo-benchmark:v5
+    env:
+      BATCH_NUM: "1"
+      MODEL: "claude-opus-4-6"
+      WAREHOUSE: "SNOWADHOC"
+      RUN_SCHEMA: "DEVREL.CNANTASENAMAT_DEV"
+      RUN_ID: "20"
+      MAX_TOKENS: "8192"
+      GENERATION_MODE: "cortex_cli"
+      ROLE: "DEVREL_INGEST_RL"
