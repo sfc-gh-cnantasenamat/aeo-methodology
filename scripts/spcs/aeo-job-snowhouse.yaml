@@ -11,3 +11,4 @@ spec:
       MAX_TOKENS: "8192"
       GENERATION_MODE: "cortex_cli"
       ROLE: "DEVREL_INGEST_RL"
+      REQUIRE_SPCS: "true"

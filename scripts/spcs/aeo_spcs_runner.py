@@ -317,6 +317,17 @@ def score_and_store_via_sp(cur, schema, run_id, qid, response_text, judges=None)
 # ---------------------------------------------------------------------------
 
 def main():
+    # Enforce containerized execution when REQUIRE_SPCS=true.
+    # Set this in the job-service YAML for production runs.
+    # Omit (or set to false) for local dev and smoke tests.
+    if os.environ.get("REQUIRE_SPCS", "false").lower() == "true":
+        if not os.path.exists("/snowflake/session/token"):
+            raise RuntimeError(
+                "REQUIRE_SPCS=true but /snowflake/session/token not found. "
+                "This runner must be launched via EXECUTE JOB SERVICE inside SPCS, "
+                "not run directly on a local machine."
+            )
+
     batch_num = int(os.environ.get("BATCH_NUM", "1"))
     model = os.environ.get("MODEL", "claude-opus-4-6")
     warehouse = os.environ.get("WAREHOUSE", "SNOWADHOC")
