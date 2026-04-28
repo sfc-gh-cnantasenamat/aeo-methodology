@@ -211,6 +211,8 @@ After pushing, update all `image:` references in `scripts/spcs/setup-snowhouse.s
 | SPCS job `FAILED`: `invalid identifier 'COMPLETED_AT'` | `AEO_INTERACTIVE_RESULTS` created from Snowhouse DDL which lacked `COMPLETED_AT`; container script requires it | `ALTER TABLE CHANINN_DEMO_DATA.APPS.AEO_INTERACTIVE_RESULTS ADD COLUMN COMPLETED_AT TIMESTAMP_NTZ;` (also applied to Snowhouse for parity) |
 | `AEO_TRANSCRIPT` missing on DevRel | New table not yet created in `AEO_OBSERVABILITY.EVAL_SCHEMA` | Create with DDL from `GET_DDL` on Snowhouse. 25 columns including `TOOL_CALL_*` per-tool counts, `INPUT_TOKENS`, `OUTPUT_TOKENS`, `CACHE_READ_TOKENS`, `CACHE_WRITE_TOKENS`, `FIRST_REQUEST_ID`, `LAST_REQUEST_ID`, `GENERATION_SECS`. |
 | `V_AEO_TRANSCRIPT_STATS` missing on DevRel | View not yet created in `AEO_OBSERVABILITY.EVAL_SCHEMA` | Recreate from `GET_DDL` on Snowhouse. Uses `LEFT JOIN AEO_TRANSCRIPT` so runs without transcript data still appear. |
+| Runner executed locally in production | `REQUIRE_SPCS` env var not set in job spec, allowing accidental local execution | All production job specs (`setup-snowhouse.sql`, `aeo-job-snowhouse.yaml`) set `REQUIRE_SPCS: "true"`. Runner raises `RuntimeError` at startup if `/snowflake/session/token` is absent. Omit the var (or set to `false`) only for local dev. |
+| `CACHE_READ_TOKENS` / `CACHE_WRITE_TOKENS` are NULL for `cortex_complete` runs | `SNOWFLAKE.CORTEX.COMPLETE` does not return cache token breakdown; `CORTEX_FUNCTIONS_USAGE_HISTORY` investigated but only provides total tokens with no user filter. | Expected and acceptable. `INPUT_TOKENS` and `OUTPUT_TOKENS` are populated from the inline `usage` field. Cache columns are only available for `cortex_cli` runs via `CORTEX_CODE_CLI_USAGE_HISTORY`. |
 
 ---
 

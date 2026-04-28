@@ -118,7 +118,7 @@ if run_eval:
     model_results = {m: [] for m in all_models}
 
     try:
-        user_name = st.experimental_user.user_name or "local"
+        user_name = st.user.user_name or "local"
     except Exception:
         user_name = "local"
 
@@ -159,7 +159,7 @@ if run_eval:
                             response_text = f"[Error: {_e}]"
                     else:
                         # SiS: trigger SPCS job with native Cortex Code CLI
-                        st.caption(f"- **{qid}**: Running native Cortex Code via :blue[SPCS]")
+                        st.caption(f"&nbsp;&nbsp;&nbsp;&nbsp;↳ **{qid}**: Running native Cortex Code via :blue[SPCS]")
                         from utils.spcs import run_via_spcs
                         response_text = run_via_spcs(
                             session, _native_prompt,
@@ -401,58 +401,60 @@ st.divider()
 with st.expander("Skill test history", expanded=True):
     st.caption(f"Results are written to `{DB}.{SCH}.AEO_SKILL_TESTS`")
 
-    history_df = run_query("""
-        SELECT SKILL_NAME, CATEGORY, MODEL, CREATED_AT,
-               COUNT(*) AS QUESTIONS,
-               AVG(TOTAL_SCORE) AS AVG_TOTAL,
-               AVG(MUST_HAVE_PASS) AS AVG_MH_PASS,
-               AVG(CORRECTNESS) AS AVG_CORRECTNESS,
-               AVG(COMPLETENESS) AS AVG_COMPLETENESS,
-               AVG(RECENCY) AS AVG_RECENCY,
-               AVG(CITATION_SCORE) AS AVG_CITATION,
-               AVG(RECOMMENDATION) AS AVG_RECOMMENDATION
-        FROM AEO_SKILL_TESTS
-        GROUP BY SKILL_NAME, CATEGORY, MODEL, CREATED_AT
-        ORDER BY CREATED_AT DESC
-        LIMIT 50
-    """)
+    try:
+        history_df = run_query("""
+            SELECT SKILL_NAME, CATEGORY, MODEL, CREATED_AT,
+                   COUNT(*) AS QUESTIONS,
+                   AVG(TOTAL_SCORE) AS AVG_TOTAL,
+                   AVG(MUST_HAVE_PASS) AS AVG_MH_PASS,
+                   AVG(CORRECTNESS) AS AVG_CORRECTNESS,
+                   AVG(COMPLETENESS) AS AVG_COMPLETENESS,
+                   AVG(RECENCY) AS AVG_RECENCY,
+                   AVG(CITATION_SCORE) AS AVG_CITATION,
+                   AVG(RECOMMENDATION) AS AVG_RECOMMENDATION
+            FROM AEO_SKILL_TESTS
+            GROUP BY SKILL_NAME, CATEGORY, MODEL, CREATED_AT
+            ORDER BY CREATED_AT DESC
+            LIMIT 50
+        """)
+        if history_df.empty:
+            st.info("No skill tests yet. Run your first eval above!")
+        else:
+            history_df["Avg Score %"] = (
+                history_df["AVG_TOTAL"] / 50.0 * 100
+            ).round(1)
+            history_df["MH Pass"] = (history_df["AVG_MH_PASS"] * 100).round(1)
+            for col, label in [
+                ("AVG_CORRECTNESS", "Correctness"),
+                ("AVG_COMPLETENESS", "Completeness"),
+                ("AVG_RECENCY", "Recency"),
+                ("AVG_CITATION", "Citation"),
+                ("AVG_RECOMMENDATION", "Recommendation"),
+            ]:
+                history_df[label] = history_df[col].round(1)
 
-    if history_df.empty:
-        st.info("No skill tests yet. Run your first eval above!")
-    else:
-        history_df["Avg Score %"] = (
-            history_df["AVG_TOTAL"] / 50.0 * 100
-        ).round(1)
-        history_df["MH Pass"] = (history_df["AVG_MH_PASS"] * 100).round(1)
-        for col, label in [
-            ("AVG_CORRECTNESS", "Correctness"),
-            ("AVG_COMPLETENESS", "Completeness"),
-            ("AVG_RECENCY", "Recency"),
-            ("AVG_CITATION", "Citation"),
-            ("AVG_RECOMMENDATION", "Recommendation"),
-        ]:
-            history_df[label] = history_df[col].round(1)
-
-        st.dataframe(
-            history_df[[
-                "CREATED_AT", "SKILL_NAME", "CATEGORY",
-                "MODEL", "QUESTIONS", "Avg Score %", "MH Pass",
-                "Correctness", "Completeness", "Recency", "Citation", "Recommendation",
-            ]].rename(columns={
-                "CREATED_AT": "Time",
-                "SKILL_NAME": "Skill",
-                "CATEGORY": "Category",
-                "MODEL": "Model",
-                "QUESTIONS": "Qs",
-            }),
-            column_config={
-                "Avg Score %": st.column_config.ProgressColumn(
-                    "Avg Score %", format="%.1f%%", min_value=0, max_value=100, width="medium",
-                ),
-                "MH Pass": st.column_config.ProgressColumn(
-                    "MH Pass", format="%.0f%%", min_value=0, max_value=100, width="medium",
-                ),
-            },
-            use_container_width=True,
-            height=300,
-        )
+            st.dataframe(
+                history_df[[
+                    "CREATED_AT", "SKILL_NAME", "CATEGORY",
+                    "MODEL", "QUESTIONS", "Avg Score %", "MH Pass",
+                    "Correctness", "Completeness", "Recency", "Citation", "Recommendation",
+                ]].rename(columns={
+                    "CREATED_AT": "Time",
+                    "SKILL_NAME": "Skill",
+                    "CATEGORY": "Category",
+                    "MODEL": "Model",
+                    "QUESTIONS": "Qs",
+                }),
+                column_config={
+                    "Avg Score %": st.column_config.ProgressColumn(
+                        "Avg Score %", format="%.1f%%", min_value=0, max_value=100, width="medium",
+                    ),
+                    "MH Pass": st.column_config.ProgressColumn(
+                        "MH Pass", format="%.0f%%", min_value=0, max_value=100, width="medium",
+                    ),
+                },
+                use_container_width=True,
+                height=300,
+            )
+    except Exception as _e:
+        st.warning(f"Could not load history: {_e}")

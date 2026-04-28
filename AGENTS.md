@@ -628,3 +628,61 @@ This refreshes the token via the Snow CLI and updates Docker's credential store.
 | Always `--platform linux/amd64` for builds | SPCS compute pools run on x86; building on Apple Silicon without the flag produces an arm64 image that silently fails to start |
 | Login via `snow spcs image-registry login` not `docker login` | `docker login` with cached tokens expires; Snow CLI refreshes the session token automatically |
 | Keep image tag and script version as independent counters | Script can be updated and pushed multiple times between image rebuilds; conflating them creates confusion about what is deployed |
+
+---
+
+## Session Log: 2026-04-23 — REQUIRE_SPCS Guard, Token Coverage Investigation
+
+### What Was Done
+
+#### `REQUIRE_SPCS=true` guard added to runner and all job specs
+
+`aeo_spcs_runner.py` now checks for the SPCS OAuth token file at startup when `REQUIRE_SPCS=true`:
+
+```python
+if os.environ.get("REQUIRE_SPCS", "false").lower() == "true":
+    if not os.path.exists("/snowflake/session/token"):
+        raise RuntimeError(
+            "REQUIRE_SPCS=true but /snowflake/session/token not found. "
+            "This runner must be launched via EXECUTE JOB SERVICE inside SPCS, "
+            "not run directly on a local machine."
+        )
+```
+
+`/snowflake/session/token` is injected by SPCS at container startup and never exists on a local machine. The guard is opt-in so local dev still works by omitting the env var.
+
+`REQUIRE_SPCS: "true"` was added to all 8 batch env blocks in `setup-snowhouse.sql` and to `aeo-job-snowhouse.yaml`.
+
+#### `cortex_complete` token coverage confirmed — no additional work needed
+
+`SNOWFLAKE.CORTEX.COMPLETE` returns token usage inline in the response JSON:
+
+```json
+{"usage": {"prompt_tokens": N, "completion_tokens": N, "total_tokens": N}}
+```
+
+The existing `insert_transcript()` call already maps these to `INPUT_TOKENS` and `OUTPUT_TOKENS`. No additional query is needed.
+
+`CORTEX_FUNCTIONS_USAGE_HISTORY` was investigated as a potential source of additional metadata for `cortex_complete` calls. It was ruled out: it only provides a total `TOKENS` count with no user filter, no input/output breakdown, and no request ID. It adds nothing over the inline response.
+
+#### Token coverage comparison by generation mode
+
+| Column | `cortex_cli` | `cortex_complete` |
+|--------|-------------|-------------------|
+| `INPUT_TOKENS` | `CORTEX_CODE_CLI_USAGE_HISTORY` | Inline `usage.prompt_tokens` |
+| `OUTPUT_TOKENS` | `CORTEX_CODE_CLI_USAGE_HISTORY` | Inline `usage.completion_tokens` |
+| `CACHE_READ_TOKENS` | `CORTEX_CODE_CLI_USAGE_HISTORY` | NULL (not in CORTEX.COMPLETE response) |
+| `CACHE_WRITE_TOKENS` | `CORTEX_CODE_CLI_USAGE_HISTORY` | NULL |
+| `FIRST_REQUEST_ID` | `CORTEX_CODE_CLI_USAGE_HISTORY` | NULL (no equivalent for SQL calls) |
+| `LAST_REQUEST_ID` | `CORTEX_CODE_CLI_USAGE_HISTORY` | NULL |
+| `GENERATION_SECS` | Wall-clock timing | Wall-clock timing |
+
+---
+
+### Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| `REQUIRE_SPCS` is opt-in via env var | Keeps local dev and smoke tests unblocked while enforcing containerization in production job specs |
+| Fail-fast at `main()` entry not mid-run | Catches misconfigured local runs immediately rather than after generating and scoring questions |
+| Do not query `CORTEX_FUNCTIONS_USAGE_HISTORY` for `cortex_complete` token attribution | View lacks user filter and input/output split; inline response already provides what is needed |

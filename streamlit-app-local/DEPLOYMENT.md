@@ -197,6 +197,8 @@ After pushing, update all `image:` references in `scripts/spcs/setup-snowhouse.s
 | `snowflake.yml` becomes identical to `snowflake-devrel.yml` | Swap-restore command interrupted or partially failed | Reconstructed from `SHOW STREAMLITS` + `GET_DDL`. Correct Snowhouse config: `DEVREL.CNANTASENAMAT_DEV`, `SNOWADHOC`, `STREAMLIT_DEDICATED_POOL`, no EAI |
 | `AEO_TRANSCRIPT` missing on new account | New table not yet created | Create on both accounts: `DEVREL.CNANTASENAMAT_DEV` (Snowhouse) and `AEO_OBSERVABILITY.EVAL_SCHEMA` (DevRel). DDL in `scripts/spcs/setup-snowhouse.sql`. 25 columns including `TOOL_CALL_*` per-tool counts, `INPUT_TOKENS`, `OUTPUT_TOKENS`, `CACHE_READ_TOKENS`, `CACHE_WRITE_TOKENS`, `FIRST_REQUEST_ID`, `LAST_REQUEST_ID`, `GENERATION_SECS`. |
 | `V_AEO_TRANSCRIPT_STATS` missing | View not yet created on new account | Recreate from `GET_DDL` on Snowhouse. Uses `LEFT JOIN AEO_TRANSCRIPT` so runs without transcript data still appear. |
+| Runner executed locally in production | `REQUIRE_SPCS` env var not set in job spec, allowing accidental local execution | All production job specs (`setup-snowhouse.sql`, `aeo-job-snowhouse.yaml`) set `REQUIRE_SPCS: "true"`. Runner raises `RuntimeError` at startup if token file is absent. Omit the var (or set to `false`) only for local dev. |
+| `CACHE_READ_TOKENS` / `CACHE_WRITE_TOKENS` are NULL for `cortex_complete` runs | `SNOWFLAKE.CORTEX.COMPLETE` does not return cache token breakdown; `CORTEX_FUNCTIONS_USAGE_HISTORY` investigated but only provides total tokens with no user filter. | Expected and acceptable. `INPUT_TOKENS` and `OUTPUT_TOKENS` are populated from the inline `usage` field. Cache columns are only available for `cortex_cli` runs via `CORTEX_CODE_CLI_USAGE_HISTORY`.
 
 ---
 

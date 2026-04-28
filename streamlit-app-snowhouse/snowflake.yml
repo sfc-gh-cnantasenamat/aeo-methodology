@@ -8,8 +8,6 @@ entities:
       database: DEVREL
       schema: CNANTASENAMAT_DEV
     query_warehouse: SNOWADHOC
-    runtime_name: SYSTEM$ST_CONTAINER_RUNTIME_PY3_11
-    compute_pool: SYSTEM_COMPUTE_POOL_CPU
     main_file: app.py
     artifacts:
       - app.py

@@ -134,7 +134,7 @@ if run_eval:
     model_results = {}
 
     try:
-        user_name = st.experimental_user.user_name or "local"
+        user_name = st.user.user_name or "local"
     except Exception:
         user_name = "local"
 
@@ -143,7 +143,7 @@ if run_eval:
         custom_canonical = ""
         custom_must_haves = []
         if question_mode == "Custom question" and question_text and question_text.strip():
-            st.caption("Generating evaluation criteria with Cortex…")
+            st.caption("- Generating evaluation criteria with Cortex…")
             try:
                 _crit_prompt = (
                     f'For the question: "{question_text}"\n\n'
@@ -192,7 +192,7 @@ if run_eval:
                         for line in _mh_raw.splitlines()
                         if line.strip()
                     ]
-                    st.caption(f"Evaluation criteria generated ({len(custom_must_haves)} must-haves).")
+                    st.caption(f"- Evaluation criteria generated ({len(custom_must_haves)} must-haves).")
                 else:
                     st.warning("Could not generate evaluation criteria — scoring will proceed without them.")
             except subprocess.TimeoutExpired:
@@ -262,7 +262,7 @@ if run_eval:
                             response_text = f"[Error: {_e}]"
                     else:
                         # SiS: trigger SPCS job with native Cortex Code CLI
-                        st.caption(f"- **{qid or 'custom'}**: Running native Cortex Code via :blue[SPCS]")
+                        st.caption(f"&nbsp;&nbsp;&nbsp;&nbsp;↳ **{qid or 'custom'}**: Running native Cortex Code via :blue[SPCS]")
                         from utils.spcs import run_via_spcs
                         response_text = run_via_spcs(
                             session, _native_prompt,
@@ -271,13 +271,8 @@ if run_eval:
                             role=SPCS_ROLE,
                         )
                         if response_text.startswith("[Error:"):
-                            # SPCS not available in this environment — fall back to CORTEX.COMPLETE
-                            st.caption(f"- **{qid or 'custom'}**: SPCS unavailable, falling back to :orange[mistral-large2]")
-                            response_text = generate_response(
-                                session, qt,
-                                system_prompt=system_prompt,
-                                model="mistral-large2",
-                            )
+                            st.error(f"SPCS job failed for {qid or 'custom'}: {response_text}")
+                            continue
                 else:
                     response_text = generate_response(
                         session, qt,

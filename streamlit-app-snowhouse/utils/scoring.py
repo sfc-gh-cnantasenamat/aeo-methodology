@@ -230,25 +230,16 @@ def score_response(
             "panel_avg": data.get("panel_avg", {}),
         }
 
-    # Per-judge loop — custom questions in SiS, or all questions locally
-    if in_sis:
-        from aeo_feedback_functions import score_full_rubric as _score_fn
-    else:
-        _score_fn = None  # use _score_full_rubric_local below
-
+    # Per-judge loop — custom questions in SiS, or all questions locally.
+    # aeo_feedback_functions is not installable in SiS; _score_full_rubric_local
+    # calls CORTEX.COMPLETE directly through the active session and works in both.
     all_scores = {}
     for idx, judge in enumerate(effective_judges):
         try:
-            if in_sis:
-                scores = _score_fn(
-                    session, judge, question, response,
-                    canonical_answer, must_haves,
-                )
-            else:
-                scores = _score_full_rubric_local(
-                    session, judge, question, response,
-                    canonical_answer, must_haves,
-                )
+            scores = _score_full_rubric_local(
+                session, judge, question, response,
+                canonical_answer, must_haves,
+            )
             all_scores[judge] = scores
         except Exception as e:
             all_scores[judge] = {

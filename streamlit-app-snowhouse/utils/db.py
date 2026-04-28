@@ -86,7 +86,7 @@ else:  # snowhouse (including local dev)
     SCH       = "CNANTASENAMAT_DEV"
     WH        = "SNOWADHOC"
     ROLE      = "DEVREL_ADMIN_RL"
-    SPCS_ROLE = "DEVREL_INGEST_RL"
+    SPCS_ROLE = "DEVREL_MODELING_RL"
 
 
 # ---------------------------------------------------------------------------
@@ -98,8 +98,18 @@ def _get_session():
     """Return a Snowpark Session that works in both SiS and local."""
     try:
         from snowflake.snowpark.context import get_active_session
-        return get_active_session()
+        session = get_active_session()
+        # SiS owner's rights: session already runs as the Streamlit owner role.
+        # Best-effort USE ROLE/WAREHOUSE in a nested try so a failure here
+        # never triggers the local-dev fallback path below.
+        try:
+            session.sql(f"USE ROLE {ROLE}").collect()
+            session.sql(f"USE WAREHOUSE {WH}").collect()
+        except Exception:
+            pass
+        return session
     except Exception:
+        # Local dev fallback — SiS get_active_session() not available.
         from snowflake.snowpark import Session
         session = Session.builder.config("connection_name", "my-snowflake").create()
         session.sql(f"USE ROLE {ROLE}").collect()
