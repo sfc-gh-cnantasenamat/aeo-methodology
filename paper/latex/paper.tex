@@ -232,6 +232,10 @@ Runs are numbered in Yates order: run = 1 + D + 2C + 4A + 8S, where D, C, A, S a
 
 Sessions were sandboxed to prevent access to canonical answers, scoring rubrics, or benchmark files.
 
+\textbf{Response Generation Procedure.} Each run begins in a fresh Cortex Code session. Canonical answers, scoring rubrics, benchmark question files, and outputs from prior runs are not present in the session working directory. This isolation ensures that the respondent model cannot reference expected answers or carry over context from any previous run.
+
+\textbf{Scoring Procedure.} Scoring is conducted in a separate session after all responses for a run are fully collected. Each of the five judges scores every response independently, with no access to the scores or assessments produced by the other judges. Panel average scores are computed post-hoc by aggregating across all five judge scores. This two-phase structure (generation then scoring) prevents response quality from being influenced by scoring feedback and prevents judges from anchoring on each other's assessments.
+
 % ============================================================
 \section{Results}
 % ============================================================
