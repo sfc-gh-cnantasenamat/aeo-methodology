@@ -75,6 +75,18 @@ Our custom pipeline extends the TruLens baseline in four ways:
 
 The tradeoff is that our pipeline does not produce OpenTelemetry-compatible spans or integrate natively with Snowflake AI Observability. TruLens would provide those observability capabilities out of the box. A natural next step is to migrate the scoring pipeline to TruLens so that results are visible in Snowsight under `AI & ML > Evaluations`, while retaining our custom feedback functions as TruLens `Feedback` objects backed by the same rubric prompts.
 
+### Session Observability and Transcript Collection
+
+Each run's response generation process is instrumented at the per-question level. Alongside the response text, the benchmark captures a structured observability record for every question-run pair containing:
+
+- **Turn counts and tool usage.** The number of conversation turns, total tool invocations, and per-tool call counts across ten tracked tools: bash, file read, file write, file edit, glob, grep, SQL execution, skill invocation, web fetch, and web search. This makes the computational footprint of each answer directly measurable and comparable across configurations.
+- **Token attribution.** Total input tokens, output tokens, cache read tokens, and cache write tokens per question. For agentic runs executed via the Cortex CLI, token data is attributed post-generation from `SNOWFLAKE.ACCOUNT_USAGE.CORTEX_CODE_CLI_USAGE_HISTORY` using a time-window query, since the CLI does not emit token counts inline. Prompt cache tokens are tracked separately to quantify reuse across multi-turn sessions.
+- **Generation time.** Wall-clock seconds from prompt submission to response completion, enabling latency comparisons across configurations and models.
+- **Request traceability.** The first and last API request identifiers for each question link observability records back to Snowflake's usage history for full auditability.
+- **Full conversation transcript.** The complete multi-turn exchange is stored as newline-delimited JSON, preserving all intermediate tool calls, tool results, and model turns for post-hoc analysis.
+
+Run-level aggregates (total turns, per-tool call distribution, cache hit rate, average generation time per question) are available through a dedicated analytics view. This observability layer enables analysis beyond scores alone: differences in tool usage patterns across configurations provide direct evidence of how each augmentation factor changes retrieval and generation behavior at the session level.
+
 ### 2^4 Factorial Experiment
 
 We tested four binary augmentation factors in all 16 possible combinations:
