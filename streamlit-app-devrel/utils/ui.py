@@ -10,12 +10,14 @@ def citation_expander(response_text: str) -> None:
     Extracts both markdown-style links ([label](url)) and bare https:// URLs.
     Shows a note explaining low Citation scores when no sources are found.
     """
-    # Markdown links: [label](url)
-    md_links = re.findall(r'\[([^\]]+)\]\((https?://[^\s\)]+)\)', response_text or "")
+    # Markdown links: [label](url) — strip whitespace so trailing spaces
+    # before ] don't break markdown link rendering
+    md_links_raw = re.findall(r'\[([^\]]+)\]\((https?://[^\s\)]+)\)', response_text or "")
+    md_links = [(label.strip(), url.strip()) for label, url in md_links_raw]
     md_urls = {url for _, url in md_links}
     # Bare URLs not already captured inside a markdown link
     all_urls = re.findall(r'https?://[^\s\)\]\'"<>]+', response_text or "")
-    bare = [(url, url) for url in all_urls if url not in md_urls]
+    bare = [(url.strip(), url.strip()) for url in all_urls if url.strip() not in md_urls]
 
     # Merge, deduplicate by URL, preserve order
     seen: set = set()

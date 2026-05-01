@@ -181,7 +181,7 @@ def _qualify_tables(sql: str) -> str:
     return re.sub(
         r'\b(V_AEO_\w+|AEO_QUESTIONS|AEO_RESPONSES|AEO_RUNS'
         r'|AEO_RUN_CONFIG|AEO_SCORES|AEO_PM_PROMPTS|AEO_SKILL_TESTS'
-        r'|AEO_INTERACTIVE_RESULTS|AEO_QUESTION_CANDIDATES)\b',
+        r'|AEO_INTERACTIVE_RESULTS|AEO_QUESTION_CANDIDATES|AEO_DOC_CANDIDATES)\b',
         f'{DB}.{SCH}.\\1', sql,
     )
 

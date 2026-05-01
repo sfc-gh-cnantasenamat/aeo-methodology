@@ -31,6 +31,7 @@ page = st.navigation(
         st.Page("pages/questions_explorer.py",   title="Questions Explorer",   icon=":material/manage_search:"),
         st.Page("pages/test_prompt.py",          title="Test your Prompt",     icon=":material/science:"),
         st.Page("pages/test_skill.py",           title="Test your Skill",      icon=":material/extension:"),
+        st.Page("pages/doc_eval_candidates.py",  title="Doc Eval Candidates",  icon=":material/rate_review:"),
         st.Page("pages/leaderboard.py",          title="Leaderboard",          icon=":material/leaderboard:"),
         st.Page("pages/factors_influence.py",    title="Factors Influence",    icon=":material/insights:"),
         st.Page("pages/factorial_heatmap.py",    title="Factorial Heatmap",    icon=":material/grid_view:"),
@@ -55,7 +56,8 @@ st.sidebar.page_link("pages/home.py",               label="Home",               
 st.sidebar.page_link("pages/category_performance.py", label="Category Performance", icon=":material/category:")
 st.sidebar.page_link("pages/questions_explorer.py", label="Questions Explorer",   icon=":material/manage_search:")
 st.sidebar.page_link("pages/test_prompt.py",        label="Test your Prompt",     icon=":material/science:")
-st.sidebar.page_link("pages/test_skill.py",         label="Test your Skill",      icon=":material/extension:")
+st.sidebar.page_link("pages/test_skill.py",           label="Test your Skill",      icon=":material/extension:")
+st.sidebar.page_link("pages/doc_eval_candidates.py",  label="Doc Eval Candidates",  icon=":material/rate_review:")
 
 # Expand automatically when the active page is an analysis page
 with st.sidebar.expander("Analysis", expanded=page.title in _ANALYSIS_TITLES):
