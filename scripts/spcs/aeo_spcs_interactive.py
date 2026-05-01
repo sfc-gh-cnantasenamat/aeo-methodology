@@ -76,12 +76,15 @@ def setup_cortex_connection_for_spcs(token, account, host, warehouse, role):
 # ---------------------------------------------------------------------------
 
 def generate_via_cortex_cli(prompt, model, connection, timeout=300):
-    """Invoke the Cortex CLI in headless mode.
+    """Invoke the Cortex CLI in headless -p mode.
 
-    The -p flag is required for non-TTY subprocess invocation (Docker/SPCS).
-    Without it the CLI prints 'Usage: cortex [options] [message]' and exits 1.
-    The -p flag does NOT restrict tool access — the V3 agentic benchmark runs
-    confirmed full tool usage with -p when a valid connection is configured.
+    The -p flag is required for non-TTY subprocess execution. Without it,
+    CoCo's underlying Ink (React terminal UI) library crashes with
+    'Raw mode is not supported on the current process.stdin'.
+
+    Web tools (web_search, web_fetch) may be unavailable if the SPCS compute
+    pool has no outbound internet egress. That is a Snowhouse network policy
+    constraint, not a limitation of the -p flag itself.
 
     Returns the response text string.
     """

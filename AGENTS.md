@@ -774,3 +774,70 @@ The existing `insert_transcript()` call already maps these to `INPUT_TOKENS` and
 | `REQUIRE_SPCS` is opt-in via env var | Keeps local dev and smoke tests unblocked while enforcing containerization in production job specs |
 | Fail-fast at `main()` entry not mid-run | Catches misconfigured local runs immediately rather than after generating and scoring questions |
 | Do not query `CORTEX_FUNCTIONS_USAGE_HISTORY` for `cortex_complete` token attribution | View lacks user filter and input/output split; inline response already provides what is needed |
+
+---
+
+## Session Log: 2026-05-01 — SPCS Interactive Fix, Dashboard v2 Improvements, Web Tool Investigation
+
+### What Was Done
+
+#### SPCS interactive runner created and fixed (`aeo_spcs_interactive.py`)
+
+`aeo_spcs_interactive.py` was referenced in the Dockerfile COPY command but had never been committed to the repo. It was recreated from scratch and committed to `scripts/spcs/`.
+
+Root cause of CoCo's "restricted session" message: the interactive runner was not calling `setup_cortex_connection_for_spcs()`, so `~/.snowflake/connections.toml` was never written and CoCo could not authenticate to Snowflake to use its tools.
+
+Fix: the runner now calls `setup_cortex_connection_for_spcs(token, account, host, warehouse, role)` before invoking `cortex -c spcs -m model -p prompt`. This writes the SPCS OAuth token to `~/.snowflake/connections.toml`, giving CoCo full Snowflake tool access (sql_execute, etc.).
+
+Image rebuilt as `aeo-benchmark:v5`, then `v6` (see below). SP updated to reference the new image. `GRANT USAGE` re-applied to `DEVREL_ADMIN_RL` after `CREATE OR REPLACE PROCEDURE` dropped existing grants.
+
+#### `-p` flag is required; stdin mode crashes Ink
+
+An attempt was made to run `cortex` without `-p` (piping the prompt via stdin). This crashed immediately with:
+```
+ERROR Raw mode is not supported on the current process.stdin
+```
+
+CoCo's CLI uses [Ink](https://github.com/vadimdemedes/ink), a React-based terminal UI library that requires raw mode, which is only available with a real TTY. Docker/SPCS containers have no TTY, so Ink crashes when `-p` is omitted.
+
+**`-p` does NOT restrict tools.** The V3 agentic benchmark runs (A-condition) confirmed 19–137 web_search calls per run using `cortex -c spcs -m model -p question` on the DevRel account. The tool restriction on Snowhouse is a network policy issue, not a `-p` limitation.
+
+#### Web tool restriction is a Snowhouse network policy constraint
+
+After the connection setup fix, CoCo changed from "restricted session" to "web browsing and web search tools are blocked." This is because SPCS compute pools on Snowhouse have no outbound internet egress by default.
+
+Investigation confirmed:
+- V3 agentic runs with web_search were executed on the DevRel account (ACCOUNTADMIN, unrestricted egress), not on Snowhouse
+- `AEO_WEB_ACCESS_RULE` (HOST_PORT EGRESS network rule) was created in `DEVREL.CNANTASENAMAT_DEV`
+- `CREATE EXTERNAL ACCESS INTEGRATION` requires account-level `CREATE INTEGRATION` privilege which `DEVREL_ADMIN_RL` does not have
+
+To enable web tools on Snowhouse: a sysadmin must create the EAI and attach it to the EXECUTE JOB SERVICE spec. Image rebuilt as `v6` (reverts stdin attempt, documents Ink constraint).
+
+#### Dashboard v2 improvements deployed to Snowhouse
+
+- **V3 data path**: `V3_AEO_SCORES` with `ENV`-based routing, `AVG()` aggregation for per-judge rows
+- **Per-model baseline**: `get_baseline_run_id(model)` returns `{model}-base` (e.g. `claude-opus-4-7-base`); baseline label shows model name
+- **Multi-question baseline bar fix**: baseline was only computed when `single_q=True`; now averages across all questions with baseline data
+- **Citation expander**: extracts URLs from response text; strips whitespace from labels/URLs to fix broken markdown link rendering (trailing spaces before `]` break Ink syntax)
+- **Download as HTML**: added to live Results section in both test pages
+- **SPCS status line**: indented with `↳` to match scoring sub-items
+- **Factorial heatmap**: right margin reduced from 80px to 10px to eliminate empty space
+
+#### `AEO_BENCHMARK_DASHBOARD` (V1 slot) updated to match V2
+
+`snowflake-snowhouse-v1.yml` created so `streamlit-app-devrel/` can deploy to the V1 app name. Both `AEO_BENCHMARK_DASHBOARD` and `AEO_BENCHMARK_DASHBOARD_V2` now run identical code.
+
+#### GitHub PRs merged to snowflake-eng/aeo v3
+
+- PR #3: SPCS interactive fix, dashboard v2 improvements, paper updates (6 commits)
+- PR #4: `snowflake-snowhouse-v1.yml` deploy config
+
+### Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Keep `-p` flag for all SPCS subprocess invocations | Ink library requires raw mode (TTY); stdin piping crashes in containers |
+| `setup_cortex_connection_for_spcs()` must be called before cortex invocation | Without `~/.snowflake/connections.toml`, CoCo falls back to restricted session |
+| Web tool limitation documented as network policy, not code | Correct fix requires account-level sysadmin action (EAI creation), not an app code change |
+| Re-grant EXECUTE after every `CREATE OR REPLACE PROCEDURE` | Snowflake drops all grants on procedure recreation; `DEVREL_ADMIN_RL` must have USAGE |
+| `AEO_WEB_ACCESS_RULE` left in place | Network rule is created and can be referenced by a future EAI once sysadmin grants are available |
