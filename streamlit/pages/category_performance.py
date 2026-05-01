@@ -180,10 +180,6 @@ with col_bub_text:
 
 with col_bub:
     st.caption("Identify which categories offer the highest improvement potential.")
-    st.caption(
-        "x = current avg score  |  y = gap to best achievable score  |  "
-        "bubble size = number of questions"
-    )
     fig2 = go.Figure()
     for _, row in cat_stats.iterrows():
         fig2.add_trace(go.Scatter(
@@ -223,6 +219,10 @@ with col_bub:
         margin=dict(t=20),
     )
     st.plotly_chart(fig2, use_container_width=True)
+    st.caption(
+        "x = current avg score  |  y = gap to best achievable score  |  "
+        "bubble size = number of questions"
+    )
 
 # --- Impact table ---
 st.subheader(":material/table_chart: Category impact table")

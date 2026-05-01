@@ -5,27 +5,47 @@ import pandas as pd
 import numpy as np
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from utils.db import run_query, config_label
+from utils.db import run_query, config_label, ENV
+from utils.ui import model_selector
 
 st.title(":material/grid_view: Factorial Heatmap")
 st.caption(
-    "Score % for every category × configuration combination. "
-    "Columns: Agentic Avg | 8 agentic configs | 8 non-agentic configs | Non-Agentic Avg | Overall Avg."
+    "Score % for every category × configuration pairing. "
+    "Columns: Agentic Avg | 8 agentic configs | 8 non-agentic configs | Non-Ag Avg | Overall Avg. "
+    "Brighter cells = higher score."
 )
 
+# ── Model selector ────────────────────────────────────────────────────────────
+if ENV == "devrel":
+    _label, _model = model_selector("fh_model_sel")
+
 # --- Load data ---
-df = run_query("""
-    SELECT CATEGORY, RUN_ID, DOMAIN_PROMPT, CITATION, AGENTIC, SELF_CRITIQUE,
-           AVG(TOTAL_SCORE / 50.0 * 100) AS SCORE_PCT
-    FROM V_AEO_PER_QUESTION_HEATMAP
-    GROUP BY CATEGORY, RUN_ID, DOMAIN_PROMPT, CITATION, AGENTIC, SELF_CRITIQUE
-""")
+if ENV == "devrel":
+    df = run_query(f"""
+        SELECT q.CATEGORY, s.RUN_ID,
+               CONTAINS(REGEXP_REPLACE(s.RUN_ID, '^.*-', ''), 'D') AS DOMAIN_PROMPT,
+               CONTAINS(REGEXP_REPLACE(s.RUN_ID, '^.*-', ''), 'C') AS CITATION,
+               CONTAINS(REGEXP_REPLACE(s.RUN_ID, '^.*-', ''), 'A') AS AGENTIC,
+               CONTAINS(REGEXP_REPLACE(s.RUN_ID, '^.*-', ''), 'S') AS SELF_CRITIQUE,
+               AVG(s.TOTAL_SCORE / 50.0 * 100) AS SCORE_PCT
+        FROM V3_AEO_SCORES s
+        JOIN AEO_QUESTIONS q ON s.QUESTION_ID = q.QUESTION_ID
+        WHERE s.RUN_ID LIKE '{_model}-%'
+        GROUP BY q.CATEGORY, s.RUN_ID
+    """)
+else:
+    df = run_query("""
+        SELECT CATEGORY, RUN_ID, DOMAIN_PROMPT, CITATION, AGENTIC, SELF_CRITIQUE,
+               AVG(TOTAL_SCORE / 50.0 * 100) AS SCORE_PCT
+        FROM V_AEO_PER_QUESTION_HEATMAP
+        GROUP BY CATEGORY, RUN_ID, DOMAIN_PROMPT, CITATION, AGENTIC, SELF_CRITIQUE
+    """)
 
 df["Config"] = df.apply(
     lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
 )
 
-# Pivot: categories × runs
+# Pivot: categories × configs
 pivot = df.pivot_table(index="CATEGORY", columns="Config", values="SCORE_PCT", aggfunc="mean")
 
 # Sort configs: agentic first by overall score desc, then non-agentic
@@ -52,7 +72,7 @@ categories   = list(pivot.index)
 # Cell text
 text = [[f"{v:.1f}" for v in row] for row in z]
 
-# Color scale — dark-mode friendly (dark gray mid replaces light yellow)
+# Color scale — dark-mode friendly
 colorscale = [
     [0,    "#b2182b"],
     [0.25, "#ef8a62"],
@@ -90,7 +110,7 @@ for sx, sw in zip(sep_xs, sep_widths):
         line=dict(color="#000000", width=sw), xref="x", yref="y",
     )
 
-# Group labels — placed below the plot area via paper coords
+# Group labels
 ag_cx  = (0 + n_ag) / 2
 nag_cx = (n_ag + 1 + ncols - 3) / 2
 fig.add_annotation(x=ag_cx,  y=-0.02, text="<b>Agentic</b>",
@@ -102,7 +122,7 @@ fig.add_annotation(x=nag_cx, y=-0.02, text="<b>Non-Agentic</b>",
 
 fig.update_layout(
     height=960,
-    margin=dict(l=200, r=80, t=20, b=80),
+    margin=dict(l=200, r=10, t=20, b=80),
     xaxis=dict(side="top", tickfont=dict(size=9, family="monospace", color="#cccccc")),
     yaxis=dict(autorange="reversed", tickfont=dict(size=9, color="#cccccc")),
     template="plotly_dark",

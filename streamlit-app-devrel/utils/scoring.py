@@ -20,7 +20,7 @@ from typing import Dict, List, Optional
 import streamlit as st
 import pandas as pd
 
-from utils.db import get_session, run_query, is_sis, DB, SCH  # noqa: E402
+from utils.db import get_session, run_query, is_sis, DB, SCH, ENV  # noqa: E402
 
 # Judge panel — mirrors aeo_feedback_functions.JUDGE_PANEL
 JUDGE_PANEL = [
@@ -230,25 +230,16 @@ def score_response(
             "panel_avg": data.get("panel_avg", {}),
         }
 
-    # Per-judge loop — custom questions in SiS, or all questions locally
-    if in_sis:
-        from aeo_feedback_functions import score_full_rubric as _score_fn
-    else:
-        _score_fn = None  # use _score_full_rubric_local below
-
+    # Per-judge loop — custom questions in SiS, or all questions locally.
+    # aeo_feedback_functions is not installable in SiS; _score_full_rubric_local
+    # calls CORTEX.COMPLETE directly through the active session and works in both.
     all_scores = {}
     for idx, judge in enumerate(effective_judges):
         try:
-            if in_sis:
-                scores = _score_fn(
-                    session, judge, question, response,
-                    canonical_answer, must_haves,
-                )
-            else:
-                scores = _score_full_rubric_local(
-                    session, judge, question, response,
-                    canonical_answer, must_haves,
-                )
+            scores = _score_full_rubric_local(
+                session, judge, question, response,
+                canonical_answer, must_haves,
+            )
             all_scores[judge] = scores
         except Exception as e:
             all_scores[judge] = {
@@ -280,22 +271,81 @@ def score_response(
 # Baseline lookup
 # ---------------------------------------------------------------------------
 
+# Map Cortex Code (coco-*) model aliases to their canonical model names.
+# These are used to find the matching baseline run.
+_COCO_MODEL_MAP: Dict[str, str] = {
+    "coco-opus-4-6": "claude-opus-4-6",
+    "coco-opus-4-7": "claude-opus-4-7",
+    "coco-gpt-5.4":  "openai-gpt-5.4",
+}
+
+
+@st.cache_data(ttl=3600)
+def get_baseline_run_id(model: str) -> str:
+    """Return the run identifier for the baseline of a given model.
+
+    In devrel ENV (V3 data path): returns a V3 RUN_ID string like
+    'claude-opus-4-7-base'.  In legacy ENV: returns a string representation
+    of the integer RUN_ID from AEO_RUNS (e.g. '20'), falling back to '1'.
+    """
+    canonical = _COCO_MODEL_MAP.get(model, model)
+    if ENV == "devrel":
+        # V3 baseline run_id is "{model}-base"
+        v3_id = f"{canonical}-base"
+        df = run_query(f"SELECT DISTINCT RUN_ID FROM V3_AEO_SCORES WHERE RUN_ID = '{v3_id}' LIMIT 1")
+        return v3_id if not df.empty else f"claude-opus-4-6-base"
+    # Legacy path: integer RUN_ID in AEO_RUNS
+    df = run_query(f"""
+        SELECT RUN_ID FROM AEO_RUNS
+        WHERE MODEL = '{canonical}'
+          AND DOMAIN_PROMPT = FALSE
+          AND CITATION = FALSE
+          AND AGENTIC = FALSE
+          AND SELF_CRITIQUE = FALSE
+        ORDER BY RUN_ID DESC
+        LIMIT 1
+    """)
+    if df.empty:
+        return "1"
+    return str(int(df.iloc[0]["RUN_ID"]))
+
 
 @st.cache_data(ttl=600)
-def get_baseline_scores(question_id: str) -> Optional[Dict]:
-    """Return baseline (run_id=1) scores for a question from the heatmap view.
+def get_baseline_scores(question_id: str, run_id: str = "") -> Optional[Dict]:
+    """Return baseline scores for a question.
 
+    Pass run_id from get_baseline_run_id(model) to get model-matched baseline.
     Returns a dict with keys matching panel_avg (correctness, completeness, …)
     or None if no baseline exists.
     """
-    df = run_query(f"""
-        SELECT CORRECTNESS, COMPLETENESS, RECENCY, CITATION_SCORE,
-               RECOMMENDATION, TOTAL_SCORE, MUST_HAVE_PASS
-        FROM V_AEO_PER_QUESTION_HEATMAP
-        WHERE QUESTION_ID = '{question_id}'
-          AND RUN_ID = 1
-    """)
-    if df.empty:
+    if not run_id:
+        run_id = "claude-opus-4-6-base" if ENV == "devrel" else "1"
+
+    if ENV == "devrel":
+        # V3: average across all judge rows for this question + run
+        df = run_query(f"""
+            SELECT
+                AVG(CORRECTNESS)   AS CORRECTNESS,
+                AVG(COMPLETENESS)  AS COMPLETENESS,
+                AVG(RECENCY)       AS RECENCY,
+                AVG(CITATION)      AS CITATION_SCORE,
+                AVG(RECOMMENDATION) AS RECOMMENDATION,
+                AVG(TOTAL_SCORE)   AS TOTAL_SCORE,
+                AVG(MUST_HAVE_PASS) AS MUST_HAVE_PASS
+            FROM V3_AEO_SCORES
+            WHERE QUESTION_ID = '{question_id}'
+              AND RUN_ID = '{run_id}'
+        """)
+    else:
+        df = run_query(f"""
+            SELECT CORRECTNESS, COMPLETENESS, RECENCY, CITATION_SCORE,
+                   RECOMMENDATION, TOTAL_SCORE, MUST_HAVE_PASS
+            FROM V_AEO_PER_QUESTION_HEATMAP
+            WHERE QUESTION_ID = '{question_id}'
+              AND RUN_ID = {run_id}
+        """)
+
+    if df.empty or df.iloc[0]["TOTAL_SCORE"] is None:
         return None
 
     row = df.iloc[0]
@@ -308,6 +358,22 @@ def get_baseline_scores(question_id: str) -> Optional[Dict]:
         "total": float(row["TOTAL_SCORE"]),
         "must_have_pass": float(row["MUST_HAVE_PASS"]),
     }
+
+
+@st.cache_data(ttl=3600)
+def get_baseline_model(model: str = "") -> str:
+    """Return the model name used in the baseline run for a given test model."""
+    if ENV == "devrel":
+        canonical = _COCO_MODEL_MAP.get(model, model)
+        # V3 run_id is "{model}-base" — model name is everything before "-base"
+        run_id = get_baseline_run_id(model) if model else "claude-opus-4-6-base"
+        return run_id.replace("-base", "") if run_id.endswith("-base") else canonical or "claude-opus-4-6"
+    # Legacy path
+    run_id = get_baseline_run_id(model) if model else "1"
+    df = run_query(f"SELECT MODEL FROM AEO_RUNS WHERE RUN_ID = {run_id} LIMIT 1")
+    if df.empty:
+        return "run 1"
+    return str(df.iloc[0]["MODEL"])
 
 
 # ---------------------------------------------------------------------------

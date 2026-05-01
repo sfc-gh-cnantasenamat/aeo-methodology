@@ -1,6 +1,6 @@
 """AEO Benchmark — Home page."""
 import streamlit as st
-from utils.db import run_query, DB, SCH
+from utils.db import run_query, DB, SCH, ENV
 
 st.title(":material/query_stats: AEO Benchmark")
 st.markdown("*Building an AI Engine Optimization (AEO) system for measuring how well LLMs answer Snowflake developer questions*")
@@ -8,17 +8,31 @@ st.markdown("*Building an AI Engine Optimization (AEO) system for measuring how 
 st.divider()
 
 # ── Live stats ────────────────────────────────────────────────────────────────
-stats = run_query("""
-    SELECT
-        (SELECT COUNT(*)          FROM AEO_RUNS)                    AS total_runs,
-        (SELECT COUNT(*)          FROM AEO_QUESTIONS)               AS total_questions,
-        (SELECT COUNT(DISTINCT CATEGORY) FROM AEO_QUESTIONS)        AS total_categories,
-        (SELECT COUNT(*)          FROM AEO_RESPONSES)               AS total_responses,
-        (SELECT COUNT(*)          FROM AEO_SCORES)                  AS total_scores,
-        (SELECT COUNT(DISTINCT MODEL)                FROM AEO_RUNS)    AS model_count,
-        (SELECT TO_CHAR(MIN(RUN_DATE), 'Mon DD, YYYY') FROM AEO_RUNS) AS first_run,
-        (SELECT TO_CHAR(MAX(RUN_DATE), 'Mon DD, YYYY') FROM AEO_RUNS) AS last_run
-""")
+if ENV == "devrel":
+    stats = run_query("""
+        SELECT
+            (SELECT COUNT(DISTINCT RUN_ID)                             FROM V3_AEO_SCORES) AS total_runs,
+            (SELECT COUNT(*)                                           FROM AEO_QUESTIONS) AS total_questions,
+            (SELECT COUNT(DISTINCT CATEGORY)                           FROM AEO_QUESTIONS) AS total_categories,
+            (SELECT COUNT(*)                                           FROM V3_AEO_TRANSCRIPT) AS total_responses,
+            (SELECT COUNT(*)                                           FROM V3_AEO_SCORES) AS total_scores,
+            (SELECT COUNT(DISTINCT REGEXP_REPLACE(RUN_ID, '-(base|[DCAS]+)$', ''))
+                                                                       FROM V3_AEO_SCORES) AS model_count,
+            (SELECT TO_CHAR(MIN(SCORED_AT), 'Mon DD, YYYY')           FROM V3_AEO_SCORES) AS first_run,
+            (SELECT TO_CHAR(MAX(SCORED_AT), 'Mon DD, YYYY')           FROM V3_AEO_SCORES) AS last_run
+    """)
+else:
+    stats = run_query("""
+        SELECT
+            (SELECT COUNT(*)          FROM AEO_RUNS)                    AS total_runs,
+            (SELECT COUNT(*)          FROM AEO_QUESTIONS)               AS total_questions,
+            (SELECT COUNT(DISTINCT CATEGORY) FROM AEO_QUESTIONS)        AS total_categories,
+            (SELECT COUNT(*)          FROM AEO_RESPONSES)               AS total_responses,
+            (SELECT COUNT(*)          FROM AEO_SCORES)                  AS total_scores,
+            (SELECT COUNT(DISTINCT MODEL)                FROM AEO_RUNS)    AS model_count,
+            (SELECT TO_CHAR(MIN(RUN_DATE), 'Mon DD, YYYY') FROM AEO_RUNS) AS first_run,
+            (SELECT TO_CHAR(MAX(RUN_DATE), 'Mon DD, YYYY') FROM AEO_RUNS) AS last_run
+    """)
 s = stats.iloc[0]
 
 c1, c2, c3, c4, c5, c6 = st.columns(6)
@@ -39,7 +53,7 @@ with col_left:
     st.markdown(
         "The **Snowflake Developer Relations** team built AEO to evaluate "
         "AI-powered answer quality across Snowflake's product surface. "
-        "A panel of **3–5 LLM judges** scores every response, removing "
+        "A panel of **5 LLM judges** scores every response, removing "
         "single-model bias."
     )
 

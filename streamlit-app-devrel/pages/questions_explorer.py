@@ -1,50 +1,66 @@
 """Page 5 — Questions Explorer: drilldown by run, category, and question type."""
 import re
+import json
 import uuid
 import streamlit as st
 import plotly.graph_objects as go
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from utils.db import run_query, run_write, config_label, get_current_username, DB, SCH
+from utils.db import run_query, run_write, config_label, get_current_username, DB, SCH, ENV
+from utils.db import v3_per_question_sql
+from utils.ui import model_selector
 
 ADMIN_USERS = {"cnantasenamat", "chaninn"}
 current_user = get_current_username()
 
 st.title(":material/manage_search: Questions Explorer")
-st.caption("Drill into per-question scores for any combination of run, category, and question type.")
+st.caption("Per-question scores for every configuration — filter by config, category, or question type to drill down into individual results.")
+
+# ── Model selector (DevRel only) ──────────────────────────────────────────────
+if ENV == "devrel":
+    _label, _model = model_selector("qe_model_sel")
 
 # --- Load data ---
-df = run_query("""
-    SELECT q.QUESTION_ID, q.QUESTION_TEXT, q.CATEGORY, q.QUESTION_TYPE,
-           h.RUN_ID, h.DOMAIN_PROMPT, h.CITATION, h.AGENTIC, h.SELF_CRITIQUE,
-           rc.MODEL,
-           h.TOTAL_SCORE, h.MUST_HAVE_PASS,
-           h.CORRECTNESS, h.COMPLETENESS, h.RECENCY, h.CITATION_SCORE, h.RECOMMENDATION
-    FROM V_AEO_PER_QUESTION_HEATMAP h
-    JOIN AEO_QUESTIONS q   ON h.QUESTION_ID = q.QUESTION_ID
-    JOIN (SELECT DISTINCT RUN_ID, MODEL FROM AEO_RUN_CONFIG) rc ON h.RUN_ID = rc.RUN_ID
-    ORDER BY h.RUN_ID, q.QUESTION_ID
-""")
+if ENV == "devrel":
+    pq = run_query(v3_per_question_sql(_model))
+    pq["Config"] = pq.apply(
+        lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
+    )
+    q_meta = run_query(
+        "SELECT QUESTION_ID, QUESTION_TEXT, CATEGORY, QUESTION_TYPE FROM AEO_QUESTIONS"
+    )
+    df = pq.merge(q_meta, on="QUESTION_ID", how="left")
+else:
+    df = run_query("""
+        SELECT q.QUESTION_ID, q.QUESTION_TEXT, q.CATEGORY, q.QUESTION_TYPE,
+               h.RUN_ID, h.DOMAIN_PROMPT, h.CITATION, h.AGENTIC, h.SELF_CRITIQUE,
+               rc.MODEL,
+               h.TOTAL_SCORE, h.MUST_HAVE_PASS,
+               h.CORRECTNESS, h.COMPLETENESS, h.RECENCY, h.CITATION_SCORE, h.RECOMMENDATION
+        FROM V_AEO_PER_QUESTION_HEATMAP h
+        JOIN AEO_QUESTIONS q   ON h.QUESTION_ID = q.QUESTION_ID
+        JOIN (SELECT DISTINCT RUN_ID, MODEL FROM AEO_RUN_CONFIG) rc ON h.RUN_ID = rc.RUN_ID
+        ORDER BY h.RUN_ID, q.QUESTION_ID
+    """)
+    df["Config"] = df.apply(
+        lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
+    )
 
-df["Config"] = df.apply(
-    lambda r: config_label(r.DOMAIN_PROMPT, r.CITATION, r.AGENTIC, r.SELF_CRITIQUE), axis=1
-)
-df["ConfigModel"] = df["Config"] + " (" + df["MODEL"].fillna("unknown") + ")"
 df["Score %"] = (df["TOTAL_SCORE"] / 50.0 * 100).round(1)
 
-all_config_models = sorted(df["ConfigModel"].unique())
-all_cats          = sorted(df["CATEGORY"].unique())
-all_types         = sorted(df["QUESTION_TYPE"].unique())
+all_configs = sorted(df["Config"].unique())
+all_cats    = sorted(df["CATEGORY"].unique())
+all_types   = sorted(df["QUESTION_TYPE"].unique())
 
 # --- Per-question table ---
 st.subheader(":material/table_rows: Question-level results")
 fcol1, fcol2, fcol3 = st.columns(3)
-default_cm  = next((v for v in all_config_models if v.startswith("C+A (")), all_config_models[0])
-sel_configs = fcol1.selectbox("Configuration", all_config_models, index=all_config_models.index(default_cm))
+default_cfg = next((v for v in all_configs if v == "C+A"), all_configs[0])
+sel_config  = fcol1.selectbox("Configuration", all_configs, index=all_configs.index(default_cfg))
 sel_cats    = fcol2.selectbox("Category",      ["All"] + all_cats)
 sel_types   = fcol3.selectbox("Question Type", ["All"] + all_types)
 
-mask = (df["ConfigModel"] == sel_configs)
+mask = (df["Config"] == sel_config)
 if sel_cats  != "All":
     mask &= df["CATEGORY"]      == sel_cats
 if sel_types != "All":
@@ -108,21 +124,55 @@ st.dataframe(
 )
 
 with st.expander(":material/chat: View generated answer"):
-    run_id   = int(filtered["RUN_ID"].iloc[0])
     q_ids    = sorted(filtered["QUESTION_ID"].unique())
     sel_view = st.selectbox("Select a question", q_ids, key="view_answer_q")
 
     q_text = filtered[filtered["QUESTION_ID"] == sel_view].iloc[0]["QUESTION_TEXT"]
     st.markdown(f"**{sel_view}:** {q_text}")
 
-    resp_df = run_query(
-        f"SELECT RESPONSE_TEXT FROM AEO_RESPONSES "
-        f"WHERE RUN_ID = {run_id} AND QUESTION_ID = '{sel_view}'"
-    )
-    if not resp_df.empty and resp_df.iloc[0]["RESPONSE_TEXT"]:
-        st.markdown(resp_df.iloc[0]["RESPONSE_TEXT"])
+    if ENV == "devrel":
+        # In V3, the response is embedded in TRANSCRIPT_JSONL
+        run_id_str = str(filtered["RUN_ID"].iloc[0])
+        tran_df = run_query(
+            f"SELECT TRANSCRIPT_JSONL FROM V3_AEO_TRANSCRIPT "
+            f"WHERE RUN_ID = '{run_id_str}' AND QUESTION_ID = '{sel_view}'"
+        )
+        if not tran_df.empty and tran_df.iloc[0]["TRANSCRIPT_JSONL"]:
+            jsonl = tran_df.iloc[0]["TRANSCRIPT_JSONL"]
+            # Extract the last assistant message text from JSONL
+            response_text = None
+            try:
+                lines = [l for l in jsonl.split("\n") if l.strip()]
+                for line in reversed(lines):
+                    try:
+                        msg = json.loads(line)
+                        if msg.get("role") == "assistant":
+                            for block in msg.get("content", []):
+                                if isinstance(block, dict) and block.get("type") == "text":
+                                    response_text = block["text"]
+                                    break
+                            if response_text:
+                                break
+                    except json.JSONDecodeError:
+                        continue
+            except Exception:
+                pass
+            if response_text:
+                st.markdown(response_text)
+            else:
+                st.caption("Response text could not be extracted from transcript.")
+        else:
+            st.caption("No transcript found for this question and configuration.")
     else:
-        st.caption("No response found for this question and configuration.")
+        run_id = int(filtered["RUN_ID"].iloc[0])
+        resp_df = run_query(
+            f"SELECT RESPONSE_TEXT FROM AEO_RESPONSES "
+            f"WHERE RUN_ID = {run_id} AND QUESTION_ID = '{sel_view}'"
+        )
+        if not resp_df.empty and resp_df.iloc[0]["RESPONSE_TEXT"]:
+            st.markdown(resp_df.iloc[0]["RESPONSE_TEXT"])
+        else:
+            st.caption("No response found for this question and configuration.")
 
 with st.expander(":material/key: Configuration key"):
     st.markdown("""
@@ -137,11 +187,6 @@ with st.expander(":material/key: Configuration key"):
 | **Baseline** | None | No features enabled — raw model response only |
 
 Combinations like **C+A** mean Citation and Agentic were both enabled. **D+C+A+S** means all four features were on.
-
----
-
-**Model name** (shown in parentheses) is the underlying LLM used for that run, e.g. `claude-opus-4-6`. \
-Different model rows with the same config acronym represent independent runs of the same configuration on a different model.
 """)
 
 
@@ -343,7 +388,6 @@ if current_user in ADMIN_USERS:
                     """)
                     set_label = bm_name_input.strip() if bm_choice == "+ Create new..." else bm_choice
 
-                    # Duplicate check against existing questions in the target set
                     existing_q_df = run_query(f"SELECT QUESTION_TEXT FROM {tbl}")
                     existing_qs   = set(existing_q_df["QUESTION_TEXT"].tolist()) if not existing_q_df.empty else set()
                     new_rows  = checked[~checked["QUESTION_TEXT"].isin(existing_qs)]

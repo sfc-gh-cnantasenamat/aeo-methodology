@@ -45,19 +45,23 @@ with st.container(border=True):
     # Question source: single radio with three options
     question_mode = st.radio(
         "Select a question source:",
-        ["All questions in the bank", "Specific product category", "Custom question"],
+        [
+            # "All questions in the bank",
+            "Specific product category",
+            "Custom question",
+        ],
         horizontal=True,
     )
 
-    if question_mode == "All questions in the bank":
-        with st.container(border=True):
-            st.caption(f"{len(questions_df)} questions across {len(categories)} categories will be evaluated.")
-            selected_qid = None
-            question_text = None
-            custom_question = None
-            category = None
+    # if question_mode == "All questions in the bank":
+    #     with st.container(border=True):
+    #         st.caption(f"{len(questions_df)} questions across {len(categories)} categories will be evaluated.")
+    #         selected_qid = None
+    #         question_text = None
+    #         custom_question = None
+    #         category = None
 
-    elif question_mode == "Specific product category":
+    if question_mode == "Specific product category":
         with st.container(border=True):
             cat_filter = st.selectbox("Category", categories)
             bank_qs = questions_df[questions_df["CATEGORY"] == cat_filter]
@@ -110,7 +114,7 @@ with st.container(border=True):
 
 # --- Run evaluation ---
 if run_eval:
-    all_mode = (question_mode == "All questions in the bank")
+    all_mode = False  # "All questions in the bank" option is disabled
     cat_mode = (question_mode == "Specific product category" and selected_qid is None)
     multi_mode = all_mode or cat_mode
 

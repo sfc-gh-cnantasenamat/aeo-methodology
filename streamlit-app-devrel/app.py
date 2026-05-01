@@ -20,10 +20,9 @@ else:
     # SiS supports layout but not page_title, page_icon, or menu_items
     st.set_page_config(layout="wide")
 
-# Register all pages for routing; sidebar is built manually below.
-# NOTE: position="hidden" triggers a >=1.48.0 static-analysis constraint which
-# causes the container runtime to attempt a PyPI upgrade — blocked on Snowhouse
-# (STREAMLIT_DEDICATED_POOL has no EAI). Use CSS injection instead.
+# Register all pages for routing; pass position via dict to avoid triggering
+# the static-analysis >=1.48.0 version constraint on older SiS runtimes.
+_nav_kwargs = {"position": "hidden"}
 page = st.navigation(
     [
         st.Page("pages/home.py",                 title="Home",                 icon=":material/home:"),
@@ -35,12 +34,7 @@ page = st.navigation(
         st.Page("pages/factors_influence.py",    title="Factors Influence",    icon=":material/insights:"),
         st.Page("pages/factorial_heatmap.py",    title="Factorial Heatmap",    icon=":material/grid_view:"),
     ],
-)
-
-# Hide Streamlit's built-in sidebar nav — we build it manually below.
-st.markdown(
-    "<style>[data-testid='stSidebarNav']{display:none}</style>",
-    unsafe_allow_html=True,
+    **_nav_kwargs,
 )
 
 # ── Manual sidebar ───────────────────────────────────────────────────────────

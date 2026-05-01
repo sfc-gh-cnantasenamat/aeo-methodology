@@ -132,7 +132,7 @@ def is_sis() -> bool:
 def get_current_username() -> str:
     """Return the lowercase Snowflake username for the active session.
 
-    SiS:   reads st.experimental_user.user_name.
+    SiS:   reads st.user.user_name.
     Local: reads the 'user' field from the [my-snowflake] section of
            ~/.snowflake/connections.toml.  This means only users whose
            Snowflake credentials are explicitly for 'cnantasenamat' or

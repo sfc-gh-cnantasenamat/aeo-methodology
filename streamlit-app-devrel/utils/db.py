@@ -50,12 +50,25 @@ except Exception:
 # Environment detection
 # ---------------------------------------------------------------------------
 
-def _detect_env() -> str:
-    """Return 'devrel' or 'snowhouse' based on the active Snowflake account.
+# Tracks whether the app is running on the DevRel account (SFDEVREL).
+# Used for infrastructure constants (WH, ROLE, SPCS_ROLE) independently of
+# the data-path flag ENV.
+_DEVREL_ACCOUNT: bool = False
 
-    Short-circuits to 'snowhouse' when not running in SiS — avoids a false
-    'devrel' detection if a local Snowpark session happens to be registered.
+
+def _detect_env() -> str:
+    """Return 'devrel' or 'snowhouse' for data-path selection.
+
+    'devrel'   — V3 data (V3_AEO_SCORES / V3_AEO_TRANSCRIPT) is available.
+                 This is true on the DevRel account AND on Snowhouse when the
+                 V3 tables have been migrated there.
+    'snowhouse' — Fall back to legacy V_AEO_* proxy views.
+
+    Sets the module-level _DEVREL_ACCOUNT flag to True when running on the
+    SFDEVREL account, so infrastructure constants (WH, ROLE, SPCS_ROLE) can
+    be set independently of the data-path.
     """
+    global _DEVREL_ACCOUNT
     if not _IS_SIS:
         return "snowhouse"
     try:
@@ -63,7 +76,14 @@ def _detect_env() -> str:
         session = get_active_session()
         acct = (session.get_current_account() or "").upper()
         if "SFDEVREL" in acct:
+            _DEVREL_ACCOUNT = True
             return "devrel"
+        # Snowhouse: check if V3 data has been migrated to this schema.
+        try:
+            session.sql("SELECT 1 FROM V3_AEO_SCORES LIMIT 1").collect()
+            return "devrel"
+        except Exception:
+            pass
     except Exception:
         pass
     return "snowhouse"
@@ -73,9 +93,11 @@ ENV = _detect_env()
 
 # ---------------------------------------------------------------------------
 # Environment-specific constants
+# Infrastructure constants (WH, ROLE, SPCS_ROLE) are based on the actual
+# Snowflake account (_DEVREL_ACCOUNT), not on the data-path ENV flag.
 # ---------------------------------------------------------------------------
 
-if ENV == "devrel":
+if _DEVREL_ACCOUNT:
     DB        = "CHANINN_DEMO_DATA"
     SCH       = "APPS"
     WH        = "CHANIN_XS"
@@ -90,7 +112,7 @@ else:  # snowhouse (including local dev)
     SCH       = "CNANTASENAMAT_DEV"
     WH        = "SNOWADHOC"
     ROLE      = "DEVREL_ADMIN_RL"
-    SPCS_ROLE = "DEVREL_INGEST_RL"
+    SPCS_ROLE = "DEVREL_MODELING_RL"
     # On Snowhouse, proxy views live in the same schema as writable tables.
     READ_DB   = DB
     READ_SCH  = SCH
@@ -129,7 +151,7 @@ def is_sis() -> bool:
 def get_current_username() -> str:
     """Return the lowercase Snowflake username for the active session.
 
-    SiS:   reads st.experimental_user.user_name.
+    SiS:   reads st.user.user_name.
     Local: reads the 'user' field from the [my-snowflake] section of
            ~/.snowflake/connections.toml.  This means only users whose
            Snowflake credentials are explicitly for 'cnantasenamat' or
@@ -137,7 +159,7 @@ def get_current_username() -> str:
     """
     if _IS_SIS:
         try:
-            return (st.experimental_user.user_name or "").lower()
+            return (st.user.user_name or "").lower()
         except Exception:
             return ""
     import tomllib
@@ -194,7 +216,8 @@ def _qualify_tables(sql: str) -> str:
     # Writable: app-specific tables stored in DB.SCH
     sql = re.sub(
         r'\b(AEO_PM_PROMPTS|AEO_SKILL_TESTS'
-        r'|AEO_INTERACTIVE_RESULTS|AEO_QUESTION_CANDIDATES)\b',
+        r'|AEO_INTERACTIVE_RESULTS|AEO_QUESTION_CANDIDATES'
+        r'|V3_AEO_SCORES|V3_AEO_TRANSCRIPT)\b',
         f'{DB}.{SCH}.\\1', sql,
     )
     return sql
@@ -246,3 +269,87 @@ AGENTIC_COLOR    = "#2166ac"   # blue
 NONAGENTIC_COLOR = "#b2182b"   # red
 GREEN            = "#4dac26"
 RED              = "#d01c8b"
+
+
+# ---------------------------------------------------------------------------
+# V3 data SQL helpers (DevRel only — V3_AEO_SCORES & V3_AEO_TRANSCRIPT)
+# ---------------------------------------------------------------------------
+
+# Human-readable labels for model identifiers (DevRel V3 + Snowhouse AEO_RUNS)
+V3_MODEL_LABELS: dict[str, str] = {
+    "claude-opus-4-6": "Opus 4.6",
+    "claude-opus-4-7": "Opus 4.7",
+    "openai-gpt-5.4":  "GPT 5.4",
+    "gemini-3.1-pro":  "Gemini 3.1 Pro",
+    "llama4-maverick": "Llama4 Maverick",
+}
+
+
+def v3_models_sql() -> str:
+    """SQL returning distinct model names from V3_AEO_SCORES, sorted."""
+    return (
+        "SELECT DISTINCT REGEXP_REPLACE(RUN_ID, '-(base|[DCAS]+)$', '') AS MODEL "
+        "FROM V3_AEO_SCORES ORDER BY MODEL"
+    )
+
+
+def snowhouse_models_sql() -> str:
+    """SQL returning distinct model names from AEO_RUNS (Snowhouse), sorted.
+
+    Filters to models with >= 2 runs to exclude single exploratory runs
+    and match the 3 benchmark models (claude-opus-4-6, claude-opus-4-7, openai-gpt-5.4).
+    """
+    return (
+        "SELECT MODEL FROM AEO_RUNS "
+        "GROUP BY MODEL HAVING COUNT(*) >= 2 ORDER BY MODEL"
+    )
+
+
+def v3_leaderboard_sql(model: str) -> str:
+    """SQL equivalent of V_AEO_LEADERBOARD for a single V3 model.
+
+    Returns one row per run_id with aggregated SCORE_PCT, MH_PCT, and config
+    flag columns (bool) derived from the RUN_ID suffix encoding.
+    """
+    return f"""
+        SELECT RUN_ID,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'D') AS DOMAIN_PROMPT,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'C') AS CITATION,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'A') AS AGENTIC,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'S') AS SELF_CRITIQUE,
+               AVG(TOTAL_SCORE) / 50.0 * 100 AS SCORE_PCT,
+               AVG(MUST_HAVE_PASS) * 100     AS MH_PCT,
+               AVG(TOTAL_SCORE)              AS TOTAL_SCORE,
+               COUNT(DISTINCT QUESTION_ID)   AS QUESTIONS_SCORED,
+               REGEXP_REPLACE(RUN_ID, '-(base|[DCAS]+)$', '') AS MODEL
+        FROM V3_AEO_SCORES
+        WHERE RUN_ID LIKE '{model}-%'
+        GROUP BY RUN_ID
+    """
+
+
+def v3_per_question_sql(model: str) -> str:
+    """SQL equivalent of V_AEO_PER_QUESTION_HEATMAP for a single V3 model.
+
+    Returns one row per (QUESTION_ID, RUN_ID) with per-judge averages and
+    config flag columns derived from the RUN_ID suffix encoding.
+    Note: AVG(CITATION) is aliased CITATION_SCORE to match old view columns.
+    """
+    return f"""
+        SELECT QUESTION_ID, RUN_ID,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'D') AS DOMAIN_PROMPT,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'C') AS CITATION,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'A') AS AGENTIC,
+               CONTAINS(REGEXP_REPLACE(RUN_ID, '^.*-', ''), 'S') AS SELF_CRITIQUE,
+               AVG(TOTAL_SCORE)     AS TOTAL_SCORE,
+               AVG(MUST_HAVE_PASS)  AS MUST_HAVE_PASS,
+               AVG(CORRECTNESS)     AS CORRECTNESS,
+               AVG(COMPLETENESS)    AS COMPLETENESS,
+               AVG(RECENCY)         AS RECENCY,
+               AVG(CITATION)        AS CITATION_SCORE,
+               AVG(RECOMMENDATION)  AS RECOMMENDATION,
+               REGEXP_REPLACE(RUN_ID, '-(base|[DCAS]+)$', '') AS MODEL
+        FROM V3_AEO_SCORES
+        WHERE RUN_ID LIKE '{model}-%'
+        GROUP BY QUESTION_ID, RUN_ID
+    """

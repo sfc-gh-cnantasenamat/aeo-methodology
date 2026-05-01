@@ -140,6 +140,94 @@ LaTeX auxiliary files (`.aux`, `.log`, `.out`) are excluded via `.gitignore`.
 
 `paper.md` is the source of truth. When editing content, update `paper.md` first, then mirror the changes into `paper/latex/paper.tex` and recompile the PDF.
 
+### Updating the paper (consolidated rule)
+
+When the user says **"update the paper"**, perform all three steps in order:
+
+1. **Edit `paper/paper.md`** (source of truth)
+2. **Mirror every change into `paper/latex/paper.tex`** (same content, LaTeX syntax)
+3. **Recompile and copy the PDF**:
+   ```bash
+   cd paper/latex
+   pdflatex -interaction=nonstopmode paper.tex
+   pdflatex -interaction=nonstopmode paper.tex
+   cp paper.pdf ../paper.pdf
+   ```
+
+#### Sections that change with each benchmark version update
+
+| Section | What to update |
+|---------|---------------|
+| **Summary / Abstract** | Best score, baseline score, improvement (pp), agentic avg, non-agentic avg, score range, date |
+| **Rankings table** | All 16 runs: rank, run ID, config flags, score %, MH %, config label |
+| **Main effects table** | All 4 factors: effect (pp) and MH effect (pp); dominant factor narrative |
+| **Model comparison** | Per-model scores; update table structure if number of models changes across versions |
+| **Product Category Intelligence table** | All 32 rows × 5 columns: Overall, Explain, Implement, Debug, Compare; Weakest column |
+| **Category observations** | Highest-priority gap categories and their Weakest type |
+| **Scoring dimensions** | Judge panel size and model list (changes between v2 and v3) |
+| **Conclusion** | Numbered findings (best score, baseline, score range, dominant factor, category count, weakest type, implication) |
+
+#### V3 data sources (connection: `devrel`)
+
+```sql
+-- Overall scores per run (16 configs × N models)
+SELECT
+    RUN_ID,
+    AVG(TOTAL_SCORE)/50*100  AS SCORE_PCT,
+    AVG(MUST_HAVE_PASS)*100  AS MH_PCT
+FROM CHANINN_DEMO_DATA.APPS.V3_AEO_SCORES
+GROUP BY RUN_ID
+ORDER BY SCORE_PCT DESC;
+
+-- Per-category × question-type breakdown (for the 32-row table)
+-- Uses claude-opus-4-6 C+A config as the "best run" baseline
+SELECT
+    q.CATEGORY,
+    q.QUESTION_TYPE,
+    AVG(s.TOTAL_SCORE)/50*100 AS SCORE_PCT
+FROM CHANINN_DEMO_DATA.APPS.V3_AEO_SCORES s
+JOIN AEO_OBSERVABILITY.EVAL_SCHEMA.AEO_QUESTIONS q
+    ON s.QUESTION_ID = q.QUESTION_ID
+WHERE s.RUN_ID = 'claude-opus-4-6-CA'   -- best config for category table
+GROUP BY q.CATEGORY, q.QUESTION_TYPE
+ORDER BY q.CATEGORY, q.QUESTION_TYPE;
+
+-- Main effects: per-factor score lift
+-- Factor flags: DOMAIN_PROMPT, CITATION, AGENTIC, SELF_CRITIQUE (all BOOLEAN in V3_AEO_SCORES)
+SELECT
+    'Agentic'      AS FACTOR, AVG(CASE WHEN AGENTIC      THEN TOTAL_SCORE END) - AVG(CASE WHEN NOT AGENTIC      THEN TOTAL_SCORE END) AS EFFECT_RAW
+FROM CHANINN_DEMO_DATA.APPS.V3_AEO_SCORES
+WHERE MODEL = 'claude-opus-4-6';
+-- (repeat for each factor; divide by 50 * 100 to convert to pp)
+```
+
+#### V3 RUN_ID convention
+
+Format: `{model}-{config_code}`
+
+| Config code | Domain | Citation | Agentic | Self-Critique |
+|-------------|--------|----------|---------|---------------|
+| `base` | 0 | 0 | 0 | 0 |
+| `D` | 1 | 0 | 0 | 0 |
+| `C` | 0 | 1 | 0 | 0 |
+| `A` | 0 | 0 | 1 | 0 |
+| `S` | 0 | 0 | 0 | 1 |
+| `DC` | 1 | 1 | 0 | 0 |
+| `DA` | 1 | 0 | 1 | 0 |
+| … | … | … | … | … |
+| `DCAS` | 1 | 1 | 1 | 1 |
+
+Models in V3: `claude-opus-4-6`, `claude-opus-4-7`, `openai-gpt-5.4` (respondents); judges: llama4-maverick, gemini-3.1-pro (5-judge panel total).
+
+#### Score formula
+
+```
+SCORE_PCT = AVG(TOTAL_SCORE) / 50 * 100
+MH_PCT    = AVG(MUST_HAVE_PASS) * 100
+```
+
+5 judges × 10-point scale = 50 max per question.
+
 ## PM Actionability
 
 ### The Central Question

@@ -23,7 +23,7 @@ entities:
       - pages/factors_influence.py
       - pages/home.py
       - pages/leaderboard.py
-      - pages/model_comparison.py
+      - pages/experimental/model_comparison.py
       - pages/questions_explorer.py
       - pages/test_prompt.py
       - pages/test_skill.py
@@ -31,3 +31,4 @@ entities:
       - utils/db.py
       - utils/scoring.py
       - utils/spcs.py
+      - utils/ui.py
